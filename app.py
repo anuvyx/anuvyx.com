@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 
-app = Flask(__name__)
+# Configurar Flask para que busque las plantillas en la raíz del proyecto
+app = Flask(__name__, template_folder='.')
+
 CORS(app)
 
 @app.route("/")
 def home():
-    return render_template("anuvyx.html")  # Sirve el HTML desde la carpeta templates
+    return render_template("anuvyx.html")  # Ahora buscará anuvyx.html en la raíz
 
 @app.route("/contact", methods=["POST"])
 def contact():
