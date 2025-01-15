@@ -8,7 +8,7 @@ CORS(app)
 
 @app.route("/")
 def home():
-    return render_template("anuvyx.html")  # Ahora buscará anuvyx.html en la raíz
+    return render_template("index.html")
 
 @app.route("/contact", methods=["POST"])
 def contact():
