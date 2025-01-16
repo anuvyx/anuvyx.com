@@ -103,3 +103,10 @@ footer {
 .cta:hover {
     background: #0056b3;
 }
+
+img.favicon {
+    border-radius: 50%; /* Hace la imagen circular */
+    width: 32px; /* Tamaño sugerido */
+    height: 32px;
+  }
+  
