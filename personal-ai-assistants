@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Personal AI Assistants - Empower your daily life with intelligent assistants.">
     <title>Personal AI Assistants | Anuvyx</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://anuvyx.github.io/anuvyx.com/styles.css">
     <style>
         body {
             font-family: Arial, sans-serif;
