@@ -109,5 +109,10 @@ img.favicon {
     width: 32px; /* Tamaño sugerido */
     height: 32px;
 }
+
+body {
+    background-color: white;
+  }
+  
   
   
