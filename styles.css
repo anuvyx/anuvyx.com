@@ -105,9 +105,9 @@ footer {
 }
 
 img.favicon {
-    border-radius: 50%; /* Hace la imagen circular */
-    width: 32px; /* Tamaño sugerido */
-    height: 32px;
+    border-radius: 50%;
+    width: 16px; 
+    height: 16px;
 }
 
 body {
