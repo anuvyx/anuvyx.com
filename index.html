@@ -1,104 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Anuvyx - Guiding change, connecting the future with AI-powered solutions for people and businesses alike.">
     <title>Anuvyx</title>
-    <link rel="stylesheet" href="styles.css"> 
-    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico"> <!-- Ruta relativa recomendada -->
 </head>
 <body>
-    <header>
-        <h1>Anuvyx</h1>
-        <p>Guiding Change, Connecting the Future</p>
-    </header>
+    <!-- Barra superior con solo el nombre -->
+    <div class="top-bar">
+        <span class="company-name">ANUVYX</span>
+    </div>
 
-    <nav>
-        <img src="static/Anuvyx-White-NB.PNG" alt="Anuvyx Logo" onclick="window.location.href='https://anuvyx.com/'">
-        <a href="#about">About Us</a>
-        <a href="#solutions">Solutions</a>
-        <a href="#contact">Contact</a>
+    <!-- Barra de navegación principal -->
+    <nav class="nav">
+        <a href="#" class="nav-logo">
+            <img src="static/Anuvyx-White-NB.PNG" alt="Logo Anuvyx" class="logo-img">
+        </a>
+        <div class="nav-links">
+            <a href="#hero" class="nav-link">Inicio</a>
+            <a href="#ia" class="nav-link">IA</a>
+            <a href="#iot" class="nav-link">IoT</a>
+            <a href="#blockchain" class="nav-link">Web3</a>
+            <a href="#metaverso" class="nav-link">Metaverso</a>
+            <a href="#energia" class="nav-link">Energía</a>
+        </div>
     </nav>
 
-    <section class="hero">
-        <div>
-            <h1>Empowering Businesses and Individuals</h1>
-            <p>Seamless AI solutions for a smarter, more connected future.</p>
+    <section class="section hero" id="hero">
+        <h1 class="hero-title">Donde el futuro converge</h1>
+        <p class="hero-subtitle">Revolucionando la tecnología para un mundo sostenible</p>
+        <a href="#contacto" class="cta-button">Únete a la revolución</a>
+    </section>
+
+    <section class="section" id="ia">
+        <div class="section-content">
+            <h2>Inteligencia Artificial</h2>
+            <p>Soluciones éticas y autónomas para un mañana inteligente</p>
+            <a href="#ia" class="cta-button">Descubre más</a>
         </div>
     </section>
 
-    <section id="about" class="section">
-        <h2>About Anuvyx</h2>
-        <p>At Anuvyx, we blend cutting-edge artificial intelligence with human ingenuity to create tools and platforms that enhance lives and streamline businesses. Inspired by Anubis, the guide of transitions, we help individuals and organizations navigate the complexities of a digital world.</p>
-    </section>
-
-    <section id="solutions" class="section">
-        <h2>Our Solutions</h2>
-        <div class="cards">
-            <div class="card">
-                <a href="personal-ai-assistants.html">
-                    <h3>Personal AI Assistants</h3>
-                    <p>Empower your daily life with intelligent assistants that help you stay organized, informed, and efficient.</p>
-                </a>
-            </div>
-            <div class="card">
-                <h3>Business Automation</h3>
-                <p>Streamline operations with customized AI-driven tools that boost productivity and reduce costs.</p>
-            </div>
-            <div class="card">
-                <h3>IoT Ecosystem Management</h3>
-                <p>Connect and optimize your smart devices with our advanced IoT solutions.</p>
-            </div>
+    <section class="section" id="iot">
+        <div class="section-content">
+            <h2>Ecosistemas IoT</h2>
+            <p>Conectando el mundo físico y digital</p>
+            <a href="#iot" class="cta-button">Ver proyectos</a>
         </div>
     </section>
 
-    <section id="contact" class="section">
-        <h2>Contact Us</h2>
-        <p>Ready to explore how Anuvyx can transform your future? Reach out to us today!</p>
-        <form id="contactForm">
-            <input type="text" id="name" name="name" placeholder="Your Name" required><br>
-            <input type="email" id="email" name="email" placeholder="Your Email" required><br>
-            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea><br>
-            <button type="submit" class="cta">Send Message</button>
-        </form>
-        <p id="responseMessage"></p>
+    <section class="section" id="blockchain">
+        <div class="section-content">
+            <h2>Blockchain & Web3</h2>
+            <p>Descentralizando el futuro</p>
+            <a href="#blockchain" class="cta-button">Explorar</a>
+        </div>
     </section>
 
-    <footer>
-        <p>&copy; 2025 Anuvyx. All rights reserved.</p>
+    <section class="section" id="metaverso">
+        <div class="section-content">
+            <h2>Metaverso</h2>
+            <p>Espacios inmersivos para una nueva realidad</p>
+            <a href="#metaverso" class="cta-button">Ingresar</a>
+        </div>
+    </section>
+
+    <section class="section" id="energia">
+        <div class="section-content">
+            <h2>Energía Limpia</h2>
+            <p>Fusión nuclear para un planeta sostenible</p>
+            <a href="#energia" class="cta-button">Conocer más</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p class="copyright">&copy; 2025 Anuvyx. Todos los derechos reservados.</p>
     </footer>
 
-    <script>
-        const form = document.getElementById('contactForm');
-        const responseMessage = document.getElementById('responseMessage');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value
-            };
-
-            try {
-                const response = await fetch('http://127.0.0.1:5000/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-                responseMessage.textContent = data.message;
-                responseMessage.style.color = 'green';
-            } catch (error) {
-                responseMessage.textContent = 'Error sending your message. Please try again.';
-                responseMessage.style.color = 'red';
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
