@@ -1,9 +1,11 @@
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Estilos generales */
 body {
     font-family: 'Inter', sans-serif;
     background: #000;
@@ -12,17 +14,19 @@ body {
     overflow-x: hidden;
 }
 
+/* Navegación */
 .nav {
     position: fixed;
-    top: 0;
+    top: 50px; /* Ajuste para la barra superior */
     width: 100%;
-    padding: 1.5rem 3rem;
+    padding: 1rem 3rem;
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(15px);
     z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background 0.3s;
 }
 
 .nav-logo {
@@ -30,6 +34,18 @@ body {
     font-weight: 700;
     color: #fff;
     text-decoration: none;
+    display: flex;
+    align-items: center; /* Centrado vertical del logo */
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+    transition: opacity 0.3s;
+}
+
+.logo-img:hover {
+    opacity: 0.8;
 }
 
 .nav-links {
@@ -48,6 +64,7 @@ body {
     opacity: 0.7;
 }
 
+/* Secciones */
 .section {
     height: 100vh;
     padding: 8rem 2rem;
@@ -57,6 +74,23 @@ body {
     scroll-snap-align: start;
 }
 
+.section-content {
+    max-width: 800px;
+    text-align: center;
+}
+
+.section h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.section p {
+    font-size: 1.2rem;
+    color: #888;
+    margin-bottom: 2rem;
+}
+
+/* Hero */
 .hero {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920');
@@ -76,34 +110,16 @@ body {
     margin-bottom: 3rem;
 }
 
-#ia {
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                url('https://images.unsplash.com/photo-1535378917046-79de36167a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920');
-    background-size: cover;
+/* Título de la empresa */
+.company-name {
+    font-size: 1.5rem; /* Aumentado */
+    letter-spacing: 4px;
+    color: #fff;
+    font-weight: 700; /* Negrita para más impacto */
+    text-transform: uppercase;
 }
 
-#iot {
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                url('https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920');
-    background-size: cover;
-}
-
-.section-content {
-    max-width: 800px;
-    text-align: center;
-}
-
-.section h2 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.section p {
-    font-size: 1.2rem;
-    color: #888;
-    margin-bottom: 2rem;
-}
-
+/* Botones */
 .cta-button {
     background: #0071e3;
     color: #fff;
@@ -120,6 +136,7 @@ body {
     transform: scale(1.05);
 }
 
+/* Media Queries */
 @media (max-width: 768px) {
     .nav {
         padding: 1rem;
@@ -138,44 +155,7 @@ body {
     }
 }
 
-.logo-img {
-    height: 40px;
-    width: auto;
-    transition: opacity 0.3s;
-}
-
-.logo-img:hover {
-    opacity: 0.8;
-}
-
-.nav {
-    padding: 1rem 3rem;
-}
-
-.logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-.company-name {
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    color: #fff;
-    opacity: 0.8;
-}
-
-.logo-img {
-    height: 35px;
-    width: auto;
-    transition: opacity 0.3s;
-}
-
-.logo-img:hover {
-    opacity: 0.8;
-}
-
+/* Footer */
 .footer {
     background: rgba(0, 0, 0, 0.9);
     padding: 1.5rem;
@@ -188,7 +168,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Barra superior con el nombre */
+/* Barra superior */
 .top-bar {
     background: #000;
     padding: 10px 0;
@@ -198,18 +178,4 @@ body {
     width: 100%;
     top: 0;
     z-index: 1001;
-}
-
-.company-name {
-    font-size: 1.2rem;
-    letter-spacing: 4px;
-    color: #fff;
-    font-weight: 300;
-    text-transform: uppercase;
-}
-
-/* Ajuste de la barra de navegación principal */
-.nav {
-    top: 50px;
-    padding: 1rem 3rem;
 }
