@@ -41,28 +41,31 @@ body {
 /* Barra de navegación principal */
 .nav {
     position: fixed;
-    top: 60px; /* Ajusté la posición para que no se superponga con la barra superior */
+    top: 75px; /* Ajusté la posición para que no se superponga con la barra superior */
     width: 100%;
-    padding: 1rem 3rem;
-    background: rgba(0, 0, 0, 0.9);
+    padding: 0 3rem; /* Reducimos el padding vertical para centrar mejor */
+    background: rgba(0, 0, 0, 0.7); /* Más transparencia */
     backdrop-filter: blur(15px);
     z-index: 1000;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center; /* Centra verticalmente todo el contenido */
+    height: 60px; /* Altura fija para la barra de navegación */
 }
 
+/* Logo */
 .nav-logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #fff;
-    text-decoration: none;
+    display: flex;
+    align-items: center; /* Centra verticalmente el logo */
 }
 
+/* Enlaces de navegación */
 .nav-links {
     display: flex;
     gap: 2rem;
+    align-items: center; /* Centra verticalmente los enlaces */
 }
+
 
 .nav-link {
     color: #fff;
@@ -173,7 +176,7 @@ body {
     }
 }
 
-/* Logo */
+/* Imagen del logo */
 .logo-img {
     height: 40px;
     width: auto;
