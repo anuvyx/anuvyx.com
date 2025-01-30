@@ -48,20 +48,33 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Menú móvil
+// Menú móvil (hamburguesa)
 const menuToggle = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
+const body = document.body;
 
+// Abrir/cerrar menú al hacer clic en el botón hamburguesa
 menuToggle.addEventListener('click', () => {
     menuToggle.classList.toggle('active');
     navLinks.classList.toggle('active');
+    body.classList.toggle('no-scroll'); // Bloquear scroll cuando el menú está abierto
 });
 
-// Cerrar menú al hacer click en un enlace
+// Cerrar menú al hacer clic fuera o en un enlace
+document.addEventListener('click', (e) => {
+    if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+        menuToggle.classList.remove('active');
+        navLinks.classList.remove('active');
+        body.classList.remove('no-scroll');
+    }
+});
+
+// Cerrar menú al hacer clic en un enlace
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
         menuToggle.classList.remove('active');
         navLinks.classList.remove('active');
+        body.classList.remove('no-scroll');
     });
 });
 
