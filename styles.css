@@ -398,7 +398,7 @@ body {
         transition: opacity 0.5s ease, transform 0.5s ease; /* Transición para la aparición */
     }
     .nav-links.active .nav-link {
-        animation: fadeInLinks 2.5s forwards; /* Animación para cada enlace */
+        animation: fadeInLinks 1.5s forwards; /* Animación para cada enlace */
     }
 
     /* Animación para los enlaces */
