@@ -92,18 +92,37 @@ body {
                 url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920');
     background-size: cover;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
 }
 
 .hero-title {
     font-size: 4rem;
     margin-bottom: 1.5rem;
     font-weight: 700;
+    order: 1; /* Título primero */
 }
 
 .hero-subtitle {
     font-size: 1.5rem;
     color: #888;
     margin-bottom: 3rem;
+    order: 2; /* Subtítulo segundo */
+}
+
+.cta-button {
+    background: #0071e3;
+    color: #fff;
+    padding: 1rem 2.5rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: inline-block;
+    order: 3; /* Botón tercero */
 }
 
 #ia {
@@ -257,11 +276,18 @@ body {
     .hero-title {
         font-size: 2rem;
         line-height: 1.2;
+        margin-bottom: 1rem;
     }
 
     .hero-subtitle {
         font-size: 1rem;
         margin-bottom: 2rem;
+    }
+
+    .cta-button {
+        width: auto; /* Ajusta el ancho del botón */
+        padding: 1rem 2rem;
+        border-radius: 1rem;
     }
 
     .section {
