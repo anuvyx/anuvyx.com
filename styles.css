@@ -308,6 +308,13 @@ body {
         border-radius: 1rem;
     }
 
+    .hero, 
+    .section {
+        background-position: center center !important;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
     .section {
         padding: 6rem 1rem;
         height: auto;
