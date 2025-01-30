@@ -47,3 +47,37 @@ window.addEventListener('scroll', () => {
         nav.style.background = "rgba(0, 0, 0, 0.9)"; // Fondo original
     }
 });
+
+// Menú móvil
+const menuToggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('active');
+    navLinks.classList.toggle('active');
+});
+
+// Cerrar menú al hacer click en un enlace
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        navLinks.classList.remove('active');
+    });
+});
+
+// Ajuste de scroll para dispositivos móviles
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            e.preventDefault();
+            const offset = 80; // Ajusta según la altura de tu header
+            const position = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            
+            window.scrollTo({
+                top: position,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
