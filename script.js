@@ -42,7 +42,7 @@ document.querySelectorAll('.section-content').forEach(content => {
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.nav');
     if (window.scrollY > 50) {
-        nav.style.background = "rgba(0, 0, 0, 0.95)"; // Fondo más oscuro al hacer scroll
+        nav.style.background = "rgba(0, 0, 0, 0.9)"; // Fondo original al hacer scroll
     } else {
         nav.style.background = "rgba(0, 0, 0, 0.9)"; // Fondo original
     }
@@ -57,7 +57,7 @@ const body = document.body;
 menuToggle.addEventListener('click', () => {
     menuToggle.classList.toggle('active');
     navLinks.classList.toggle('active');
-    body.classList.toggle('no-scroll'); // Bloquear scroll cuando el menú está abierto
+    body.classList.toggle('scroll'); // Dejar el scroll cuando el menú está abierto
 });
 
 // Cerrar menú al hacer clic fuera o en un enlace

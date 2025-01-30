@@ -200,6 +200,7 @@ body {
     .nav-links {
         display: none;
         position: fixed;
+        height: 100vh; /* Ocupa toda la altura de la pantalla */
         top: 0;
         left: 0;
         right: 0;
@@ -299,8 +300,4 @@ body {
         transform: rotate(-45deg) translate(5px, -5px);
     }
 
-    /* Bloquear scroll cuando el menú está abierto */
-    .no-scroll {
-        overflow: hidden;
-    }
 }
