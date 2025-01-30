@@ -57,7 +57,7 @@ const body = document.body;
 menuToggle.addEventListener('click', () => {
     menuToggle.classList.toggle('active');
     navLinks.classList.toggle('active');
-    body.classList.toggle('scroll'); // Dejar el scroll cuando el menú está abierto
+    body.classList.toggle('no-scroll'); // Dejar el scroll cuando el menú está abierto
 });
 
 // Cerrar menú al hacer clic fuera o en un enlace

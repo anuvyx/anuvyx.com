@@ -205,12 +205,30 @@ body {
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 1.0);
         flex-direction: column;
         padding: 80px 2rem 2rem;
-        gap: 1.5rem;
+        gap: 0;
         z-index: 1000;
         overflow-y: auto;
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 1.5rem 0;
+        position: relative;
+    }
+
+    .nav-link:not(:first-child)::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
     }
 
     .nav-links.active {
@@ -298,6 +316,11 @@ body {
     }
     .menu-toggle.active span:nth-child(3) {
         transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Agrega esto al final del archivo CSS */
+    body.no-scroll {
+        overflow: hidden;
     }
 
 }
