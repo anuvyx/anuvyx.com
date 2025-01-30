@@ -178,7 +178,7 @@ body {
 @media (max-width: 768px) {
     .top-bar {
         padding: 12px 0;
-        border-bottom: none;
+        border-bottom: 1px solid #333;
     }
     
     .company-name {
@@ -205,7 +205,7 @@ body {
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.98);
+        background: rgba(0, 0, 0, 0.7);
         flex-direction: column;
         padding: 80px 2rem 2rem;
         gap: 1.5rem;
