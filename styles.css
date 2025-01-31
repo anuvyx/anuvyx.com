@@ -98,7 +98,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 120vh; /* Asegura que ocupe toda la altura de la pantalla */
+    height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
 }
 
 .hero-title {
