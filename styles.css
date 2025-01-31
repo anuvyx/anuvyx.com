@@ -85,12 +85,14 @@ body {
     align-items: center;
     justify-content: center;
     scroll-snap-align: start;
+    background-position: center center; /* Centra la imagen */
 }
 
 .hero {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/hero-banner.avif');
     background-size: cover;
+    background-position: center center; /* Centra la imagen */
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -129,30 +131,35 @@ body {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/ia-banner.avif');
     background-size: cover;
+    background-position: center center; /* Centra la imagen */
 }
 
 #iot {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/iot-banner.avif');
     background-size: cover;
+    background-position: center center; /* Centra la imagen */
 }
 
 #blockchain {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/blockchain-banner.avif');
     background-size: cover;
+    background-position: center center; /* Centra la imagen */
 }
 
 #metaverso {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/meta-banner.avif');
     background-size: cover;
+    background-position: center center; /* Centra la imagen */
 }
 
 #energias {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/energies-banner.avif');
     background-size: cover;
+    background-position: center center; /* Centra la imagen */
 }
 
 .section-content {
