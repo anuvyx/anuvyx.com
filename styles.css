@@ -131,14 +131,14 @@ body {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/ia-banner.avif');
     background-size: cover;
-    background-position: center center; /* Centra la imagen */
+    background-position: center 20%; /* Centra la imagen */
 }
 
 #iot {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('static/index/iot-banner.avif');
     background-size: cover;
-    background-position: center center; /* Centra la imagen */
+    background-position: center 20%; /* Centra la imagen */
 }
 
 #blockchain {
