@@ -1,0 +1,394 @@
+<!-- ia/chat-ia.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anuvyx - Arex AI</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos mejorados manteniendo la identidad de Anuvyx */
+        .chat-wrapper {
+            display: flex;
+            min-height: 100vh;
+            background: #000;
+            margin-top: 75px;
+        }
+
+        /* Sidebar de chats */
+        .chat-sidebar {
+            width: 300px;
+            background: rgba(15, 15, 15, 0.95);
+            border-right: 1px solid #333;
+            padding: 2rem 1rem;
+            position: fixed;
+            height: calc(100vh - 75px);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .new-chat-btn {
+            background: #0071e3;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .new-chat-btn:hover {
+            background: #005bb5;
+        }
+
+        .chat-history {
+            list-style: none;
+        }
+
+        .chat-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #888;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .chat-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .chat-item.active {
+            background: rgba(0, 113, 227, 0.1);
+            color: #0071e3;
+            border-left: 3px solid #0071e3;
+        }
+
+        /* Área principal del chat */
+        .chat-main {
+            flex: 1;
+            margin-left: 300px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .chat-header {
+            border-bottom: 1px solid #333;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .arex-logo {
+            height: 40px;
+            width: 40px;
+        }
+
+        .chat-header h1 {
+            font-size: 2rem;
+            color: #0071e3;
+        }
+
+        .chat-messages {
+            height: calc(100vh - 280px);
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .message {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            border-radius: 15px;
+            max-width: 70%;
+            position: relative;
+            animation: messageFade 0.4s ease;
+        }
+
+        @keyframes messageFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: rgba(0, 113, 227, 0.1);
+            border: 1px solid #0071e3;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            margin-right: auto;
+        }
+
+        .chat-input-container {
+            position: fixed;
+            bottom: 2rem;
+            width: calc(100% - 300px - 4rem);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 1.2rem;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: #0071e3;
+            outline: none;
+        }
+
+        #send-btn {
+            padding: 1.2rem 2rem;
+            background: #0071e3;
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #send-btn:hover {
+            background: #005bb5;
+        }
+
+        .loading-dots {
+            display: inline-block;
+            padding: 1rem;
+        }
+
+        .loading-dots::after {
+            content: '...';
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .chat-wrapper {
+                margin-top: 130px;
+            }
+
+            .chat-sidebar {
+                transform: translateX(-100%);
+                width: 100%;
+                z-index: 1000;
+                background: #000;
+            }
+
+            .chat-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .chat-main {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .chat-input-container {
+                width: calc(100% - 2rem);
+                bottom: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                left: 1rem;
+                top: 100px;
+                z-index: 1001;
+            }
+
+            .message {
+                max-width: 85%;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-wrapper">
+        <!-- Sidebar -->
+        <nav class="chat-sidebar" id="chatSidebar">
+            <div class="chat-sidebar-header">
+                <h3>Chats</h3>
+                <button class="new-chat-btn">+ Nuevo</button>
+            </div>
+            <ul class="chat-history" id="chatHistory">
+                <!-- Chats se cargarán dinámicamente -->
+            </ul>
+        </nav>
+
+        <!-- Área principal -->
+        <main class="chat-main">
+            <!-- Header -->
+            <div class="chat-header">
+                <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Arex AI" class="arex-logo">
+                <h1>Arex AI Assistant</h1>
+            </div>
+
+            <!-- Mensajes -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    ¡Hola! Soy Arex, el asistente de IA de Anuvyx.<br><br>
+                    Puedo ayudarte con:<br>
+                    • Desarrollo de modelos de IA<br>
+                    • Integraciones IoT<br>
+                    • Smart contracts<br>
+                    • Optimización energética<br>
+                    • Análisis predictivo
+                </div>
+            </div>
+
+            <!-- Input -->
+            <div class="chat-input-container">
+                <div class="chat-input">
+                    <input type="text" id="user-input" placeholder="Escribe tu consulta tecnológica...">
+                    <button id="send-btn">
+                        <span>Enviar</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sistema de chats con localStorage
+        const chatSidebar = document.getElementById('chatSidebar');
+        const chatHistory = document.getElementById('chatHistory');
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const newChatBtn = document.querySelector('.new-chat-btn');
+
+        let currentChatId = null;
+        let chats = JSON.parse(localStorage.getItem('arexChats')) || [];
+
+        // Cargar historial de chats
+        function loadChatHistory() {
+            chatHistory.innerHTML = chats.map(chat => `
+                <li class="chat-item ${chat.id === currentChatId ? 'active' : ''}" data-id="${chat.id}">
+                    ${new Date(chat.timestamp).toLocaleString()}
+                </li>
+            `).join('');
+        }
+
+        // Nuevo chat
+        function createNewChat() {
+            currentChatId = Date.now().toString();
+            chats.push({
+                id: currentChatId,
+                timestamp: Date.now(),
+                messages: []
+            });
+            localStorage.setItem('arexChats', JSON.stringify(chats));
+            loadChatHistory();
+            chatMessages.innerHTML = '';
+        }
+
+        // Enviar mensaje
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Guardar mensaje
+            const chat = chats.find(c => c.id === currentChatId);
+            chat.messages.push({
+                content: message,
+                isUser: true,
+                timestamp: Date.now()
+            });
+
+            // Mostrar mensaje
+            displayMessage(message, true);
+            userInput.value = '';
+
+            // Simular respuesta de API
+            const loading = showLoading();
+            
+            // Aquí iría la llamada real a la API
+            setTimeout(async () => {
+                loading.remove();
+                const response = `Respuesta simulada para: "${message}". En la implementación real, esto se conectaría a la API de Arex.`;
+                
+                chat.messages.push({
+                    content: response,
+                    isUser: false,
+                    timestamp: Date.now()
+                });
+                
+                displayMessage(response, false);
+                localStorage.setItem('arexChats', JSON.stringify(chats));
+            }, 1500);
+        }
+
+        // Mostrar mensajes
+        function displayMessage(content, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = content;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Mostrar carga
+        function showLoading() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot-message loading-dots';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return loadingDiv;
+        }
+
+        // Event Listeners
+        newChatBtn.addEventListener('click', createNewChat);
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
+
+        // Inicializar primer chat
+        if (chats.length === 0) createNewChat();
+        else currentChatId = chats[0].id;
+        loadChatHistory();
+    </script>
+</body>
+</html>
