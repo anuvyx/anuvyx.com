@@ -1,0 +1,247 @@
+/* Estilos generales */
+.chat-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background: #000;
+    margin-top: 0;
+}
+
+/* Sidebar de chats */
+.chat-sidebar {
+    width: 300px;
+    background: rgba(15, 15, 15, 0.95);
+    border-right: 1px solid #333;
+    padding: 2rem 1rem;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+.chat-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.new-chat-btn {
+    background: #ffffff;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 25%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-chat-btn:hover {
+    background: rgba(209, 209, 209, 0.6);
+    transform: scale(1.1);
+}
+
+.new-chat-btn:active {
+    transform: scale(0.9);
+}
+
+.new-chat-btn svg {
+    stroke: #000000;
+    width: 24px;
+    height: 24px;
+}
+
+.chat-history {
+    list-style: none;
+    padding: 0;
+}
+
+.chat-item {
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #888;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.chat-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.chat-item.active {
+    background: rgba(227, 227, 227, 0.1);
+    color: #ffffff;
+    border-left: 3px solid #ffffff;
+}
+
+/* Área principal del chat */
+.chat-main {
+    flex: 1;
+    margin-left: 300px;
+    padding: 2rem;
+    position: relative;
+}
+
+.chat-header {
+    border-bottom: 1px solid #333;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.arex-logo {
+    height: 40px;
+    width: 40px;
+}
+
+.chat-header h1 {
+    font-size: 2rem;
+    color: #ffffff;
+}
+
+.chat-messages {
+    height: calc(100vh - 280px);
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.message {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    border-radius: 15px;
+    max-width: 70%;
+    position: relative;
+    animation: messageFade 0.4s ease;
+}
+
+@keyframes messageFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.user-message {
+    background: rgba(227, 227, 227, 0.1);
+    border: 1px solid #ffffff;
+    margin-left: auto;
+}
+
+.bot-message {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #333;
+    margin-right: auto;
+}
+
+.chat-input-container {
+    position: fixed;
+    bottom: 2rem;
+    width: calc(100% - 300px - 4rem);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 1rem 0;
+    backdrop-filter: blur(10px);
+}
+
+.chat-input {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+#user-input {
+    flex: 1;
+    padding: 1.2rem;
+    background: #111;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+#user-input:focus {
+    border-color: #ffffff;
+    outline: none;
+}
+
+#send-btn {
+    padding: 1.2rem 2rem;
+    background: #ffffff;
+    border: none;
+    border-radius: 12px;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#send-btn:hover {
+    background: rgba(209, 209, 209, 0.6);
+    transform: scale(1.1);
+}
+
+.loading-dots {
+    display: inline-block;
+    padding: 1rem;
+}
+
+.loading-dots::after {
+    content: '...';
+    animation: typing 1.5s infinite;
+}
+
+@keyframes typing {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+/* Estilos para móviles */
+@media (max-width: 768px) {
+    .chat-wrapper {
+        margin-top: 130px;
+    }
+
+    .chat-sidebar {
+        transform: translateX(-100%);
+        width: 100%;
+        z-index: 1000;
+        background: #000;
+    }
+
+    .chat-sidebar.active {
+        transform: translateX(0);
+    }
+
+    .chat-main {
+        margin-left: 0;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .chat-input-container {
+        width: calc(100% - 2rem);
+        bottom: 1rem;
+    }
+
+    .menu-toggle {
+        display: block;
+        position: fixed;
+        left: 1rem;
+        top: 100px;
+        z-index: 1001;
+    }
+
+    .message {
+        max-width: 85%;
+        padding: 1rem;
+    }
+}
