@@ -11,18 +11,47 @@
     width: 300px;
     background: rgba(15, 15, 15, 0.95);
     border-right: 1px solid #333;
-    padding: 2rem 1rem;
+    padding: 0 1rem;
     position: fixed;
     height: 100vh;
     overflow-y: auto;
     transition: transform 0.3s ease;
 }
 
+/* Estilos para el título "Arex" en el sidebar */
+.sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1rem;
+    margin: 1rem 0;
+}
+
+.sidebar-title h1 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin: 0;
+}
+
+/* Estilos para la línea divisoria */
+.divider {
+    height: 1px;
+    background: #333;
+    margin: 1rem 0;
+}
+
+/* Ajustes para el encabezado de "Chats" */
 .chat-sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    padding: 0 1rem 1.5rem 1rem;
+}
+
+.chat-sidebar-header h3 {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin: 0;
 }
 
 .new-chat-btn {

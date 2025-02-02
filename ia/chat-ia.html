@@ -12,6 +12,16 @@
     <div class="chat-wrapper">
         <!-- Sidebar -->
         <nav class="chat-sidebar" id="chatSidebar">
+            <!-- Título "Arex" con el logo -->
+            <div class="sidebar-title">
+                <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Arex AI" class="arex-logo">
+                <h1>Arex</h1>
+            </div>
+
+            <!-- Línea divisoria -->
+            <div class="divider"></div>
+
+            <!-- Encabezado de "Chats" con el botón de nuevo chat -->
             <div class="chat-sidebar-header">
                 <h3>Chats</h3>
                 <button class="new-chat-btn" title="Nuevo chat">
@@ -20,6 +30,8 @@
                     </svg>
                 </button>
             </div>
+
+            <!-- Lista de chats -->
             <ul class="chat-history" id="chatHistory">
                 <!-- Chats se cargarán dinámicamente -->
             </ul>
@@ -50,7 +62,7 @@
             <div class="chat-input-container">
                 <div class="chat-input">
                     <input type="text" id="user-input" placeholder="Escribe tu consulta tecnológica...">
-                    <button id="send-btn">
+                    <button id="send-btn" title="Enviar mensaje">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                         </svg>
