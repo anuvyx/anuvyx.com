@@ -13,7 +13,7 @@
             display: flex;
             min-height: 100vh;
             background: #000;
-            margin-top: 75px;
+            margin-top: 0;
         }
 
         /* Sidebar de chats */
@@ -23,7 +23,7 @@
             border-right: 1px solid #333;
             padding: 2rem 1rem;
             position: fixed;
-            height: calc(100vh - 75px);
+            height: 100vh;
             overflow-y: auto;
             transition: transform 0.3s ease;
         }
@@ -36,18 +36,30 @@
         }
 
         .new-chat-btn {
-            background: #0071e3;
-            color: #fff;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
+        background: #ffffff;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 25%;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         }
 
         .new-chat-btn:hover {
-            background: #005bb5;
+            background: rgba(209, 209, 209, 0.6);
+            transform: scale(1.1);
+        }
+
+        .new-chat-btn:active {
+            transform: scale(0.9);
+        }
+
+        .new-chat-btn svg {
+            stroke: #000000;
+            width: 24px;
+            height: 24px;
         }
 
         .chat-history {
@@ -70,9 +82,9 @@
         }
 
         .chat-item.active {
-            background: rgba(0, 113, 227, 0.1);
-            color: #0071e3;
-            border-left: 3px solid #0071e3;
+            background: rgba(227, 227, 227, 0.1);
+            color: #ffffff;
+            border-left: 3px solid #ffffff;
         }
 
         /* Área principal del chat */
@@ -99,7 +111,7 @@
 
         .chat-header h1 {
             font-size: 2rem;
-            color: #0071e3;
+            color: #ffffff;
         }
 
         .chat-messages {
@@ -123,8 +135,8 @@
         }
 
         .user-message {
-            background: rgba(0, 113, 227, 0.1);
-            border: 1px solid #0071e3;
+            background: rgba(227, 227, 227, 0.1);
+            border: 1px solid #ffffff;
             margin-left: auto;
         }
 
@@ -162,16 +174,16 @@
         }
 
         #user-input:focus {
-            border-color: #0071e3;
+            border-color: #ffffff;
             outline: none;
         }
 
         #send-btn {
             padding: 1.2rem 2rem;
-            background: #0071e3;
+            background: #ffffff;
             border: none;
             border-radius: 12px;
-            color: #fff;
+            color: #000000;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
@@ -180,7 +192,8 @@
         }
 
         #send-btn:hover {
-            background: #005bb5;
+            background: rgba(209, 209, 209, 0.6);
+            transform: scale(1.1);
         }
 
         .loading-dots {
@@ -249,7 +262,10 @@
         <nav class="chat-sidebar" id="chatSidebar">
             <div class="chat-sidebar-header">
                 <h3>Chats</h3>
-                <button class="new-chat-btn">+ Nuevo</button>
+                <button class="new-chat-btn" title="Nuevo chat">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
             </div>
             <ul class="chat-history" id="chatHistory">
                 <!-- Chats se cargarán dinámicamente -->
@@ -261,7 +277,7 @@
             <!-- Header -->
             <div class="chat-header">
                 <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Arex AI" class="arex-logo">
-                <h1>Arex AI Assistant</h1>
+                <h1>Arex</h1>
             </div>
 
             <!-- Mensajes -->
@@ -282,7 +298,6 @@
                 <div class="chat-input">
                     <input type="text" id="user-input" placeholder="Escribe tu consulta tecnológica...">
                     <button id="send-btn">
-                        <span>Enviar</span>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                         </svg>
