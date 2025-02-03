@@ -121,7 +121,9 @@
     margin-bottom: 2rem;
     display: flex;
     align-items: center;
+    justify-content: center; /* Centra horizontalmente */
     gap: 1rem;
+    text-align: center; /* Asegura que el texto esté centrado */
 }
 
 .arex-logo {
