@@ -94,3 +94,27 @@ userInput.addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
 if (chats.length === 0) createNewChat();
 else currentChatId = chats[0].id;
 loadChatHistory();
+
+// Toggle del sidebar
+function toggleSidebar() {
+    const sidebar = document.getElementById('chatSidebar');
+    sidebar.classList.toggle('hidden');
+    
+    // Guardar estado
+    const isHidden = sidebar.classList.contains('hidden');
+    localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
+}
+
+// Event listeners para ambos botones
+document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+document.getElementById('floatingToggle').addEventListener('click', toggleSidebar);
+
+// Cargar estado al iniciar
+window.addEventListener('load', () => {
+    const sidebarState = localStorage.getItem('sidebarState');
+    const sidebar = document.getElementById('chatSidebar');
+    
+    if (sidebarState === 'hidden' && window.innerWidth >= 769) {
+        sidebar.classList.add('hidden');
+    }
+});

@@ -19,12 +19,52 @@
 }
 
 /* Estilos para el título "Arex" en el sidebar */
+/* Botón de toggle en el sidebar */
 .sidebar-title {
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 0 1rem;
+    position: relative;
     margin: 1rem 0;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-toggle svg {
+    stroke: #ffffff;
+}
+
+.sidebar-toggle:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Botón flotante */
+.floating-toggle {
+    display: none;
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 1000;
+    border-radius: 8px;
+    padding: 0.8rem;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+/* Mostrar botón flotante cuando el sidebar está oculto */
+.chat-sidebar.hidden + .chat-main .floating-toggle {
+    display: block;
 }
 
 .sidebar-title h1 {
@@ -241,11 +281,19 @@
         margin-top: 130px;
     }
 
+    .floating-toggle {
+        display: none !important;
+    }
+
     .chat-sidebar {
         transform: translateX(-100%);
         width: 100%;
         z-index: 1000;
         background: #000;
+    }
+
+    .sidebar-toggle {
+        display: none;
     }
 
     .chat-sidebar.active {
@@ -275,4 +323,15 @@
         max-width: 85%;
         padding: 1rem;
     }
+}
+
+/* Estado oculto del sidebar */
+.chat-sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+/* Ajustar contenido principal cuando el sidebar está oculto */
+.chat-sidebar.hidden + .chat-main {
+    margin-left: 0;
+    width: 100%;
 }
