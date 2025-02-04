@@ -1,3 +1,13 @@
+.chat-sidebar {
+    scrollbar-width: normal;
+    scrollbar-color: #333 rgba(15, 15, 15, 0.95);
+}
+
+.chat-messages {
+    scrollbar-width: normal;
+    scrollbar-color: #333 #000; 
+}
+
 /* Estilos generales */
 .chat-wrapper {
     display: flex;
@@ -297,6 +307,15 @@
 
     .chat-sidebar.active {
         transform: translateX(0);
+    }
+
+    ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+    
+    .chat-messages::-webkit-scrollbar {
+        width: 3px;
     }
 
     .chat-main {
