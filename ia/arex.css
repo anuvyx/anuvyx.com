@@ -42,7 +42,7 @@
 .sidebar-toggle {
     position: absolute;
     right: 0;
-    top: 50%;
+    top: 60%;
     transform: translateY(-50%);
     background: none;
     border: none;
