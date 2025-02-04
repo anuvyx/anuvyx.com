@@ -191,6 +191,18 @@
     padding-right: 1rem;
 }
 
+.sidebar-title a {
+    display: flex; /* Hace que el enlace sea un contenedor flexible */
+    align-items: center; /* Centra verticalmente el contenido */
+    height: 100%; /* Asegura que el enlace ocupe toda la altura del contenedor */
+}
+
+.chat-header a {
+    display: flex; /* Hace que el enlace sea un contenedor flexible */
+    align-items: center; /* Centra verticalmente el contenido */
+    height: 100%; /* Asegura que el enlace ocupe toda la altura del contenedor */
+}
+
 .message {
     margin: 1.5rem 0;
     padding: 1.5rem;
