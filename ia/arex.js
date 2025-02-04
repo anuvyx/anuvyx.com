@@ -118,3 +118,21 @@ window.addEventListener('load', () => {
         sidebar.classList.add('hidden');
     }
 });
+
+// Selecciona el botón de eliminar chats
+const deleteChatsBtn = document.querySelector('.delete-chats-btn');
+
+// Función para eliminar todos los chats
+deleteChatsBtn.addEventListener('click', () => {
+    // Muestra un cuadro de confirmación
+    const confirmDelete = confirm('¿Estás seguro de que quieres eliminar todos los chats?');
+    
+    if (confirmDelete) {
+        // Elimina todos los chats de la lista
+        chatHistory.innerHTML = '';
+        alert('Todos los chats han sido eliminados.');
+    }
+});
+
+// Eliminar chats del localStorage
+localStorage.removeItem('chats');

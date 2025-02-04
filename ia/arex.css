@@ -130,6 +130,39 @@
     height: 24px;
 }
 
+/* Contenedor de acciones (botón + y basura) */
+.chat-actions {
+    display: flex;
+    gap: 0.5rem; /* Espacio entre los botones */
+    align-items: center;
+}
+
+/* Estilos para el botón de eliminar */
+.delete-chats-btn {
+    background: rgba(255, 0, 0, 0.9);
+    border: none;
+    padding: 0.8rem;
+    border-radius: 25%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-chats-btn:hover {
+    background: rgba(255, 0, 0, 0.6); /* Fondo rojo suave al hacer hover */
+    transform: scale(1.1);
+}
+
+.delete-chats-btn:active {
+    transform: scale(0.9);
+}
+
+.delete-chats-btn svg {
+    stroke: #000;
+}
+
 .chat-history {
     list-style: none;
     padding: 0;
