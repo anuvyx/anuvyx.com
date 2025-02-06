@@ -5,7 +5,7 @@ const chatMessages = document.getElementById('chatMessages');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const newChatBtn = document.querySelector('.new-chat-btn');
-
+const deleteChatsBtn = document.querySelector('.delete-chats-btn');
 let currentChatId = null;
 let chats = JSON.parse(localStorage.getItem('arexChats')) || [];
 
@@ -16,19 +16,45 @@ function loadChatHistory() {
             ${new Date(chat.timestamp).toLocaleString()}
         </li>
     `).join('');
+
+    // Agregar evento a cada chat para cargarlo al hacer clic
+    document.querySelectorAll('.chat-item').forEach(item => {
+        item.addEventListener('click', () => {
+            currentChatId = item.dataset.id;
+            loadChatHistory();
+            loadChatMessages();
+        });
+    });
+}
+
+// Cargar mensajes del chat seleccionado
+function loadChatMessages() {
+    const chat = chats.find(c => c.id === currentChatId);
+    if (!chat) return;
+
+    chatMessages.innerHTML = '';
+    chat.messages.forEach(msg => displayMessage(msg.content, msg.isUser));
 }
 
 // Nuevo chat
 function createNewChat() {
     currentChatId = Date.now().toString();
+    const welcomeMessage = `¡Hola! Soy Arex, el asistente de IA de Anuvyx.\n\n¿En qué puedo ayudarte hoy?\n`;
+
     chats.push({
         id: currentChatId,
         timestamp: Date.now(),
-        messages: []
+        messages: [
+            {
+                content: welcomeMessage,
+                isUser: false, // Este mensaje es del bot
+                timestamp: Date.now()
+            }
+        ]
     });
     localStorage.setItem('arexChats', JSON.stringify(chats));
     loadChatHistory();
-    chatMessages.innerHTML = '';
+    loadChatMessages();
 }
 
 // Enviar mensaje
@@ -36,7 +62,7 @@ async function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
 
-    // Guardar mensaje
+    // Guardar mensaje del usuario
     const chat = chats.find(c => c.id === currentChatId);
     chat.messages.push({
         content: message,
@@ -44,34 +70,59 @@ async function sendMessage() {
         timestamp: Date.now()
     });
 
-    // Mostrar mensaje
+    // Mostrar mensaje del usuario
     displayMessage(message, true);
     userInput.value = '';
 
-    // Simular respuesta de API
+    // Mostrar indicador de carga
     const loading = showLoading();
-    
-    // Aquí iría la llamada real a la API
-    setTimeout(async () => {
-        loading.remove();
-        const response = `Respuesta simulada para: "${message}". En la implementación real, esto se conectaría a la API de Arex.`;
-        
-        chat.messages.push({
-            content: response,
-            isUser: false,
-            timestamp: Date.now()
+
+    try {
+        // Llamada al backend en Vercel
+        const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message
+            })
         });
-        
-        displayMessage(response, false);
-        localStorage.setItem('arexChats', JSON.stringify(chats));
-    }, 1500);
+
+        const data = await response.json();
+        if (response.ok) {
+            const botResponse = data.response;
+
+            // Guardar y mostrar la respuesta del bot
+            chat.messages.push({
+                content: botResponse,
+                isUser: false,
+                timestamp: Date.now()
+            });
+            displayMessage(botResponse, false);
+
+            // Guardar el historial actualizado en localStorage
+            localStorage.setItem('arexChats', JSON.stringify(chats));
+        } else {
+            console.error('Error en la API:', data.error || 'Error desconocido');
+            displayMessage(`Error: ${data.error || 'Ocurrió un error al procesar tu solicitud.'}`, false);
+        }
+    } catch (error) {
+        console.error('Error al enviar el mensaje:', error);
+        displayMessage('Error: No se pudo conectar con el servidor.', false);
+    } finally {
+        loading.remove();
+    }
 }
 
 // Mostrar mensajes
 function displayMessage(content, isUser) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-    messageDiv.textContent = content;
+
+    // Reemplazar saltos de línea (\n) con <br>
+    messageDiv.innerHTML = content.replace(/\n/g, '<br>');
+
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
@@ -88,18 +139,21 @@ function showLoading() {
 // Event Listeners
 newChatBtn.addEventListener('click', createNewChat);
 sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
+userInput.addEventListener('keydown', e => e.key === 'Enter' && sendMessage());
 
 // Inicializar primer chat
 if (chats.length === 0) createNewChat();
-else currentChatId = chats[0].id;
-loadChatHistory();
+else {
+    currentChatId = chats[0].id;
+    loadChatHistory();
+    loadChatMessages();
+}
 
 // Toggle del sidebar
 function toggleSidebar() {
     const sidebar = document.getElementById('chatSidebar');
     sidebar.classList.toggle('hidden');
-    
+
     // Guardar estado
     const isHidden = sidebar.classList.contains('hidden');
     localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
@@ -113,26 +167,21 @@ document.getElementById('floatingToggle').addEventListener('click', toggleSideba
 window.addEventListener('load', () => {
     const sidebarState = localStorage.getItem('sidebarState');
     const sidebar = document.getElementById('chatSidebar');
-    
+
     if (sidebarState === 'hidden' && window.innerWidth >= 769) {
         sidebar.classList.add('hidden');
     }
 });
 
-// Selecciona el botón de eliminar chats
-const deleteChatsBtn = document.querySelector('.delete-chats-btn');
-
 // Función para eliminar todos los chats
 deleteChatsBtn.addEventListener('click', () => {
-    // Muestra un cuadro de confirmación
     const confirmDelete = confirm('¿Estás seguro de que quieres eliminar todos los chats?');
-    
+
     if (confirmDelete) {
-        // Elimina todos los chats de la lista
+        chats = [];
+        localStorage.removeItem('arexChats');
         chatHistory.innerHTML = '';
+        chatMessages.innerHTML = '';
         alert('Todos los chats han sido eliminados.');
     }
 });
-
-// Eliminar chats del localStorage
-localStorage.removeItem('chats');
