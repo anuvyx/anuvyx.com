@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Anuvyx AI - Arex</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="arex.css"> <!-- Archivo CSS específico para el chat -->
@@ -12,92 +13,87 @@
 <body>
     <div class="chat-wrapper">
         <!-- Sidebar -->
-        <nav class="chat-sidebar" id="chatSidebar">
+        <nav class="chat-sidebar" id="chatSidebar" aria-label="Menú lateral de chats">
             <!-- Título "Arex" con el logo -->
-            <div class="sidebar-title">
-                <a href="../index.html"> <!-- Enlace a la página principal -->
-                    <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Arex AI" class="arex-logo" title="Inicio">
+            <header class="sidebar-title">
+                <a href="../index.html" aria-label="Ir a la página principal">
+                    <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo">
                 </a>
-                <div onclick="window.location.reload()" style="cursor: pointer;" title="Recargar">
-                    <h1>Arex</h1>
+                <h1>Arex</h1>
+                <!-- Contenedor para el botón de toggle -->
+                <div class="sidebar-toggle-container">
+                    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Alternar menú lateral">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M3 12h18M3 6h18M3 18h18"/>
+                        </svg>
+                    </button>
                 </div>
-                <button class="sidebar-toggle" id="sidebarToggle" title="Cerrar sidebar">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12h18M3 6h18M3 18h18"/>
-                    </svg>
-                </button>
-            </div>
-
+            </header>
             <!-- Línea divisoria -->
-            <div class="divider"></div>
-
+            <div class="divider" role="separator"></div>
             <!-- Encabezado de "Chats" con el botón de nuevo chat -->
-            <div class="chat-sidebar-header">
-                <h3>Chats</h3>
-                <div class="chat-actions">
-                    <button class="new-chat-btn" title="Nuevo chat">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 5v14M5 12h14"/>
-                        </svg>
-                    </button>
-                    <button class="delete-chats-btn" title="Eliminar todos los chats">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
-                        </svg>
-                    </button>
+            <section class="chat-sidebar-header" aria-label="Opciones de chats">
+                <div class="chat-actions-container">
+                    <h3>Chats</h3>
+                    <div class="chat-buttons">
+                        <button class="new-chat-btn" aria-label="Crear nuevo chat">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+                        </button>
+                        <button class="delete-chats-btn" aria-label="Eliminar todos los chats">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
-
+            </section>
             <!-- Lista de chats -->
-            <ul class="chat-history" id="chatHistory">
+            <ul class="chat-history" id="chatHistory" aria-label="Historial de chats">
                 <!-- Chats se cargarán dinámicamente -->
             </ul>
         </nav>
-
         <!-- Área principal -->
-        <main class="chat-main">
+        <main class="chat-main" aria-label="Área principal del chat">
             <!-- Header -->
-            <div class="chat-header">
-                <a href="../index.html"> <!-- Enlace a la página principal -->
-                    <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Arex AI" class="arex-logo" title="Inicio">
-                </a>
-                <div onclick="window.location.reload()" style="cursor: pointer;" title="Recargar">
+            <header class="chat-header">
+                <!-- Contenedor para el botón flotante -->
+                <div class="floating-toggle-container">
+                    <button class="floating-toggle" id="floatingToggle" aria-label="Alternar menú lateral">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M3 12h18M3 6h18M3 18h18"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Contenedor para el logo y el título -->
+                <div class="logo-title-container">
+                    <a href="../index.html" aria-label="Ir a la página principal">
+                        <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo">
+                    </a>
                     <h1>Arex</h1>
                 </div>
-                <button class="sidebar-toggle floating-toggle" id="floatingToggle">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12h18M3 6h18M3 18h18"/>
-                    </svg>
-                </button>
-            </div>
-
+            </header>
             <!-- Mensajes -->
-            <div class="chat-messages" id="chatMessages">
+            <section class="chat-messages" id="chatMessages" aria-live="polite" aria-label="Mensajes del chat">
                 <div class="message bot-message">
                     ¡Hola! Soy Arex, el asistente de IA de Anuvyx.<br><br>
-                    Puedo ayudarte con:<br>
-                    • Desarrollo de modelos de IA<br>
-                    • Integraciones IoT<br>
-                    • Smart contracts<br>
-                    • Optimización energética<br>
-                    • Análisis predictivo
+                    ¿En qué puedo ayudarte hoy?<br>
                 </div>
-            </div>
-
+            </section>
             <!-- Input -->
-            <div class="chat-input-container">
+            <footer class="chat-input-container" aria-label="Entrada de mensajes">
                 <div class="chat-input">
-                    <input type="text" id="user-input" placeholder="Envía un mensaje a Arex">
-                    <button id="send-btn" title="Enviar mensaje">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <input type="text" id="user-input" placeholder="Envía un mensaje a Arex" aria-label="Escribe tu mensaje">
+                    <button id="send-btn" aria-label="Enviar mensaje">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                         </svg>
                     </button>
                 </div>
-            </div>
+            </footer>
         </main>
     </div>
-
     <script src="arex.js"></script> <!-- Archivo JS específico para el chat -->
 </body>
 </html>

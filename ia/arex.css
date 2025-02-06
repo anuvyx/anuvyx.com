@@ -1,19 +1,21 @@
-.chat-sidebar {
-    scrollbar-width: normal;
-    scrollbar-color: #333 rgba(15, 15, 15, 0.95);
-}
-
-.chat-messages {
-    scrollbar-width: normal;
-    scrollbar-color: #333 #000; 
-}
-
 /* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
 .chat-wrapper {
     display: flex;
     min-height: 100vh;
     background: #000;
-    margin-top: 0;
 }
 
 /* Sidebar de chats */
@@ -21,59 +23,40 @@
     width: 300px;
     background: rgba(15, 15, 15, 0.95);
     border-right: 1px solid #333;
-    padding: 0 1rem;
+    padding: 1rem;
     position: fixed;
     height: 100vh;
     overflow-y: auto;
     transition: transform 0.3s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #333 rgba(15, 15, 15, 0.95);
 }
 
-/* Estilos para el título "Arex" en el sidebar */
-/* Botón de toggle en el sidebar */
+.chat-sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+/* Scrollbar para navegadores basados en WebKit */
+.chat-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-sidebar::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+.chat-sidebar::-webkit-scrollbar-track {
+    background: rgba(15, 15, 15, 0.95);
+}
+
+/* Título "Arex" en el sidebar */
 .sidebar-title {
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 0 1rem;
     position: relative;
-    margin: 1rem 0;
-}
-
-.sidebar-toggle {
-    position: absolute;
-    right: 0;
-    top: 60%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.sidebar-toggle svg {
-    stroke: #ffffff;
-}
-
-.sidebar-toggle:hover {
-    transform: translateY(-50%) scale(1.1);
-}
-
-/* Botón flotante */
-.floating-toggle {
-    display: none;
-    position: fixed;
-    left: -90rem;
-    top: 4rem;
-    z-index: 1000;
-    border-radius: 8px;
-    padding: 0.8rem;
-    transition: all 0.3s ease;
-}
-
-/* Mostrar botón flotante cuando el sidebar está oculto */
-.chat-sidebar.hidden + .chat-main .floating-toggle {
-    display: block;
 }
 
 .sidebar-title h1 {
@@ -82,19 +65,91 @@
     margin: 0;
 }
 
-/* Estilos para la línea divisoria */
+.sidebar-title a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* Contenedor del botón de toggle */
+.sidebar-toggle-container {
+    position: absolute;
+    right: 1rem; /* Alineado a la derecha */
+    top: 50%; /* Centrado verticalmente */
+    transform: translateY(-50%); /* Ajuste para centrar verticalmente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botón de toggle */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Contenedor del botón flotante */
+.floating-toggle-container {
+    display: none; /* Oculto por defecto */
+    margin-right: auto;
+}
+
+/* Botón flotante */
+.floating-toggle {
+    background: none;
+    border: none;
+    border-radius: 25%; /* Forma circular */
+    padding: 0.5rem; /* Reducir relleno */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-toggle svg,
+.floating-toggle svg {
+    stroke: #ffffff;
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar-toggle:hover,
+.floating-toggle:hover {
+    background: #333;
+    border-radius: 25%;
+}
+
+.chat-sidebar.hidden + .chat-main .floating-toggle-container {
+    display: block;
+}
+
+/* Línea divisoria */
 .divider {
     height: 1px;
     background: #333;
     margin: 1rem 0;
 }
 
-/* Ajustes para el encabezado de "Chats" */
+/* Encabezado de "Chats" */
 .chat-sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem 1.5rem 1rem;
+}
+
+.chat-actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5rem;
 }
 
 .chat-sidebar-header h3 {
@@ -103,8 +158,16 @@
     margin: 0;
 }
 
-.new-chat-btn {
-    background: #ffffff;
+/* Contenedor de botones */
+.chat-buttons {
+    display: flex;
+    gap: 0.5rem; /* Espacio entre los botones */
+}
+
+/* Botones comunes */
+.new-chat-btn,
+.delete-chats-btn {
+    background: none;
     border: none;
     padding: 0.8rem;
     border-radius: 25%;
@@ -113,6 +176,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.new-chat-btn {
+    background: #ffffff;
+    color: #000;
 }
 
 .new-chat-btn:hover {
@@ -124,34 +192,13 @@
     transform: scale(0.9);
 }
 
-.new-chat-btn svg {
-    stroke: #000000;
-    width: 24px;
-    height: 24px;
-}
-
-/* Contenedor de acciones (botón + y basura) */
-.chat-actions {
-    display: flex;
-    gap: 0.5rem; /* Espacio entre los botones */
-    align-items: center;
-}
-
-/* Estilos para el botón de eliminar */
 .delete-chats-btn {
     background: rgba(255, 0, 0, 0.9);
-    border: none;
-    padding: 0.8rem;
-    border-radius: 25%;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #000;
 }
 
 .delete-chats-btn:hover {
-    background: rgba(255, 0, 0, 0.6); /* Fondo rojo suave al hacer hover */
+    background: rgba(255, 0, 0, 0.6);
     transform: scale(1.1);
 }
 
@@ -159,10 +206,14 @@
     transform: scale(0.9);
 }
 
+.new-chat-btn svg,
 .delete-chats-btn svg {
-    stroke: #000;
+    stroke: currentColor;
+    width: 20px;
+    height: 20px;
 }
 
+/* Lista de chats */
 .chat-history {
     list-style: none;
     padding: 0;
@@ -194,7 +245,11 @@
     flex: 1;
     margin-left: 300px;
     padding: 2rem;
-    position: relative;
+    transition: margin-left 0.3s ease;
+}
+
+.chat-sidebar.hidden + .chat-main {
+    margin-left: 0;
 }
 
 .chat-header {
@@ -203,9 +258,15 @@
     margin-bottom: 2rem;
     display: flex;
     align-items: center;
-    justify-content: center; /* Centra horizontalmente */
+    justify-content: center;
     gap: 1rem;
-    text-align: center; /* Asegura que el texto esté centrado */
+    text-align: center;
+}
+
+.chat-header a {
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .arex-logo {
@@ -213,27 +274,40 @@
     width: 40px;
 }
 
+/* Contenedor para el logo y el título */
+.logo-title-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Espacio entre el logo y el título */
+    flex-grow: 1; /* Permite que el contenedor ocupe espacio central */
+    justify-content: center; /* Centra el logo y el título */
+}
+
 .chat-header h1 {
     font-size: 2rem;
     color: #ffffff;
 }
 
+/* Área de mensajes */
 .chat-messages {
     height: calc(100vh - 280px);
     overflow-y: auto;
     padding-right: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #333 #000;
 }
 
-.sidebar-title a {
-    display: flex; /* Hace que el enlace sea un contenedor flexible */
-    align-items: center; /* Centra verticalmente el contenido */
-    height: 100%; /* Asegura que el enlace ocupe toda la altura del contenedor */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
 }
 
-.chat-header a {
-    display: flex; /* Hace que el enlace sea un contenedor flexible */
-    align-items: center; /* Centra verticalmente el contenido */
-    height: 100%; /* Asegura que el enlace ocupe toda la altura del contenedor */
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #000;
 }
 
 .message {
@@ -246,8 +320,14 @@
 }
 
 @keyframes messageFade {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .user-message {
@@ -262,6 +342,7 @@
     margin-right: auto;
 }
 
+/* Input de mensajes */
 .chat-input-container {
     position: fixed;
     bottom: 2rem;
@@ -269,6 +350,11 @@
     background: rgba(0, 0, 0, 0.9);
     padding: 1rem 0;
     backdrop-filter: blur(10px);
+    transition: width 0.3s ease;
+}
+
+.chat-sidebar.hidden + .chat-main .chat-input-container {
+    width: calc(100% - 4rem);
 }
 
 .chat-input {
@@ -312,21 +398,25 @@
     transform: scale(1.1);
 }
 
-.loading-dots {
-    display: inline-block;
-    padding: 1rem;
-}
-
+/* Animación de carga */
 .loading-dots::after {
     content: '...';
     animation: typing 1.5s infinite;
 }
 
 @keyframes typing {
-    0%, 20% { content: ''; }
-    40% { content: '.'; }
-    60% { content: '..'; }
-    80%, 100% { content: '...'; }
+    0%, 20% {
+        content: '';
+    }
+    40% {
+        content: '.';
+    }
+    60% {
+        content: '..';
+    }
+    80%, 100% {
+        content: '...';
+    }
 }
 
 /* Estilos para móviles */
@@ -336,7 +426,7 @@
     }
 
     .floating-toggle {
-        display: none !important;
+        display: block !important;
     }
 
     .chat-sidebar {
@@ -354,15 +444,6 @@
         transform: translateX(0);
     }
 
-    ::-webkit-scrollbar {
-        width: 4px;
-        height: 4px;
-    }
-    
-    .chat-messages::-webkit-scrollbar {
-        width: 3px;
-    }
-
     .chat-main {
         margin-left: 0;
         width: 100%;
@@ -374,27 +455,8 @@
         bottom: 1rem;
     }
 
-    .menu-toggle {
-        display: block;
-        position: fixed;
-        left: 1rem;
-        top: 100px;
-        z-index: 1001;
-    }
-
     .message {
         max-width: 85%;
         padding: 1rem;
     }
-}
-
-/* Estado oculto del sidebar */
-.chat-sidebar.hidden {
-    transform: translateX(-100%);
-}
-
-/* Ajustar contenido principal cuando el sidebar está oculto */
-.chat-sidebar.hidden + .chat-main {
-    margin-left: 0;
-    width: 100%;
 }
