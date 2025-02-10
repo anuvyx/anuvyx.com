@@ -336,11 +336,6 @@ body {
     margin-bottom: 0.5em;
 }
 
-/* Espaciado para párrafos */
-.message p {
-    margin-bottom: 1em;
-}
-
 @keyframes messageFade {
     from {
         opacity: 0;
