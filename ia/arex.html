@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Anuvyx AI - Arex</title>
     <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="arex.css"> <!-- Archivo CSS específico para el chat -->
+    <link rel="stylesheet" href="arex.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../static/logo/favicon.ico">
 
@@ -22,7 +22,6 @@
             }
         };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 
     <!-- marked.js para Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -31,13 +30,11 @@
     <div class="chat-wrapper">
         <!-- Sidebar -->
         <nav class="chat-sidebar" id="chatSidebar" aria-label="Menú lateral de chats">
-            <!-- Título "Arex" con el logo -->
             <header class="sidebar-title">
                 <a href="../index.html" aria-label="Ir a la página principal">
                     <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo">
                 </a>
                 <h1>Arex</h1>
-                <!-- Contenedor para el botón de toggle -->
                 <div class="sidebar-toggle-container">
                     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Alternar menú lateral">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -46,9 +43,7 @@
                     </button>
                 </div>
             </header>
-            <!-- Línea divisoria -->
             <div class="divider" role="separator"></div>
-            <!-- Encabezado de "Chats" con el botón de nuevo chat -->
             <section class="chat-sidebar-header" aria-label="Opciones de chats">
                 <div class="chat-actions-container">
                     <h3>Chats</h3>
@@ -66,16 +61,10 @@
                     </div>
                 </div>
             </section>
-            <!-- Lista de chats -->
-            <ul class="chat-history" id="chatHistory" aria-label="Historial de chats">
-                <!-- Chats se cargarán dinámicamente -->
-            </ul>
+            <ul class="chat-history" id="chatHistory" aria-label="Historial de chats"></ul>
         </nav>
-        <!-- Área principal -->
         <main class="chat-main" aria-label="Área principal del chat">
-            <!-- Header -->
             <header class="chat-header">
-                <!-- Contenedor para el botón flotante -->
                 <div class="floating-toggle-container">
                     <button class="floating-toggle" id="floatingToggle" aria-label="Alternar menú lateral">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -83,7 +72,6 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Contenedor para el logo y el título -->
                 <div class="logo-title-container">
                     <a href="../index.html" aria-label="Ir a la página principal">
                         <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo">
@@ -91,14 +79,12 @@
                     <h1>Arex</h1>
                 </div>
             </header>
-            <!-- Mensajes -->
             <section class="chat-messages" id="chatMessages" aria-live="polite" aria-label="Mensajes del chat">
                 <div class="message bot-message">
                     ¡Hola! Soy Arex, el asistente de IA de Anuvyx.<br><br>
                     ¿En qué puedo ayudarte hoy?<br>
                 </div>
             </section>
-            <!-- Input -->
             <footer class="chat-input-container" aria-label="Entrada de mensajes">
                 <div class="chat-input">
                     <input type="text" id="user-input" placeholder="Envía un mensaje a Arex" aria-label="Escribe tu mensaje">
@@ -111,6 +97,6 @@
             </footer>
         </main>
     </div>
-    <script src="arex.js"></script> <!-- Archivo JS específico para el chat -->
+    <script src="arex.js"></script>
 </body>
 </html>

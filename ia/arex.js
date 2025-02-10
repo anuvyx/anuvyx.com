@@ -16,6 +16,7 @@ function loadChatHistory() {
             ${new Date(chat.timestamp).toLocaleString()}
         </li>
     `).join('');
+    
     // Agregar evento a cada chat para cargarlo al hacer clic
     document.querySelectorAll('.chat-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -37,7 +38,8 @@ function loadChatMessages() {
 // Nuevo chat
 function createNewChat() {
     currentChatId = Date.now().toString();
-    const welcomeMessage = `¡Hola! Soy Arex, el asistente de IA de Anuvyx.\n\n¿En qué puedo ayudarte hoy?\n`;
+    const welcomeMessage = "¡Hola! Soy Arex, el asistente de IA de Anuvyx.\n\n¿En qué puedo ayudarte hoy?\n";
+    
     chats.push({
         id: currentChatId,
         timestamp: Date.now(),
@@ -49,6 +51,7 @@ function createNewChat() {
             }
         ]
     });
+    
     localStorage.setItem('arexChats', JSON.stringify(chats));
     loadChatHistory();
     loadChatMessages();
@@ -58,7 +61,7 @@ function createNewChat() {
 async function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
-
+    
     // Guardar mensaje del usuario
     const chat = chats.find(c => c.id === currentChatId);
     chat.messages.push({
@@ -66,14 +69,14 @@ async function sendMessage() {
         isUser: true,
         timestamp: Date.now()
     });
-
+    
     // Mostrar mensaje del usuario
     displayMessage(message, true);
     userInput.value = '';
-
+    
     // Mostrar indicador de carga
     const loading = showLoading();
-
+    
     try {
         // Llamada al backend en Vercel
         const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
@@ -85,10 +88,11 @@ async function sendMessage() {
                 message: message
             })
         });
+        
         const data = await response.json();
         if (response.ok) {
             const botResponse = data.response;
-
+            
             // Guardar y mostrar la respuesta del bot
             chat.messages.push({
                 content: botResponse,
@@ -96,7 +100,7 @@ async function sendMessage() {
                 timestamp: Date.now()
             });
             displayMessage(botResponse, false);
-
+            
             // Guardar el historial actualizado en localStorage
             localStorage.setItem('arexChats', JSON.stringify(chats));
         } else {
@@ -115,20 +119,11 @@ async function sendMessage() {
 function displayMessage(content, isUser) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-
-    // Formatear el contenido antes de mostrarlo
-    content = formatMessage(content);
-
-    // Insertar el contenido formateado en el div
-    messageDiv.innerHTML = content;
-
+    
+    // Reemplazar saltos de línea (\n) con <br>
+    messageDiv.innerHTML = content.replace(/\n/g, '<br>');
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    // Notificar a MathJax que procese el nuevo contenido
-    if (typeof MathJax !== 'undefined') {
-        MathJax.typesetPromise([messageDiv]).catch(err => console.error('Error al renderizar MathJax:', err));
-    }
 }
 
 // Mostrar carga
@@ -140,57 +135,15 @@ function showLoading() {
     return loadingDiv;
 }
 
-// Procesar Markdown
-function processMarkdown(content) {
-    // Convertir ### Título a <h3>Título</h3>
-    content = content.replace(/###\s*(.*)/g, '<h3>$1</h3>');
-
-    // Convertir **negrita** a <strong>negrita</strong>
-    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-    // Convertir *cursiva* a <em>cursiva</em>
-    content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-    // Convertir listas
-    content = content.replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>');
-    content = content.replace(/<li>/g, '<ul><li>').replace(/<\/li>/g, '</li></ul>');
-
-    return content;
-}
-
-// Procesar LaTeX/MathJax
-function processLaTeX(content) {
-    // Reemplazar \frac{a}{b} con <span class="fraction"><sup>a</sup>/<sub>b</sub></span>
-    content = content.replace(/\\frac\{(.*?)\}\{(.*?)\}/g, '<span class="fraction"><sup>$1</sup>&frasl;<sub>$2</sub></span>');
-
-    // Reemplazar \cdot con ×
-    content = content.replace(/\\cdot/g, '×');
-
-    // Reemplazar $$ ... $$ con <div class="math">...</div>
-    content = content.replace(/\$\$(.*?)\$\$/gs, '<div class="math">$1</div>');
-
-    return content;
-}
-
-// Función para formatear el mensaje combinando Markdown y MathJax
-function formatMessage(content) {
-    // Paso 1: Procesar Markdown usando marked.js
-    content = marked.parse(content);
-
-    // Paso 2: Reemplazar saltos de línea (\n) con <br>
-    content = content.replace(/\n/g, '<br>');
-
-    return content;
-}
-
 // Event Listeners
 newChatBtn.addEventListener('click', createNewChat);
 sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keydown', e => e.key === 'Enter' && sendMessage());
 
 // Inicializar primer chat
-if (chats.length === 0) createNewChat();
-else {
+if (chats.length === 0) {
+    createNewChat();
+} else {
     currentChatId = chats[0].id;
     loadChatHistory();
     loadChatMessages();
@@ -200,6 +153,7 @@ else {
 function toggleSidebar() {
     const sidebar = document.getElementById('chatSidebar');
     sidebar.classList.toggle('hidden');
+    
     // Guardar estado
     const isHidden = sidebar.classList.contains('hidden');
     localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
@@ -213,6 +167,7 @@ document.getElementById('floatingToggle').addEventListener('click', toggleSideba
 window.addEventListener('load', () => {
     const sidebarState = localStorage.getItem('sidebarState');
     const sidebar = document.getElementById('chatSidebar');
+    
     if (sidebarState === 'hidden' && window.innerWidth >= 769) {
         sidebar.classList.add('hidden');
     }
