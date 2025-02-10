@@ -318,7 +318,7 @@ body {
     max-width: 70%;
     position: relative;
     animation: messageFade 0.4s ease;
-    line-height: 3em;
+    line-height: 2em;
 }
 
 /* Eliminar márgenes/padding innecesarios */
@@ -332,8 +332,13 @@ body {
 }
 
 .message h1, .message h2, .message h3 {
-    margin-top: 1em;
+    margin-top: 2em;
     margin-bottom: 0.5em;
+}
+
+/* Espaciado para párrafos */
+.message p {
+    margin-bottom: 1em;
 }
 
 @keyframes messageFade {
