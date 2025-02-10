@@ -57,11 +57,33 @@ function createNewChat() {
     loadChatMessages();
 }
 
+// Mostrar carga con contador regresivo
+function showLoadingWithCounter() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'message bot-message loading-dots';
+    let countdown = 60; // Contador inicial
+    loadingDiv.textContent = `Generando respuesta (${countdown}s)`;
+    chatMessages.appendChild(loadingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Actualizar el contador cada segundo
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown >= 0) {
+            loadingDiv.textContent = `Generando respuesta (${countdown}s)`;
+        } else {
+            clearInterval(countdownInterval); // Detener el contador si llega a 0
+        }
+    }, 1000);
+
+    return { loadingDiv, countdownInterval };
+}
+
 // Enviar mensaje
 async function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
-    
+
     // Guardar mensaje del usuario
     const chat = chats.find(c => c.id === currentChatId);
     chat.messages.push({
@@ -69,14 +91,14 @@ async function sendMessage() {
         isUser: true,
         timestamp: Date.now()
     });
-    
+
     // Mostrar mensaje del usuario
     displayMessage(message, true);
     userInput.value = '';
-    
-    // Mostrar indicador de carga
-    const loading = showLoading();
-    
+
+    // Mostrar indicador de carga con contador
+    const { loadingDiv, countdownInterval } = showLoadingWithCounter();
+
     try {
         // Llamada al backend en Vercel
         const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
@@ -88,11 +110,11 @@ async function sendMessage() {
                 message: message
             })
         });
-        
+
         const data = await response.json();
         if (response.ok) {
             const botResponse = data.response;
-            
+
             // Guardar y mostrar la respuesta del bot
             chat.messages.push({
                 content: botResponse,
@@ -100,7 +122,7 @@ async function sendMessage() {
                 timestamp: Date.now()
             });
             displayMessage(botResponse, false);
-            
+
             // Guardar el historial actualizado en localStorage
             localStorage.setItem('arexChats', JSON.stringify(chats));
         } else {
@@ -111,7 +133,9 @@ async function sendMessage() {
         console.error('Error al enviar el mensaje:', error);
         displayMessage('Error: No se pudo conectar con el servidor.', false);
     } finally {
-        loading.remove();
+        // Detener el contador y eliminar el mensaje de carga
+        clearInterval(countdownInterval);
+        loadingDiv.remove();
     }
 }
 
