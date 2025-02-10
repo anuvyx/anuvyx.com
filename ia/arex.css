@@ -311,12 +311,14 @@ body {
 }
 
 .message {
+    display: table;
     margin: 1.5rem 0;
     padding: 1.5rem;
     border-radius: 15px;
     max-width: 70%;
     position: relative;
     animation: messageFade 0.4s ease;
+    line-height: 3em;
 }
 
 /* Eliminar márgenes/padding innecesarios */
