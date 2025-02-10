@@ -319,6 +319,21 @@ body {
     animation: messageFade 0.4s ease;
 }
 
+/* Estilos generales para Markdown */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+ul, ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+li {
+    margin-bottom: 1rem;
+}
+
 @keyframes messageFade {
     from {
         opacity: 0;
