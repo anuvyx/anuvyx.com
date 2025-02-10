@@ -10,21 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../static/logo/favicon.ico">
 
-    <!-- MathJax para LaTeX -->
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']], // Habilitar $ ... $ para fórmulas en línea
-                displayMath: [['$$', '$$'], ['\\[', '\\]']] // Habilitar $$ ... $$ para fórmulas en bloque
-            },
-            svg: {
-                fontCache: 'global' // Mejora el rendimiento
-            }
-        };
-    </script>
-
-    <!-- marked.js para Markdown -->
+    <!-- Marked.js para Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- MathJax para LaTeX -->
+    <script type="text/javascript" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    
 </head>
 <body>
     <div class="chat-wrapper">

@@ -119,11 +119,27 @@ async function sendMessage() {
 function displayMessage(content, isUser) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-    
-    // Reemplazar saltos de línea (\n) con <br>
-    messageDiv.innerHTML = content.replace(/\n/g, '<br>');
+
+    // Procesar Markdown usando marked.js
+    let processedContent = marked.parse(content);
+
+    // Detectar y envolver expresiones matemáticas en delimitadores de MathJax
+    processedContent = processedContent.replace(/\\\(.+?\\\)/g, match => match); // Inline math (\(...\))
+    processedContent = processedContent.replace(/\\\[.+?\\\]/g, match => match); // Display math (\[...\])
+    processedContent = processedContent.replace(/\$.+?\$/g, match => `\\(${match.slice(1, -1)}\\)`); // Convert $...$ to \(...\)
+    processedContent = processedContent.replace(/\\boxed\{(.+?)\}/g, match => `\\boxed{${match.slice(7, -1)}}`); // Handle \boxed{}
+
+    // Insertar el contenido procesado
+    messageDiv.innerHTML = processedContent;
+
+    // Agregar el mensaje al contenedor de mensajes
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Actualizar MathJax para renderizar las expresiones matemáticas
+    if (typeof MathJax !== 'undefined') {
+        MathJax.typesetPromise([messageDiv]).catch(err => console.error('Error al renderizar MathJax:', err));
+    }
 }
 
 // Mostrar carga
