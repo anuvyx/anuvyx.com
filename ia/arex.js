@@ -175,6 +175,18 @@ function toggleSidebar() {
     localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
 }
 
+// Ajustar dinámicamente la altura del textarea
+function autoResizeTextarea() {
+    userInput.style.height = 'auto'; // Resetea la altura
+    userInput.style.height = `${userInput.scrollHeight}px`; // Ajusta la altura al contenido
+}
+
+// Escuchar eventos de entrada para ajustar la altura
+userInput.addEventListener('input', autoResizeTextarea);
+
+// Inicializar la altura al cargar la página
+autoResizeTextarea();
+
 // Event listeners para ambos botones
 document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
 document.getElementById('floatingToggle').addEventListener('click', toggleSidebar);

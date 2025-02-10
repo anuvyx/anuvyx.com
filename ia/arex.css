@@ -321,11 +321,6 @@ body {
     line-height: 2em;
 }
 
-/* Eliminar márgenes/padding innecesarios */
-.message br:last-child {
-    display: none; /* Elimina saltos de línea adicionales al final del mensaje */
-}
-
 .message ul, .message ol {
     padding-left: 1.5em;
     margin-bottom: 2em
@@ -378,6 +373,13 @@ body {
     display: flex;
     gap: 1rem;
     align-items: center;
+}
+
+.chat-input textarea {
+    max-height: 50vh;
+    resize: none;
+    scrollbar-width: thin;
+    scrollbar-color: #333 #1111;
 }
 
 #user-input {
