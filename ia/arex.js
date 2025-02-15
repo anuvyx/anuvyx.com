@@ -141,25 +141,80 @@ async function sendMessage() {
 
 // Mostrar mensajes
 function displayMessage(content, isUser) {
+    // Crear el contenedor principal del mensaje
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-
+    
     // Procesar Markdown usando marked.js
     let processedContent = marked.parse(content);
-
+    
     // Detectar y envolver expresiones matemáticas en delimitadores de MathJax
     processedContent = processedContent.replace(/\\\(.+?\\\)/g, match => match); // Inline math (\(...\))
     processedContent = processedContent.replace(/\\\[.+?\\\]/g, match => match); // Display math (\[...\])
     processedContent = processedContent.replace(/\$.+?\$/g, match => `\\(${match.slice(1, -1)}\\)`); // Convert $...$ to \(...\)
     processedContent = processedContent.replace(/\\boxed\{(.+?)\}/g, match => `\\boxed{${match.slice(7, -1)}}`); // Handle \boxed{}
-
+    
     // Insertar el contenido procesado
     messageDiv.innerHTML = processedContent;
-
+    
     // Agregar el mensaje al contenedor de mensajes
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
+    
+    // Crear un contenedor separado para el botón de copia
+    const copyButtonContainer = document.createElement('div');
+    copyButtonContainer.style.display = 'flex';
+    copyButtonContainer.style.justifyContent = isUser ? 'flex-end' : 'flex-start'; // Alineación según el tipo de mensaje
+    copyButtonContainer.style.marginTop = '5px'; // Espacio entre el mensaje y el botón
+    
+    // Crear botón de copia con ícono SVG
+    const copyButton = document.createElement('button');
+    copyButton.className = 'copy-button';
+    copyButton.style.padding = '5px'; // Tamaño del botón
+    copyButton.style.backgroundColor = 'transparent'; // Fondo transparente
+    copyButton.style.border = 'none'; // Sin borde
+    copyButton.style.cursor = 'pointer'; // Cursor de puntero
+    copyButton.style.display = 'flex'; // Para alinear el ícono correctamente
+    copyButton.style.alignItems = 'center'; // Centrar verticalmente el ícono
+    
+    // SVG del ícono de copia
+    copyButton.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        </svg>
+    `;
+    
+    // Agregar evento al botón de copia
+    copyButton.addEventListener('click', () => {
+        navigator.clipboard.writeText(content).then(() => {
+            // Cambiar temporalmente el ícono a "copiado"
+            copyButton.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            `;
+            setTimeout(() => {
+                // Volver al ícono de copia después de 2 segundos
+                copyButton.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
+                `;
+            }, 2000); // Cambiar el ícono de vuelta a "copiar" después de 2 segundos
+        }).catch(err => {
+            console.error('Error al copiar el texto: ', err);
+            alert('No se pudo copiar el texto.');
+        });
+    });
+    
+    // Agregar el botón de copia al contenedor separado
+    copyButtonContainer.appendChild(copyButton);
+    
+    // Agregar el contenedor del botón de copia al área de mensajes
+    chatMessages.appendChild(copyButtonContainer);
+    
     // Actualizar MathJax para renderizar las expresiones matemáticas
     if (typeof MathJax !== 'undefined') {
         MathJax.typesetPromise([messageDiv]).catch(err => console.error('Error al renderizar MathJax:', err));
