@@ -219,7 +219,11 @@ body {
     padding: 0;
 }
 
+/* Estilo para el botón de opciones */
 .chat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 1rem;
     margin: 0.5rem 0;
     border-radius: 8px;
@@ -227,6 +231,71 @@ body {
     color: #888;
     transition: all 0.3s;
     position: relative;
+}
+
+.chat-info {
+    flex-grow: 1;
+}
+
+.chat-options-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.chat-options-btn svg {
+    stroke: #ffffff;
+    width: 20px;
+    height: 20px;
+}
+
+.chat-options-btn:hover {
+    transform: scale(1.1);
+}
+
+.chat-options-btn:active {
+    transform: scale(0.9);
+}
+
+/* Estilo para el menú de opciones */
+.chat-options-menu {
+    display: flex;
+    flex-direction: column;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+/* Estilo para cada opción del menú */
+.chat-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.chat-option:hover {
+    background: #333;
+}
+
+.chat-option svg {
+    width: 16px;
+    height: 16px;
+    stroke: #fff;
 }
 
 .chat-item:hover {

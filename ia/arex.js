@@ -7,16 +7,26 @@ const sendBtn = document.getElementById('send-btn');
 const newChatBtn = document.querySelector('.new-chat-btn');
 const deleteChatsBtn = document.querySelector('.delete-chats-btn');
 let currentChatId = null;
+let currentOptionsMenu = null;
 let chats = JSON.parse(localStorage.getItem('arexChats')) || [];
 
 // Cargar historial de chats
 function loadChatHistory() {
     chatHistory.innerHTML = chats.map(chat => `
         <li class="chat-item ${chat.id === currentChatId ? 'active' : ''}" data-id="${chat.id}">
-            ${new Date(chat.timestamp).toLocaleString()}
+            <div class="chat-info">
+                <span>${chat.name || new Date(chat.timestamp).toLocaleString()}</span>
+            </div>
+            <button class="chat-options-btn" aria-label="Opciones del chat">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="6" r="1"></circle>
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="18" r="1"></circle>
+                </svg>
+            </button>
         </li>
     `).join('');
-    
+
     // Agregar evento a cada chat para cargarlo al hacer clic
     document.querySelectorAll('.chat-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -25,6 +35,126 @@ function loadChatHistory() {
             loadChatMessages();
         });
     });
+
+    // Agregar eventos a los botones de opciones
+    document.querySelectorAll('.chat-options-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation(); // Evitar que el clic abra el chat
+            const chatId = button.closest('.chat-item').dataset.id;
+            showChatOptions(chatId); // Mostrar opciones para este chat
+        });
+    });
+}
+
+// Función para mostrar opciones del chat
+function showChatOptions(chatId) {
+    const button = document.querySelector(`.chat-item[data-id="${chatId}"] .chat-options-btn`);
+
+    // Verificar si ya hay un menú abierto
+    if (currentOptionsMenu && currentOptionsMenu.parentElement === button.parentElement) {
+        // Si el menú ya está abierto, cerrarlo
+        currentOptionsMenu.remove();
+        currentOptionsMenu = null;
+        return;
+    }
+
+    // Cerrar cualquier menú previamente abierto
+    if (currentOptionsMenu) {
+        currentOptionsMenu.remove();
+        currentOptionsMenu = null;
+    }
+
+    // Crear el menú de opciones
+    const menu = document.createElement('div');
+    menu.className = 'chat-options-menu';
+    menu.style.position = 'absolute';
+    menu.style.right = '0';
+    menu.style.top = '100%';
+    menu.style.backgroundColor = '#111';
+    menu.style.border = '1px solid #333';
+    menu.style.borderRadius = '8px';
+    menu.style.padding = '0.5rem 0';
+    menu.style.zIndex = '1000';
+    menu.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.2)';
+    menu.style.display = 'flex';
+    menu.style.flexDirection = 'column';
+
+    // Opción de renombrar
+    const renameOption = document.createElement('button');
+    renameOption.className = 'chat-option';
+    renameOption.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+        </svg>
+        Renombrar
+    `;
+    renameOption.addEventListener('click', () => {
+        const newName = prompt("Introduce un nuevo nombre para este chat:");
+        if (newName && newName.trim()) {
+            renameChat(chatId, newName.trim());
+        }
+        menu.remove(); // Cerrar el menú después de la acción
+        currentOptionsMenu = null; // Limpiar la referencia
+    });
+
+    // Opción de eliminar
+    const deleteOption = document.createElement('button');
+    deleteOption.className = 'chat-option';
+    deleteOption.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+        </svg>
+        Eliminar
+    `;
+    deleteOption.addEventListener('click', () => {
+        if (confirm("¿Estás seguro de que quieres eliminar este chat?")) {
+            deleteChat(chatId);
+        }
+        menu.remove(); // Cerrar el menú después de la acción
+        currentOptionsMenu = null; // Limpiar la referencia
+    });
+
+    // Agregar opciones al menú
+    menu.appendChild(renameOption);
+    menu.appendChild(deleteOption);
+
+    // Añadir el menú al DOM
+    button.parentElement.appendChild(menu);
+
+    // Guardar la referencia al menú actual
+    currentOptionsMenu = menu;
+
+    // Cerrar el menú si se hace clic fuera
+    document.addEventListener('click', handleOutsideClick);
+}
+
+// Función para manejar clics fuera del menú
+function handleOutsideClick(e) {
+    if (currentOptionsMenu && !currentOptionsMenu.contains(e.target)) {
+        currentOptionsMenu.remove();
+        currentOptionsMenu = null;
+        document.removeEventListener('click', handleOutsideClick); // Remover el listener después de cerrar
+    }
+}
+
+// Función para eliminar un chat específico
+function deleteChat(chatId) {
+    chats = chats.filter(chat => chat.id !== chatId);
+    localStorage.setItem('arexChats', JSON.stringify(chats));
+    loadChatHistory();
+    if (currentChatId === chatId) {
+        chatMessages.innerHTML = ''; // Limpiar mensajes si el chat activo es eliminado
+    }
+}
+
+// Función para renombrar un chat
+function renameChat(chatId, newName) {
+    const chat = chats.find(chat => chat.id === chatId);
+    if (chat) {
+        chat.name = newName; // Actualizar el nombre del chat
+        localStorage.setItem('arexChats', JSON.stringify(chats)); // Guardar en localStorage
+        loadChatHistory(); // Recargar el historial para reflejar el cambio
+    }
 }
 
 // Cargar mensajes del chat seleccionado
