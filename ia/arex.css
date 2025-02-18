@@ -442,8 +442,17 @@ body {
 
 .chat-input {
     display: flex;
+    background: #111;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 12px;
     gap: 1rem;
     align-items: center;
+}
+
+/* Cambiar el estilo del contenedor cuando el textarea está enfocado */
+.chat-input:focus-within {
+    border: 1px solid #ffffff; /* Borde blanco */
 }
 
 .chat-input textarea {
@@ -457,7 +466,7 @@ body {
     flex: 1;
     padding: 1.2rem;
     background: #111;
-    border: 1px solid #333;
+    border: none;
     color: #fff;
     border-radius: 12px;
     font-family: 'Inter', sans-serif;
@@ -466,26 +475,33 @@ body {
 }
 
 #user-input:focus {
-    border-color: #ffffff;
+    border-color: none;
     outline: none;
 }
 
 #send-btn {
-    padding: 1.2rem 2rem;
+    top: 50%;
+    margin-right: 10px;
+    padding: 0.8rem;
     background: #ffffff;
     border: none;
-    border-radius: 12px;
+    border-radius: 50%;
     color: #000000;
     cursor: pointer;
     transition: all 0.3s;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
 }
 
 #send-btn:hover {
     background: rgba(209, 209, 209, 0.6);
     transform: scale(1.1);
+}
+
+#send-btn svg {
+    width: 16px; /* Tamaño del ícono */
+    height: 16px;
 }
 
 /* Animación de carga */
