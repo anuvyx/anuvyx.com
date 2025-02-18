@@ -8,6 +8,7 @@ const newChatBtn = document.querySelector('.new-chat-btn');
 const deleteChatsBtn = document.querySelector('.delete-chats-btn');
 let currentChatId = null;
 let currentOptionsMenu = null;
+let abortController = null;
 let chats = JSON.parse(localStorage.getItem('arexChats')) || [];
 
 // Cargar historial de chats
@@ -214,7 +215,7 @@ function showLoadingWithCounter() {
     return { loadingDiv, countdownInterval };
 }
 
-// Enviar mensaje
+// Función para enviar mensaje
 async function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
@@ -234,7 +235,19 @@ async function sendMessage() {
     // Mostrar indicador de carga con contador
     const { loadingDiv, countdownInterval } = showLoadingWithCounter();
 
+    // Crear un nuevo AbortController para esta solicitud
+    abortController = new AbortController();
+
     try {
+        // Cambiar el botón de "Enviar" a "Cancelar"
+        sendBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        `;
+        sendBtn.style.backgroundColor = '#FF0000E6';
+        sendBtn.onclick = cancelRequest; // Asignar la función de cancelación
+
         // Llamada al backend en Vercel
         const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
             method: 'POST',
@@ -243,7 +256,8 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 message: message
-            })
+            }),
+            signal: abortController.signal // Pasar la señal de aborto
         });
 
         const data = await response.json();
@@ -265,12 +279,34 @@ async function sendMessage() {
             displayMessage(`Error: ${data.error || 'Ocurrió un error al procesar tu solicitud.'}`, false);
         }
     } catch (error) {
-        console.error('Error al enviar el mensaje:', error);
-        displayMessage('Error: No se pudo conectar con el servidor.', false);
+        if (error.name === 'AbortError') {
+            console.log('Solicitud cancelada por el usuario.');
+            displayMessage('Solicitud cancelada.', false);
+        } else {
+            console.error('Error al enviar el mensaje:', error);
+            displayMessage('Error: No se pudo conectar con el servidor.', false);
+        }
     } finally {
+        // Restaurar el botón de "Enviar"
+        sendBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+        `;
+        sendBtn.style.backgroundColor = '#ffffff';
+        sendBtn.onclick = sendMessage; // Restaurar la función de envío
+
         // Detener el contador y eliminar el mensaje de carga
         clearInterval(countdownInterval);
         loadingDiv.remove();
+    }
+}
+
+// Función para cancelar la solicitud
+function cancelRequest() {
+    if (abortController) {
+        abortController.abort(); // Cancelar la solicitud
+        abortController = null; // Limpiar el controlador
     }
 }
 
