@@ -12,7 +12,10 @@ let chats = JSON.parse(localStorage.getItem('arexChats')) || [];
 
 // Cargar historial de chats
 function loadChatHistory() {
-    chatHistory.innerHTML = chats.map(chat => `
+    // Ordenar los chats de más nuevo a más antiguo
+    const sortedChats = [...chats].sort((a, b) => b.timestamp - a.timestamp);
+
+    chatHistory.innerHTML = sortedChats.map(chat => `
         <li class="chat-item ${chat.id === currentChatId ? 'active' : ''}" data-id="${chat.id}">
             <div class="chat-info">
                 <span>${chat.name || new Date(chat.timestamp).toLocaleString()}</span>
