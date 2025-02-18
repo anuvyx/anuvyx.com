@@ -34,6 +34,7 @@ function loadChatHistory() {
     document.querySelectorAll('.chat-item').forEach(item => {
         item.addEventListener('click', () => {
             currentChatId = item.dataset.id;
+            localStorage.setItem('selectedChatId', currentChatId); // Guardar el ID del chat seleccionado
             loadChatHistory();
             loadChatMessages();
         });
@@ -186,6 +187,7 @@ function createNewChat() {
     });
     
     localStorage.setItem('arexChats', JSON.stringify(chats));
+    localStorage.setItem('selectedChatId', currentChatId); // Guardar el ID del nuevo chat
     loadChatHistory();
     loadChatMessages();
 }
@@ -403,7 +405,7 @@ autoResizeTextarea();
 document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
 document.getElementById('floatingToggle').addEventListener('click', toggleSidebar);
 
-// Cargar estado al iniciar
+// Inicializar primer chat o cargar el chat previamente seleccionado
 window.addEventListener('load', () => {
     const sidebarState = localStorage.getItem('sidebarState');
     const sidebar = document.getElementById('chatSidebar');
@@ -411,6 +413,23 @@ window.addEventListener('load', () => {
     if (sidebarState === 'hidden' && window.innerWidth >= 769) {
         sidebar.classList.add('hidden');
     }
+
+    // Verificar si hay un chat seleccionado previamente
+    const savedChatId = localStorage.getItem('selectedChatId');
+    if (savedChatId && chats.some(chat => chat.id === savedChatId)) {
+        // Si existe un chat seleccionado previamente, cargarlo
+        currentChatId = savedChatId;
+    } else if (chats.length > 0) {
+        // Si no hay ningún chat seleccionado, usar el primer chat disponible
+        currentChatId = chats[0].id;
+    } else {
+        // Si no hay chats, crear uno nuevo
+        createNewChat();
+    }
+
+    // Cargar el historial y los mensajes
+    loadChatHistory();
+    loadChatMessages();
 });
 
 // Función para eliminar todos los chats
