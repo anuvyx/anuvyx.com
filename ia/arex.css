@@ -448,7 +448,6 @@ body {
     border: 1px solid #333;
     color: #fff;
     border-radius: 12px;
-    gap: 0.5rem;
     align-items: center;
 }
 
@@ -467,9 +466,10 @@ body {
 #user-input {
     flex: 1;
     margin-left: 1rem;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
+    padding-right: 0.5rem;
     background: #111;
     border: none;
     color: #fff;
