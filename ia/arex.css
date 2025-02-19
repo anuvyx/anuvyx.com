@@ -314,7 +314,7 @@ body {
 .chat-main {
     flex: 1;
     margin-left: 300px;
-    padding: 2rem;
+    padding: 0.5rem 2rem 0 2rem;
     transition: margin-left 0.3s ease;
 }
 
@@ -324,8 +324,8 @@ body {
 
 .chat-header {
     border-bottom: 1px solid #333;
-    padding-bottom: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -361,7 +361,7 @@ body {
 
 /* Área de mensajes */
 .chat-messages {
-    height: calc(100vh - 280px);
+    height: calc(100vh - 210px);
     overflow-y: auto;
     padding-right: 1rem;
     scrollbar-width: thin;
@@ -428,9 +428,11 @@ body {
 /* Input de mensajes */
 .chat-input-container {
     position: fixed;
-    bottom: 2rem;
+    bottom: 0;
     width: calc(100% - 300px - 4rem);
     background: rgba(0, 0, 0, 0.9);
+    border-top: 1px solid #333; /* Añadir un borde superior */
+    padding-top: 1rem;
     padding: 1rem 0;
     backdrop-filter: blur(10px);
     transition: width 0.3s ease;
@@ -464,11 +466,13 @@ body {
 
 #user-input {
     flex: 1;
-    padding: 1.2rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     background: #111;
     border: none;
     color: #fff;
-    border-radius: 12px;
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
     transition: all 0.3s;
