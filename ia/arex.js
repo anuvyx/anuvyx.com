@@ -193,24 +193,58 @@ function createNewChat() {
     loadChatMessages();
 }
 
-// Mostrar carga con contador regresivo
+// Función para mostrar un círculo de carga con un contador estático
 function showLoadingWithCounter() {
     const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'message bot-message loading-dots';
+    loadingDiv.className = 'message bot-message';
+    loadingDiv.style.display = 'flex';
+    loadingDiv.style.alignItems = 'center'; // Alinear verticalmente
+    loadingDiv.style.gap = '10px'; // Espacio entre el círculo y el contador
+
+    // Crear el círculo de carga (spinner)
+    const spinner = document.createElement('div');
+    spinner.style.border = '4px solid rgba(255, 255, 255, 0.2)'; // Borde transparente
+    spinner.style.borderTop = '4px solid #ffffff'; // Borde superior blanco (movimiento)
+    spinner.style.borderRadius = '50%'; // Forma circular
+    spinner.style.width = '24px'; // Tamaño del círculo
+    spinner.style.height = '24px'; // Tamaño del círculo
+    spinner.style.animation = 'spin 1s linear infinite'; // Animación de rotación
+
+    // Agregar animación de rotación al spinner
+    const styleSheet = document.createElement('style');
+    styleSheet.innerHTML = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Crear el contador estático
+    const counter = document.createElement('span');
     let countdown = 60; // Contador inicial
-    loadingDiv.textContent = `Generando respuesta (${countdown}s)`;
-    chatMessages.appendChild(loadingDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    counter.textContent = countdown; // Mostrar el contador
+    counter.style.fontSize = '1.2rem'; // Tamaño del texto
+    counter.style.color = '#ffffff'; // Color del texto
+    counter.style.fontWeight = 'bold'; // Hacer el texto más visible
 
     // Actualizar el contador cada segundo
     const countdownInterval = setInterval(() => {
         countdown--;
         if (countdown >= 0) {
-            loadingDiv.textContent = `Generando respuesta (${countdown}s)`;
+            counter.textContent = countdown; // Actualizar el contador
         } else {
             clearInterval(countdownInterval); // Detener el contador si llega a 0
         }
     }, 1000);
+
+    // Agregar el spinner y el contador al contenedor principal
+    loadingDiv.appendChild(spinner);
+    loadingDiv.appendChild(counter);
+
+    // Agregar el contenedor al área de mensajes
+    chatMessages.appendChild(loadingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 
     return { loadingDiv, countdownInterval };
 }
