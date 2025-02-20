@@ -1,95 +1,118 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Anuvyx AI - Arex</title>
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="arex.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="../static/logo/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Anuvyx AI - Arex</title>
+  
+  <!-- Descripción para SEO -->
+  <meta name="description" content="Arex es el asistente de IA de Anuvyx. Interactúa y obtén respuestas en tiempo real.">
 
-    <!-- Marked.js para Markdown -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="Anuvyx AI - Arex">
+  <meta property="og:description" content="Arex es el asistente de IA de Anuvyx. Interactúa y obtén respuestas en tiempo real.">
+  <meta property="og:image" content="../static/logo/Anuvyx-White-NB.PNG">
+  <meta property="og:url" content="https://tu-dominio.com/arex.html">
+  <meta property="og:type" content="website">
 
-    <!-- MathJax para LaTeX -->
-    <script type="text/javascript" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-    </script>
-    
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Anuvyx AI - Arex">
+  <meta name="twitter:description" content="Arex es el asistente de IA de Anuvyx. Interactúa y obtén respuestas en tiempo real.">
+  <meta name="twitter:image" content="../static/logo/Anuvyx-White-NB.PNG">
+
+  <!-- Hojas de estilo y fuentes -->
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="arex.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../static/logo/favicon.ico">
+
+  <!-- Marked.js para Markdown (cargado de forma diferida) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- MathJax para LaTeX (cargado de forma asíncrona) -->
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-    <div class="chat-wrapper">
-        <!-- Sidebar -->
-        <nav class="chat-sidebar" id="chatSidebar" aria-label="Menú lateral de chats">
-            <header class="sidebar-title">
-                <a href="../index.html" aria-label="Ir a la página principal">
-                    <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo">
-                </a>
-                <h1>AREX</h1>
-                <div class="sidebar-toggle-container">
-                    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Alternar menú lateral">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M3 12h18M3 6h18M3 18h18"/>
-                        </svg>
-                    </button>
-                </div>
-            </header>
-            <div class="divider" role="separator"></div>
-            <section class="chat-sidebar-header" aria-label="Opciones de chats">
-                <div class="chat-actions-container">
-                    <h3>Chats</h3>
-                    <div class="chat-buttons">
-                        <button class="new-chat-btn" aria-label="Crear nuevo chat">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path d="M12 5v14M5 12h14"/>
-                            </svg>
-                        </button>
-                        <button class="delete-chats-btn" aria-label="Eliminar todos los chats">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </section>
-            <ul class="chat-history" id="chatHistory" aria-label="Historial de chats"></ul>
-        </nav>
-        <main class="chat-main" aria-label="Área principal del chat">
-            <header class="chat-header">
-                <div class="floating-toggle-container">
-                    <button class="floating-toggle" id="floatingToggle" aria-label="Alternar menú lateral">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M3 12h18M3 6h18M3 18h18"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="logo-title-container">
-                    <a href="../index.html" aria-label="Ir a la página principal">
-                        <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo">
-                    </a>
-                    <h1>AREX</h1>
-                </div>
-            </header>
-            <section class="chat-messages" id="chatMessages" aria-live="polite" aria-label="Mensajes del chat">
-                <div class="message bot-message">
-                    ¡Hola! Soy Arex, el asistente de IA de Anuvyx.<br><br>
-                    ¿En qué puedo ayudarte hoy?<br>
-                </div>
-            </section>
-            <footer class="chat-input-container" aria-label="Entrada de mensajes">
-                <div class="chat-input">
-                    <textarea id="user-input" placeholder="Envía un mensaje a Arex" aria-label="Escribe tu mensaje"></textarea>
-                    <button id="send-btn" aria-label="Enviar mensaje">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                        </svg>
-                    </button>
-                </div>
-            </footer>
-        </main>
-    </div>
-    <script src="arex.js"></script>
+  <noscript>
+    <p>Esta aplicación requiere JavaScript para funcionar correctamente. Por favor, habilítalo en tu navegador.</p>
+  </noscript>
+  
+  <div class="chat-wrapper">
+    <!-- Sidebar -->
+    <nav class="chat-sidebar" id="chatSidebar" aria-label="Menú lateral de chats">
+      <header class="sidebar-title">
+        <a href="../index.html" aria-label="Ir a la página principal">
+          <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo" loading="lazy">
+        </a>
+        <h1>AREX</h1>
+        <div class="sidebar-toggle-container">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Alternar menú lateral">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+      <div class="divider" role="separator"></div>
+      <section class="chat-sidebar-header" aria-label="Opciones de chats">
+        <div class="chat-actions-container">
+          <h3>Chats</h3>
+          <div class="chat-buttons">
+            <button class="new-chat-btn" aria-label="Crear nuevo chat">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+            <button class="delete-chats-btn" aria-label="Eliminar todos los chats">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+      <ul class="chat-history" id="chatHistory" aria-label="Historial de chats"></ul>
+    </nav>
+    
+    <!-- Área principal del chat -->
+    <main class="chat-main" aria-label="Área principal del chat">
+      <header class="chat-header">
+        <div class="floating-toggle-container">
+          <button class="floating-toggle" id="floatingToggle" aria-label="Alternar menú lateral">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="logo-title-container">
+          <a href="../index.html" aria-label="Ir a la página principal">
+            <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo de Anuvyx AI" class="arex-logo" loading="lazy">
+          </a>
+          <h1>AREX</h1>
+        </div>
+      </header>
+      <section class="chat-messages" id="chatMessages" aria-live="polite" aria-label="Mensajes del chat">
+        <article class="message bot-message">
+          <p>¡Hola! Soy Arex, el asistente de IA de Anuvyx.</p>
+          <p>¿En qué puedo ayudarte hoy?</p>
+        </article>
+      </section>
+      <footer class="chat-input-container" aria-label="Entrada de mensajes">
+        <div class="chat-input">
+          <textarea id="user-input" placeholder="Envía un mensaje a Arex" aria-label="Escribe tu mensaje"></textarea>
+          <button id="send-btn" aria-label="Enviar mensaje">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </div>
+      </footer>
+    </main>
+  </div>
+  
+  <!-- Script principal, cargado de forma diferida -->
+  <script defer src="arex.js"></script>
 </body>
 </html>
