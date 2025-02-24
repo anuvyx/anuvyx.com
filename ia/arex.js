@@ -252,6 +252,7 @@
       });
       displayMessage(message, true);
       userInput.value = '';
+      autoResizeTextarea();
   
       const { loadingDiv, countdownInterval } = showLoadingWithCounter();
       abortController = new AbortController();
