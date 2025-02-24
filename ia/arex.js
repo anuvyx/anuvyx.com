@@ -267,12 +267,20 @@
       sendBtn.onclick = cancelRequest;
   
       try {
+        // Después de añadir el mensaje del usuario al chat
+        const conversationMessages = chat.messages.map(msg => ({
+          role: msg.isUser ? 'user' : 'assistant',
+          content: msg.content
+        }));
+
+        // En lugar de enviar { message }, enviamos { messages: conversationMessages }
         const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message }),
+          body: JSON.stringify({ messages: conversationMessages }),
           signal: abortController.signal
         });
+
         const data = await response.json();
         if (response.ok) {
           const botResponse = data.response;
