@@ -262,8 +262,17 @@
   }
   
   .chat-info {
-    flex-grow: 1;
+    flex: 1;
+    min-width: 0;
   }
+  
+  .chat-info span {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
   
   .chat-options-btn {
     background: none;
