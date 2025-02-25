@@ -329,24 +329,80 @@
     const displayMessage = (content, isUser) => {
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-  
+    
       let processedContent = marked.parse(content);
       processedContent = processedContent
         .replace(/\\\(.+?\\\)/g, (match) => match)
         .replace(/\\\[.+?\\\]/g, (match) => match)
         .replace(/\$.+?\$/g, (match) => `\\(${match.slice(1, -1)}\\)`)
         .replace(/\\boxed\{(.+?)\}/g, (match) => `\\boxed{${match.slice(7, -1)}}`);
-  
-      messageDiv.innerHTML = processedContent;
+    
+      // Usamos un contenedor temporal para manipular el HTML generado
+      const tempContainer = document.createElement('div');
+      tempContainer.innerHTML = processedContent;
+    
+      // Procesar bloques de código con lenguaje especificado
+      const codeBlocks = tempContainer.querySelectorAll('pre > code[class^="language-"]');
+      codeBlocks.forEach(codeBlock => {
+        const language = codeBlock.className.replace('language-', '');
+        const header = document.createElement('div');
+        header.classList.add('code-header');
+    
+        const languageSpan = document.createElement('span');
+        languageSpan.textContent = language;
+    
+        // Botón para copiar el contenido del bloque de código
+        const copyIcon = document.createElement('button');
+        copyIcon.classList.add('copy-icon');
+        copyIcon.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+        `;
+        copyIcon.addEventListener('click', () => {
+          navigator.clipboard.writeText(codeBlock.innerText)
+            .then(() => {
+              copyIcon.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              `;
+              setTimeout(() => {
+                copyIcon.innerHTML = `
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                `;
+              }, 2000);
+            })
+            .catch(err => {
+              console.error('Error al copiar el código: ', err);
+            });
+        });
+    
+        header.appendChild(languageSpan);
+        header.appendChild(copyIcon);
+    
+        const preBlock = codeBlock.parentElement;
+        preBlock.parentElement.insertBefore(header, preBlock);
+      });
+    
+      // Mover los nodos de tempContainer a messageDiv (preservando los event listeners)
+      while (tempContainer.firstChild) {
+        messageDiv.appendChild(tempContainer.firstChild);
+      }
+    
       chatMessages.appendChild(messageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
-  
-      // Botón para copiar el contenido
+    
+      // Botón para copiar todo el mensaje (manteniendo el estilo original)
       const copyButtonContainer = document.createElement('div');
       copyButtonContainer.style.display = 'flex';
       copyButtonContainer.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
       copyButtonContainer.style.marginTop = '5px';
-  
+    
       const copyButton = document.createElement('button');
       copyButton.className = 'copy-button';
       copyButton.style.padding = '5px';
@@ -355,7 +411,7 @@
       copyButton.style.cursor = 'pointer';
       copyButton.style.display = 'flex';
       copyButton.style.alignItems = 'center';
-  
+    
       copyButton.innerHTML = `
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -363,8 +419,7 @@
         </svg>
       `;
       copyButton.addEventListener('click', () => {
-        navigator.clipboard
-          .writeText(content)
+        navigator.clipboard.writeText(content)
           .then(() => {
             copyButton.innerHTML = `
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -387,14 +442,15 @@
       });
       copyButtonContainer.appendChild(copyButton);
       chatMessages.appendChild(copyButtonContainer);
-  
-      // Renderizar expresiones matemáticas con MathJax
+    
+      // Renderizar expresiones matemáticas con MathJax, si está disponible
       if (typeof MathJax !== 'undefined') {
         MathJax.typesetPromise([messageDiv]).catch((err) =>
           console.error('Error al renderizar MathJax:', err)
         );
       }
     };
+    
   
     // Función para ajustar dinámicamente la altura del textarea
     const autoResizeTextarea = () => {

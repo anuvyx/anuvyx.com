@@ -569,6 +569,53 @@
     }
   }
   
+  /* Estilos para el encabezado de código */
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-bottom: 0;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* Estilos para el botón de copiar en el encabezado */
+  .copy-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Efecto hover para el botón de copiar */
+  .copy-icon:hover {
+    opacity: 0.7;
+  }
+
+  /* Estilos para los bloques de código */
+  pre {
+    background-color: #111; /* Fondo oscuro para el bloque de código */
+    color: #f8f8f2;
+    padding: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    overflow-x: auto;
+    margin-top: 0; 
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+  }
+
+  /* Estilos para los elementos code */
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 1em;
+  }
   
   /* =======================================
      Estilos Responsivos para Móviles
@@ -639,6 +686,10 @@
     .floating-toggle {
       display: block;
       /* Puedes ajustar aquí tamaño, color y otros estilos si es necesario */
-    }    
+    }
+
+    pre {
+      font-size: 0.9em;
+    }   
   }
   
