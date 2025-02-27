@@ -608,13 +608,23 @@
     overflow-x: auto;
     margin-top: 0; 
     margin-bottom: 15px;
-    white-space: pre-wrap;
   }
 
-  /* Estilos para los elementos code */
+  .chat-messages pre {
+    transition: width 0.3s ease;
+  }
+
   code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     font-size: 1em;
+  }
+
+  .chat-sidebar:not(.hidden) ~ .chat-main .chat-messages pre {
+    width: 50vw;
+  }
+
+  .chat-sidebar.hidden ~ .chat-main .chat-messages pre {
+    width: 70vw;
   }
   
   /* =======================================
