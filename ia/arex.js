@@ -337,14 +337,16 @@
         .replace(/\$.+?\$/g, (match) => `\\(${match.slice(1, -1)}\\)`)
         .replace(/\\boxed\{(.+?)\}/g, (match) => `\\boxed{${match.slice(7, -1)}}`);
     
-      // Usamos un contenedor temporal para manipular el HTML generado
       const tempContainer = document.createElement('div');
       tempContainer.innerHTML = processedContent;
     
-      // Procesar bloques de código con lenguaje especificado
-      const codeBlocks = tempContainer.querySelectorAll('pre > code[class^="language-"]');
+      // Procesar bloques de código y aplicar Prism
+      const codeBlocks = tempContainer.querySelectorAll('pre > code');
       codeBlocks.forEach(codeBlock => {
-        const language = codeBlock.className.replace('language-', '');
+        // Detectar lenguaje; si no hay, usar "plaintext"
+        const language = codeBlock.className.replace('language-', '') || 'plaintext';
+    
+        // Crear header para el bloque de código
         const header = document.createElement('div');
         header.classList.add('code-header');
     
@@ -361,7 +363,7 @@
           </svg>
         `;
         copyIcon.addEventListener('click', () => {
-          navigator.clipboard.writeText(codeBlock.innerText)
+          navigator.clipboard.writeText(codeBlock.textContent)
             .then(() => {
               copyIcon.innerHTML = `
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -387,9 +389,14 @@
     
         const preBlock = codeBlock.parentElement;
         preBlock.parentElement.insertBefore(header, preBlock);
+    
+        // Añadir clases y atributos para Prism
+        preBlock.classList.add('line-numbers');
+        preBlock.setAttribute('data-lang', language);
+        Prism.highlightElement(codeBlock);
       });
     
-      // Mover los nodos de tempContainer a messageDiv (preservando los event listeners)
+      // Mover el contenido procesado al mensaje
       while (tempContainer.firstChild) {
         messageDiv.appendChild(tempContainer.firstChild);
       }
@@ -397,7 +404,7 @@
       chatMessages.appendChild(messageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     
-      // Botón para copiar todo el mensaje (manteniendo el estilo original)
+      // Botón para copiar todo el mensaje
       const copyButtonContainer = document.createElement('div');
       copyButtonContainer.style.display = 'flex';
       copyButtonContainer.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
@@ -450,6 +457,7 @@
         );
       }
     };
+    
     
   
     // Función para ajustar dinámicamente la altura del textarea

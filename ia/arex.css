@@ -599,7 +599,7 @@
   }
 
   /* Estilos para los bloques de código */
-  pre {
+  pre.line-numbers[class*="language-"] {
     background-color: #111; /* Fondo oscuro para el bloque de código */
     color: #f8f8f2;
     padding: 10px;
@@ -608,6 +608,7 @@
     overflow-x: auto;
     margin-top: 0; 
     margin-bottom: 15px;
+    scrollbar-color: var(--color-border) #111;
   }
 
   .chat-messages pre {
@@ -626,6 +627,59 @@
   .chat-sidebar.hidden ~ .chat-main .chat-messages pre {
     width: 70vw;
   }
+
+  pre code .token.comment {
+    color: #6A9955;
+  }
+
+  pre code .token.keyword,
+  pre code .token.tag {
+    color: #569CD6;
+  }
+
+  pre code .token.string,
+  pre code .token.attr-value {
+    color: #CE9178;
+  }
+
+  pre code .token.function {
+    color: #DCDCAA;
+  }
+
+  pre code .token.number {
+    color: #B5CEA8;
+  }
+
+  pre code .token.boolean {
+    color: #569CD6;
+  }
+
+  pre code .token.operator,
+  pre code .token.punctuation {
+    color: #D4D4D4;
+  }
+
+  pre code .token.class-name {
+    color: #4EC9B0;
+  }
+
+  pre code .token.variable,
+  pre code .token.attr-name {
+    color: #9CDCFE;
+  }
+
+  pre code .token.constant {
+    color: #4FC1FF;
+  }
+
+  pre code .token.regex {
+    color: #d16969;
+  }
+
+  pre code .token.property {
+    color: #9CDCFE;
+  }
+
   
   /* =======================================
      Estilos Responsivos para Móviles
