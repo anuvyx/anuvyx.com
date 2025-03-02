@@ -428,7 +428,7 @@
     margin-bottom: 0.5rem;
     padding: 1.5rem;
     border-radius: 15px;
-    max-width: none;
+    max-width: 100%;
     position: relative;
     animation: messageFade 0.4s ease;
     line-height: 2em;
@@ -611,6 +611,13 @@
     scrollbar-color: var(--color-border) #111;
   }
 
+  .message pre {
+    max-width: 100%;  /* ← Agrega esto */
+    overflow-x: auto; /* ← Mantiene scroll horizontal si es necesario */
+    white-space: pre-wrap; /* ← Permite ajustar texto */
+    word-wrap: break-word; /* ← Rompe palabras largas */
+  }
+
   .chat-messages pre {
     transition: width 0.3s ease;
   }
@@ -621,11 +628,19 @@
   }
 
   .chat-sidebar:not(.hidden) ~ .chat-main .chat-messages pre {
-    width: 50vw;
+    width: 42vw;
   }
 
   .chat-sidebar.hidden ~ .chat-main .chat-messages pre {
-    width: 70vw;
+    width: 62vw;
+  }
+
+  .chat-sidebar:not(.hidden) ~ .chat-main .code-header {
+    width: 42vw;
+  }
+
+  .chat-sidebar.hidden ~ .chat-main .code-header {
+    width: 62vw;
   }
 
   pre code .token.comment {
@@ -735,7 +750,7 @@
     
     /* Estilo de cada mensaje para evitar desbordamiento de texto */
     .message {
-      max-width: 90%;
+      max-width: 100%;
       padding: 1rem;
       word-wrap: break-word;
       overflow-wrap: break-word;
