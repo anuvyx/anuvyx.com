@@ -330,81 +330,84 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
     
-      let processedContent = marked.parse(content);
-      processedContent = processedContent
-        .replace(/\\\(.+?\\\)/g, (match) => match)
-        .replace(/\\\[.+?\\\]/g, (match) => match)
-        .replace(/\$.+?\$/g, (match) => `\\(${match.slice(1, -1)}\\)`)
-        .replace(/\\boxed\{(.+?)\}/g, (match) => `\\boxed{${match.slice(7, -1)}}`);
+      if (isUser) {
+        // Mensajes de usuario: se muestran tal cual, sin formatear Markdown.
+        const plainText = content
+        .replace(/</g, '&lt;') // Escapar HTML
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>'); // Mantener saltos de línea
+
+      messageDiv.innerHTML = plainText;
+      } else {
+        // Mensajes del bot: se procesa Markdown
+        let processedContent = marked.parse(content);
+        processedContent = processedContent
+          .replace(/\\\(.+?\\\)/g, (match) => match)
+          .replace(/\\\[.+?\\\]/g, (match) => match)
+          .replace(/\$.+?\$/g, (match) => `\\(${match.slice(1, -1)}\\)`)
+          .replace(/\\boxed\{(.+?)\}/g, (match) => `\\boxed{${match.slice(7, -1)}}`);
     
-      const tempContainer = document.createElement('div');
-      tempContainer.innerHTML = processedContent;
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = processedContent;
     
-      // Procesar bloques de código y aplicar Prism
-      const codeBlocks = tempContainer.querySelectorAll('pre > code');
-      codeBlocks.forEach(codeBlock => {
-        // Detectar lenguaje; si no hay, usar "plaintext"
-        const language = codeBlock.className.replace('language-', '') || 'plaintext';
+        // Procesar bloques de código (como antes)
+        const codeBlocks = tempContainer.querySelectorAll('pre > code');
+        codeBlocks.forEach(codeBlock => {
+          const language = codeBlock.className.replace('language-', '') || 'plaintext';
+          const header = document.createElement('div');
+          header.classList.add('code-header');
     
-        // Crear header para el bloque de código
-        const header = document.createElement('div');
-        header.classList.add('code-header');
+          const languageSpan = document.createElement('span');
+          languageSpan.textContent = language;
     
-        const languageSpan = document.createElement('span');
-        languageSpan.textContent = language;
-    
-        // Botón para copiar el contenido del bloque de código
-        const copyIcon = document.createElement('button');
-        copyIcon.classList.add('copy-icon');
-        copyIcon.innerHTML = `
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-          </svg>
-        `;
-        copyIcon.addEventListener('click', () => {
-          navigator.clipboard.writeText(codeBlock.textContent)
-            .then(() => {
-              copyIcon.innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              `;
-              setTimeout(() => {
+          const copyIcon = document.createElement('button');
+          copyIcon.classList.add('copy-icon');
+          copyIcon.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+          `;
+          copyIcon.addEventListener('click', () => {
+            navigator.clipboard.writeText(codeBlock.textContent)
+              .then(() => {
                 copyIcon.innerHTML = `
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 `;
-              }, 2000);
-            })
-            .catch(err => {
-              console.error('Error al copiar el código: ', err);
-            });
+                setTimeout(() => {
+                  copyIcon.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                      <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
+                  `;
+                }, 2000);
+              })
+              .catch(err => console.error('Error al copiar el código:', err));
+          });
+    
+          header.appendChild(languageSpan);
+          header.appendChild(copyIcon);
+    
+          const preBlock = codeBlock.parentElement;
+          preBlock.parentElement.insertBefore(header, preBlock);
+    
+          preBlock.classList.add('line-numbers');
+          preBlock.setAttribute('data-lang', language);
+          Prism.highlightElement(codeBlock);
         });
     
-        header.appendChild(languageSpan);
-        header.appendChild(copyIcon);
-    
-        const preBlock = codeBlock.parentElement;
-        preBlock.parentElement.insertBefore(header, preBlock);
-    
-        // Añadir clases y atributos para Prism
-        preBlock.classList.add('line-numbers');
-        preBlock.setAttribute('data-lang', language);
-        Prism.highlightElement(codeBlock);
-      });
-    
-      // Mover el contenido procesado al mensaje
-      while (tempContainer.firstChild) {
-        messageDiv.appendChild(tempContainer.firstChild);
+        while (tempContainer.firstChild) {
+          messageDiv.appendChild(tempContainer.firstChild);
+        }
       }
     
       chatMessages.appendChild(messageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     
-      // Botón para copiar todo el mensaje
+      // Agregar botón para copiar el contenido del mensaje
       const copyButtonContainer = document.createElement('div');
       copyButtonContainer.style.display = 'flex';
       copyButtonContainer.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
@@ -418,9 +421,8 @@
       copyButton.style.cursor = 'pointer';
       copyButton.style.display = 'flex';
       copyButton.style.alignItems = 'center';
-    
       copyButton.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
           <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
           <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
         </svg>
@@ -429,37 +431,35 @@
         navigator.clipboard.writeText(content)
           .then(() => {
             copyButton.innerHTML = `
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             `;
             setTimeout(() => {
               copyButton.innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
                   <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                   <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                 </svg>
               `;
             }, 2000);
           })
-          .catch((err) => {
-            console.error('Error al copiar el texto: ', err);
+          .catch(err => {
+            console.error('Error al copiar el texto:', err);
             alert('No se pudo copiar el texto.');
           });
       });
       copyButtonContainer.appendChild(copyButton);
       chatMessages.appendChild(copyButtonContainer);
     
-      // Renderizar expresiones matemáticas con MathJax, si está disponible
-      if (typeof MathJax !== 'undefined') {
-        MathJax.typesetPromise([messageDiv]).catch((err) =>
+      // Renderizar expresiones matemáticas con MathJax solo para mensajes del bot
+      if (!isUser && typeof MathJax !== 'undefined') {
+        MathJax.typesetPromise([messageDiv]).catch(err =>
           console.error('Error al renderizar MathJax:', err)
         );
       }
     };
     
-    
-  
     // Función para ajustar dinámicamente la altura del textarea
     const autoResizeTextarea = () => {
       userInput.style.height = 'auto';
