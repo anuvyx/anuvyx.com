@@ -242,8 +242,8 @@
     const sendMessage = async () => {
       const message = userInput.value.trim();
       if (!message) return;
-  
-      // Guardar mensaje del usuario en el chat actual
+    
+      // Guardar y mostrar el mensaje del usuario
       const chat = chats.find((c) => c.id === currentChatId);
       chat.messages.push({
         content: message,
@@ -253,48 +253,88 @@
       displayMessage(message, true);
       userInput.value = '';
       autoResizeTextarea();
-  
+    
+      // Mostrar el indicador de carga
       const { loadingDiv, countdownInterval } = showLoadingWithCounter();
+    
       abortController = new AbortController();
-  
       // Cambiar el botón de enviar a cancelar
-      sendBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      `;
+      sendBtn.innerHTML = `[...]`; // ícono de cancelar
       sendBtn.style.backgroundColor = '#FF0000E6';
       sendBtn.onclick = cancelRequest;
-  
+    
       try {
-        // Después de añadir el mensaje del usuario al chat
+        // Preparar la conversación para enviar
         const conversationMessages = chat.messages.map(msg => ({
           role: msg.isUser ? 'user' : 'assistant',
           content: msg.content
         }));
-
-        // En lugar de enviar { message }, enviamos { messages: conversationMessages }
+    
+        // Realizar la petición fetch para recibir stream
         const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: conversationMessages }),
           signal: abortController.signal
         });
-
-        const data = await response.json();
-        if (response.ok) {
-          const botResponse = data.response;
-          chat.messages.push({
-            content: botResponse,
-            isUser: false,
-            timestamp: Date.now()
-          });
-          displayMessage(botResponse, false);
-          saveChatsToStorage();
-        } else {
-          console.error('Error en la API:', data.error || 'Error desconocido');
-          displayMessage(`Error: ${data.error || 'Ocurrió un error al procesar tu solicitud.'}`, false);
+    
+        // Crear un elemento en el DOM para ir mostrando la respuesta del bot
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'message bot-message';
+        chatMessages.appendChild(botMessageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let botResponse = '';
+    
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          // Dividir el fragmento por líneas y procesar cada línea
+          const lines = chunk.split('\n');
+          for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+            if (line.startsWith("data:")) {
+              // Remover todos los prefijos "data:" (incluso duplicados)
+              let jsonStr = line.replace(/^(data:\s*)+/i, '');
+              if (jsonStr === "[DONE]") {
+                reader.cancel();
+                break;
+              }
+              try {
+                const parsed = JSON.parse(jsonStr);
+                if (
+                  parsed.choices &&
+                  parsed.choices.length > 0 &&
+                  parsed.choices[0].delta &&
+                  parsed.choices[0].delta.content
+                ) {
+                  botResponse += parsed.choices[0].delta.content;
+                }
+              } catch (error) {
+                console.error("Error al parsear JSON:", error);
+              }
+            }
+          }
+          // Actualizar la interfaz en tiempo real con el Markdown básico
+          botMessageDiv.innerHTML = marked.parse(botResponse);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+    
+        // Al terminar, aplica mejoras de formato para restaurar funcionalidades
+        enhanceMessage(botMessageDiv);
+    
+        // Guardar el mensaje completo del bot en el chat
+        chat.messages.push({
+          content: botResponse,
+          isUser: false,
+          timestamp: Date.now()
+        });
+        saveChatsToStorage();
+    
       } catch (error) {
         if (error.name === 'AbortError') {
           console.log('Solicitud cancelada por el usuario.');
@@ -304,18 +344,78 @@
           displayMessage('Error: No se pudo conectar con el servidor.', false);
         }
       } finally {
-        // Restaurar el botón de enviar
-        sendBtn.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-          </svg>
-        `;
+        // Restaurar el botón de enviar y quitar el indicador de carga
+        sendBtn.innerHTML = `[...]`; // ícono original de enviar
         sendBtn.style.backgroundColor = '#ffffff';
         sendBtn.onclick = sendMessage;
         clearInterval(countdownInterval);
         loadingDiv.remove();
       }
     };
+    
+    /**
+     * Función para aplicar mejoras de formato al mensaje del bot.
+     * Se puede extraer la lógica de displayMessage para los mensajes del bot,
+     * incluyendo el procesamiento de bloques de código, botones de copiar y MathJax.
+     */
+    function enhanceMessage(messageDiv) {
+      // Procesar bloques de código
+      const codeBlocks = messageDiv.querySelectorAll('pre > code');
+      codeBlocks.forEach(codeBlock => {
+        const language = codeBlock.className.replace('language-', '') || 'plaintext';
+        const header = document.createElement('div');
+        header.classList.add('code-header');
+    
+        const languageSpan = document.createElement('span');
+        languageSpan.textContent = language;
+    
+        const copyIcon = document.createElement('button');
+        copyIcon.classList.add('copy-icon');
+        copyIcon.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+        `;
+        copyIcon.addEventListener('click', () => {
+          navigator.clipboard.writeText(codeBlock.textContent)
+            .then(() => {
+              copyIcon.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              `;
+              setTimeout(() => {
+                copyIcon.innerHTML = `
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                `;
+              }, 2000);
+            })
+            .catch(err => console.error('Error al copiar el código:', err));
+        });
+    
+        header.appendChild(languageSpan);
+        header.appendChild(copyIcon);
+    
+        const preBlock = codeBlock.parentElement;
+        preBlock.parentElement.insertBefore(header, preBlock);
+    
+        preBlock.classList.add('line-numbers');
+        preBlock.setAttribute('data-lang', language);
+        Prism.highlightElement(codeBlock);
+      });
+    
+      // Renderizar expresiones matemáticas con MathJax (para mensajes del bot)
+      if (typeof MathJax !== 'undefined') {
+        MathJax.typesetPromise([messageDiv]).catch(err =>
+          console.error('Error al renderizar MathJax:', err)
+        );
+      }
+    }
+        
   
     // Función para cancelar la solicitud de la API
     const cancelRequest = () => {
