@@ -1,12 +1,13 @@
 /* VARIABLES GLOBALES */
 :root {
-  --color-bg: #000;
+  --color-bg: #111;
   --color-text: #fff;
-  --color-sidebar-bg: rgb(15, 15, 15);
+  --color-sidebar-bg: #000;
   --color-border: #333;
   --color-hover: rgba(255, 255, 255, 0.05);
   --color-bot-message-bg: rgba(255, 255, 255, 0.05);
   --color-user-message-bg: rgba(227, 227, 227, 0.1);
+  --color-chat-input-bg: #313335;
   --color-white: #ffffff;
   --color-red: rgba(255, 0, 0, 0.9);
   --font-family: 'Inter', sans-serif;
@@ -272,7 +273,7 @@ body {
 .chat-options-menu {
   display: flex;
   flex-direction: column;
-  background: #111;
+  background: var(--color-sidebar-bg);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 0.5rem 0;
@@ -455,7 +456,7 @@ body {
   position: fixed;
   bottom: 0;
   width: calc(100% - 300px - 4rem);
-  background: rgba(0, 0, 0, 0.9);
+  background: var(--color-bg);
   border-top: 1px solid var(--color-border);
   padding: 1rem 0 1rem 0;
   backdrop-filter: blur(10px);
@@ -468,7 +469,7 @@ body {
 
 .chat-input {
   display: flex;
-  background: #111;
+  background: var(--color-chat-input-bg);
   border: 1px solid var(--color-border);
   color: var(--color-text);
   border-radius: 12px;
@@ -490,7 +491,7 @@ body {
   flex: 1;
   margin: 1rem 0.5rem 1rem 1rem;
   padding-right: 0.5rem;
-  background: #111;
+  background: var(--color-chat-input-bg);
   border: none;
   color: var(--color-text);
   font-family: var(--font-family);
@@ -564,7 +565,7 @@ body {
 }
 
 pre.line-numbers[class*="language-"] {
-  background-color: #111;
+  background-color: #000;
   color: #f8f8f2;
   padding: 10px;
   border-bottom-left-radius: 5px;
