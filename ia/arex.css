@@ -336,7 +336,7 @@ body {
 
 .chat-header {
   border-bottom: 1px solid var(--color-border);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   padding-bottom: 0.8rem;
   display: flex;
   align-items: center;
@@ -372,7 +372,7 @@ body {
 
 /* MENSAJES */
 .chat-messages {
-  height: calc(100vh - 210px);
+  height: calc(100vh - 235px);
   overflow-y: auto;
   padding-right: 16rem;
   padding-left: 14rem;
@@ -477,7 +477,7 @@ body {
   border: 1px solid var(--color-border);
   color: var(--color-text);
   border-radius: 12px;
-  align-items: center;
+  flex-direction: column;
 }
 
 .chat-input:focus-within {
@@ -486,6 +486,7 @@ body {
 
 .chat-input textarea {
   max-height: 50vh;
+  width: 95%;
   resize: none;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) var(--color-chat-input-bg);
@@ -493,8 +494,8 @@ body {
 
 #user-input {
   flex: 1;
-  margin: 1rem 0.5rem 1rem 1rem;
   padding-right: 0.5rem;
+  margin: 1rem 0.5rem 0 1rem;
   background: var(--color-chat-input-bg);
   border: none;
   color: var(--color-text);
@@ -508,8 +509,44 @@ body {
   outline: none;
 }
 
+/* Contenedor de acciones (botones) */
+.input-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Botón de subir archivos */
+.file-upload-btn {
+  cursor: pointer;
+  padding: 0.8rem;
+  border-radius: 50%;
+  background: var(--color-chat-input-bg);
+  border: 1px solid var(--color-border);
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-upload-btn:hover {
+  background: var(--color-border);
+}
+
+.file-upload-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Aseguramos que el input de archivos esté oculto */
+#file-upload {
+  display: none;
+}
+
 #send-btn {
-  margin-right: 10px;
   padding: 0.8rem;
   background: var(--color-white);
   border: none;

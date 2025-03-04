@@ -106,14 +106,26 @@
       </section>
       <footer class="chat-input-container" aria-label="Entrada de mensajes">
         <div class="chat-input">
-          <textarea id="user-input" placeholder="Envía un mensaje a Arex" aria-label="Escribe tu mensaje"></textarea>
-          <button id="send-btn" aria-label="Enviar mensaje">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-            </svg>
-          </button>
+          <div class="textarea-wrapper">
+            <textarea id="user-input" placeholder="Enviar mensaje a Arex..."></textarea>
+          </div>
+          <div class="input-actions">
+            <!-- Botón de adjuntar archivos con ícono de clip -->
+            <label for="file-upload" class="file-upload-btn" aria-label="Adjuntar archivo">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+              </svg>             
+              <input type="file" id="file-upload" hidden multiple>
+            </label>
+            <!-- Botón de enviar -->
+            <button id="send-btn" aria-label="Enviar mensaje">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+              </svg>
+            </button>
+          </div>
         </div>
-      </footer>
+      </footer>      
     </main>
   </div>
   

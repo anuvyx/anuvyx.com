@@ -585,6 +585,52 @@
       loadChatHistory();
       loadChatMessages();
     });
+
+    document.getElementById('file-upload').addEventListener('change', handleFileUpload);
+
+    function handleFileUpload(event) {
+      const files = event.target.files;
+      if (!files.length) return;
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          console.log('Archivo cargado:', file.name);
+          console.log('Contenido:', e.target.result);
+          displayFilePreview(file, e.target.result);
+        };
+        
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function displayFilePreview(file, content) {
+      const preview = document.createElement('div');
+      preview.className = 'file-preview';
+      
+      preview.innerHTML = `
+        <div class="file-info">
+          <strong>${file.name}</strong>
+          <small>${formatBytes(file.size)}</small>
+        </div>
+        <button class="remove-file">×</button>
+      `;
+      
+      // Inserta la previsualización justo encima del contenedor de chat-input
+      document.querySelector('.chat-input').insertAdjacentElement('beforebegin', preview);
+    }
+
+    function formatBytes(bytes) {
+      const units = ['B', 'KB', 'MB', 'GB'];
+      let i = 0;
+      for (; bytes >= 1024 && i < units.length - 1; i++) {
+        bytes /= 1024;
+      }
+      return `${bytes.toFixed(1)} ${units[i]}`;
+    }
+
+
   };
 
   init();
