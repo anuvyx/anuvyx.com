@@ -229,17 +229,34 @@
 
   // Enviar mensaje y gestionar respuesta de la API
   const sendMessage = async () => {
-    const message = userInput.value.trim();
-    if (!message) return;
+    const userText = userInput.value.trim();
+    const filePreviews = document.querySelectorAll('.file-preview');
+    let fileContent = '';
 
-    const chat = chats.find((c) => c.id === currentChatId);
+    // Obtener contenido de todos los archivos
+    filePreviews.forEach(preview => {
+      fileContent += preview.dataset.content + '\n';
+    });
+
+    // Combinar mensaje del usuario con contenido de archivos
+    const fullMessage = userText + (fileContent ? '\n\n' + fileContent : '');
+
+    if (!fullMessage.trim()) return;
+
+    // Añadir mensaje del usuario al historial
+    const chat = chats.find(c => c.id === currentChatId);
     chat.messages.push({
-      content: message,
+      content: fullMessage,
       isUser: true,
       timestamp: Date.now()
     });
-    displayMessage(message, true);
+
+    // Limpiar área de entrada y previsualizaciones
     userInput.value = '';
+    document.querySelectorAll('.file-preview').forEach(p => p.remove());
+    
+    // Continuar con el envío normal (mostrar mensaje, llamar a la API, etc.)
+    displayMessage(fullMessage, true);
     autoResizeTextarea();
 
     const { loadingDiv, countdownInterval } = showLoadingWithCounter();
@@ -335,6 +352,7 @@
       sendBtn.onclick = sendMessage;
       clearInterval(countdownInterval);
       loadingDiv.remove();
+      document.querySelectorAll('.file-preview').forEach(p => p.remove());
     }
   };
 
@@ -591,46 +609,42 @@
     function handleFileUpload(event) {
       const files = event.target.files;
       if (!files.length) return;
-
+    
       Array.from(files).forEach(file => {
+        // Verificar si es un archivo de texto
+        if (!file.type.startsWith('text/')) {
+          alert('Solo se permiten archivos de texto.');
+          return;
+        }
+    
         const reader = new FileReader();
         
         reader.onload = function(e) {
-          console.log('Archivo cargado:', file.name);
-          console.log('Contenido:', e.target.result);
-          displayFilePreview(file, e.target.result);
+          const content = e.target.result; // Contenido del texto
+          displayFilePreview(file, content);
         };
         
-        reader.readAsDataURL(file);
+        reader.readAsText(file); // Leer como texto
       });
     }
 
     function displayFilePreview(file, content) {
       const preview = document.createElement('div');
       preview.className = 'file-preview';
-    
-      // Extrae el tipo del archivo (por ejemplo: 'application/pdf' -> 'PDF')
-      const fileType = file.type ? file.type.split('/')[1].toUpperCase() : 'FILE';
+      preview.dataset.content = content; // Guardar contenido del archivo
     
       preview.innerHTML = `
         <div class="file-info">
           <strong>${file.name}</strong>
-          <small>${fileType}</small>
+          <small>${formatBytes(file.size)}</small>
         </div>
         <button class="remove-file">×</button>
       `;
     
-      // Agrega el event listener para eliminar la previsualización al hacer clic en la "X"
-      preview.querySelector('.remove-file').addEventListener('click', () => {
-        preview.remove();
-        // Opcional: limpiar el input de archivos para permitir volver a subir el mismo archivo
-        document.getElementById('file-upload').value = "";
-      });
-    
-      // Inserta la previsualización dentro del contenedor .chat-input, justo encima del textarea
+      // Insertar la previsualización en el contenedor
       const chatInput = document.querySelector('.chat-input');
       chatInput.insertBefore(preview, chatInput.firstChild);
-    }       
+    }     
 
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
