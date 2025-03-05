@@ -608,18 +608,29 @@
     function displayFilePreview(file, content) {
       const preview = document.createElement('div');
       preview.className = 'file-preview';
-      
+    
+      // Extrae el tipo del archivo (por ejemplo: 'application/pdf' -> 'PDF')
+      const fileType = file.type ? file.type.split('/')[1].toUpperCase() : 'FILE';
+    
       preview.innerHTML = `
         <div class="file-info">
           <strong>${file.name}</strong>
-          <small>${formatBytes(file.size)}</small>
+          <small>${fileType}</small>
         </div>
         <button class="remove-file">×</button>
       `;
-      
-      // Inserta la previsualización justo encima del contenedor de chat-input
-      document.querySelector('.chat-input').insertAdjacentElement('beforebegin', preview);
-    }
+    
+      // Agrega el event listener para eliminar la previsualización al hacer clic en la "X"
+      preview.querySelector('.remove-file').addEventListener('click', () => {
+        preview.remove();
+        // Opcional: limpiar el input de archivos para permitir volver a subir el mismo archivo
+        document.getElementById('file-upload').value = "";
+      });
+    
+      // Inserta la previsualización dentro del contenedor .chat-input, justo encima del textarea
+      const chatInput = document.querySelector('.chat-input');
+      chatInput.insertBefore(preview, chatInput.firstChild);
+    }       
 
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
