@@ -62,7 +62,7 @@ body {
 .sidebar-title {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   padding: 0 1rem;
   position: relative;
 }
@@ -359,7 +359,7 @@ body {
 .logo-title-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   flex-grow: 1;
   justify-content: center;
 }
