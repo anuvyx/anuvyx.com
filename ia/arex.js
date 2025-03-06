@@ -611,28 +611,94 @@
       if (!files.length) return;
     
       Array.from(files).forEach(file => {
-        // Verificar si es un archivo de texto
-        if (!file.type.startsWith('text/')) {
-          alert('Solo se permiten archivos de texto.');
-          return;
-        }
+        // Extraer la extensión en minúsculas
+        const extension = file.name.split('.').pop().toLowerCase();
     
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          const content = e.target.result; // Contenido del texto
-          displayFilePreview(file, content);
-        };
-        
-        reader.readAsText(file); // Leer como texto
+        // Para archivos que se pueden leer directamente como texto
+        if (['txt', 'csv', 'tsv', 'json', 'xml'].includes(extension)) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            let content = e.target.result;
+            // Si es JSON, formatearlo de forma legible
+            if (extension === 'json') {
+              try {
+                const parsed = JSON.parse(content);
+                content = JSON.stringify(parsed, null, 2);
+              } catch (error) {
+                console.error("Error al parsear JSON:", error);
+              }
+            }
+            // Puedes agregar formatos adicionales para CSV/TSV si deseas convertirlos a una tabla
+            displayFilePreview(file, content);
+          };
+          reader.readAsText(file);
+        }
+        // Procesar archivos DOCX usando Mammoth.js
+        else if (extension === 'docx') {
+          mammoth.extractRawText({ file: file })
+            .then(function(result) {
+              const content = result.value;
+              displayFilePreview(file, content);
+            })
+            .catch(function(error) {
+              console.error("Error al procesar DOCX:", error);
+            });
+        }
+        // Procesar archivos XLSX usando SheetJS
+        else if (extension === 'xlsx') {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            // Convertir la primera hoja a CSV para mostrarla
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const content = XLSX.utils.sheet_to_csv(worksheet);
+            displayFilePreview(file, content);
+          };
+          reader.readAsArrayBuffer(file);
+        }
+        // Procesar archivos PDF usando PDF.js
+        else if (extension === 'pdf') {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const typedarray = new Uint8Array(e.target.result);
+            pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+              let maxPages = pdf.numPages;
+              let countPromises = [];
+              // Extraer el texto de cada página
+              for (let i = 1; i <= maxPages; i++) {
+                countPromises.push(
+                  pdf.getPage(i).then(function(page) {
+                    return page.getTextContent().then(function(textContent) {
+                      return textContent.items.map(item => item.str).join(' ');
+                    });
+                  })
+                );
+              }
+              Promise.all(countPromises).then(function(texts) {
+                const content = texts.join('\n\n');
+                displayFilePreview(file, content);
+              });
+            }).catch(function(error) {
+              console.error("Error al procesar PDF:", error);
+            });
+          };
+          reader.readAsArrayBuffer(file);
+        }
+        // Si el formato no está soportado
+        else {
+          alert('Formato de archivo no soportado.');
+        }
       });
-    }
+    }    
 
     function displayFilePreview(file, content) {
       const preview = document.createElement('div');
       preview.className = 'file-preview';
-      preview.dataset.content = content; // Guardar contenido del archivo
-    
+      // (Opcional) Puedes mantener el contenido en el dataset si lo requieres para otras funciones.
+      preview.dataset.content = content; 
+      
       preview.innerHTML = `
         <div class="file-info">
           <strong>${file.name}</strong>
@@ -640,11 +706,17 @@
         </div>
         <button class="remove-file">×</button>
       `;
-    
-      // Insertar la previsualización en el contenedor
+      
+      // Agregar evento para eliminar la previsualización al hacer clic en la X
+      preview.querySelector('.remove-file').addEventListener('click', () => {
+        preview.remove();
+      });
+      
+      // Insertar la previsualización en el contenedor de la entrada
       const chatInput = document.querySelector('.chat-input');
       chatInput.insertBefore(preview, chatInput.firstChild);
-    }     
+    }
+       
 
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
