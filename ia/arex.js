@@ -686,6 +686,22 @@
           };
           reader.readAsArrayBuffer(file);
         }
+        else if (extension === 'xlsx' || extension === 'xls') {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            // Si el libro tiene varias hojas, concatenamos el contenido de todas.
+            let content = '';
+            workbook.SheetNames.forEach(sheetName => {
+              const worksheet = workbook.Sheets[sheetName];
+              const csv = XLSX.utils.sheet_to_csv(worksheet);
+              content += `--- ${sheetName} ---\n${csv}\n\n`;
+            });
+            displayFilePreview(file, content);
+          };
+          reader.readAsArrayBuffer(file);
+        }
         // Si el formato no está soportado
         else {
           alert('Formato de archivo no soportado.');
