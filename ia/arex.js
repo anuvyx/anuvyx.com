@@ -161,7 +161,13 @@
     const chat = chats.find((c) => c.id === currentChatId);
     if (!chat) return;
     chatMessages.innerHTML = '';
-    chat.messages.forEach((msg) => displayMessage(msg.content, msg.isUser));
+    chat.messages.forEach((msg) => {
+      if (msg.isUser && msg.displayContent) {
+        displayMessage(msg.displayContent, true);
+      } else {
+        displayMessage(msg.content, false);
+      }
+    });
   };
 
   // Crear un nuevo chat
@@ -231,23 +237,31 @@
   const sendMessage = async () => {
     const userText = userInput.value.trim();
     const filePreviews = document.querySelectorAll('.file-preview');
+    
+    // Capturar nombres y contenido de archivos
+    const fileNames = [];
     let fileContent = '';
-
-    // Obtener contenido de todos los archivos
+    
     filePreviews.forEach(preview => {
-      fileContent += preview.dataset.content + '\n';
+      const fileName = preview.dataset.filename;
+      const content = preview.dataset.content;
+      fileNames.push(`[${fileName}]`);
+      fileContent += '\n\n' + content;
     });
 
-    // Combinar mensaje del usuario con contenido de archivos
-    const fullMessage = userText + (fileContent ? '\n\n' + fileContent : '');
+    // Construir mensajes
+    const displayMessageContent = (fileNames.join('\n') + (userText ? '\n\n' + userText : '')).trim();
+    const apiMessageContent = (userText + fileContent).trim();
 
-    if (!fullMessage.trim()) return;
+    if (!apiMessageContent) return;
 
     // Añadir mensaje del usuario al historial
     const chat = chats.find(c => c.id === currentChatId);
     chat.messages.push({
-      content: fullMessage,
+      content: apiMessageContent,           // Para el backend
+      displayContent: displayMessageContent,  // Para mostrar
       isUser: true,
+      files: fileNames,
       timestamp: Date.now()
     });
 
@@ -255,8 +269,8 @@
     userInput.value = '';
     document.querySelectorAll('.file-preview').forEach(p => p.remove());
     
-    // Continuar con el envío normal (mostrar mensaje, llamar a la API, etc.)
-    displayMessage(fullMessage, true);
+    // Mostrar en UI
+    displayMessage(displayMessageContent, true);
     autoResizeTextarea();
 
     const { loadingDiv, countdownInterval } = showLoadingWithCounter();
@@ -427,11 +441,11 @@
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
 
     if (isUser) {
-      const plainText = content
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/\n/g, '<br>');
-      messageDiv.innerHTML = plainText;
+      // Procesar contenido para mostrar: reemplazar saltos de línea y formatear etiquetas de archivos
+      const formattedContent = content
+        .replace(/\n/g, '<br>')
+        .replace(/\[(.*?)\]/g, '<span class="file-tag">$1</span>');
+      messageDiv.innerHTML = formattedContent;
     } else {
       let processedContent = marked.parse(content);
       processedContent = processedContent
@@ -709,11 +723,12 @@
       });
     }    
 
+    // Modificar displayFilePreview para incluir dataset.filename y dataset.content
     function displayFilePreview(file, content) {
       const preview = document.createElement('div');
       preview.className = 'file-preview';
-      // (Opcional) Puedes mantener el contenido en el dataset si lo requieres para otras funciones.
-      preview.dataset.content = content; 
+      preview.dataset.filename = file.name;  // Nuevo atributo
+      preview.dataset.content = content;
       
       preview.innerHTML = `
         <div class="file-info">
@@ -733,7 +748,6 @@
       chatInput.insertBefore(preview, chatInput.firstChild);
     }
        
-
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
       let i = 0;
@@ -742,8 +756,6 @@
       }
       return `${bytes.toFixed(1)} ${units[i]}`;
     }
-
-
   };
 
   init();
