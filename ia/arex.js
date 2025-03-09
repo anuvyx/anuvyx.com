@@ -729,10 +729,10 @@
       preview.className = 'file-preview';
       preview.dataset.filename = file.name;
       preview.dataset.content = content;
-    
+
       // Extraer la extensión del nombre del archivo y convertirla a mayúsculas
       const fileExtension = file.name.split('.').pop().toUpperCase();
-    
+
       preview.innerHTML = `
         <div class="file-icon">
           <!-- Icono genérico de archivo -->
@@ -750,17 +750,24 @@
         </div>
         <button class="remove-file">×</button>
       `;
-    
-      // Agregar evento para eliminar la previsualización
+
+      // Evento para eliminar la previsualización
       preview.querySelector('.remove-file').addEventListener('click', () => {
         preview.remove();
       });
-    
-      // Insertar la previsualización en el contenedor de entrada
-      const chatInput = document.querySelector('.chat-input');
-      chatInput.insertBefore(preview, chatInput.firstChild);
-    }     
-       
+
+      // Buscar o crear el contenedor de previsualizaciones
+      let filePreviewsContainer = document.querySelector('.file-previews-container');
+      if (!filePreviewsContainer) {
+        filePreviewsContainer = document.createElement('div');
+        filePreviewsContainer.className = 'file-previews-container';
+        // Insertarlo al inicio del contenedor de entrada (antes del textarea)
+        const chatInput = document.querySelector('.chat-input');
+        chatInput.insertBefore(filePreviewsContainer, chatInput.firstChild);
+      }
+      filePreviewsContainer.appendChild(preview);
+    }
+
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
       let i = 0;
@@ -769,6 +776,7 @@
       }
       return `${bytes.toFixed(1)} ${units[i]}`;
     }
+
   };
 
   init();
