@@ -727,26 +727,39 @@
     function displayFilePreview(file, content) {
       const preview = document.createElement('div');
       preview.className = 'file-preview';
-      preview.dataset.filename = file.name;  // Nuevo atributo
+      preview.dataset.filename = file.name;
       preview.dataset.content = content;
-      
+    
+      // Extraer la extensión del nombre del archivo y convertirla a mayúsculas
+      const fileExtension = file.name.split('.').pop().toUpperCase();
+    
       preview.innerHTML = `
-        <div class="file-info">
-          <strong>${file.name}</strong>
-          <small>${formatBytes(file.size)}</small>
+        <div class="file-icon">
+          <!-- Icono genérico de archivo -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <div class="file-details">
+          <div class="file-name">${file.name}</div>
+          <div class="file-meta">
+            <span class="file-type">${fileExtension}</span>
+            <span class="file-size">${formatBytes(file.size)}</span>
+          </div>
         </div>
         <button class="remove-file">×</button>
       `;
-      
-      // Agregar evento para eliminar la previsualización al hacer clic en la X
+    
+      // Agregar evento para eliminar la previsualización
       preview.querySelector('.remove-file').addEventListener('click', () => {
         preview.remove();
       });
-      
-      // Insertar la previsualización en el contenedor de la entrada
+    
+      // Insertar la previsualización en el contenedor de entrada
       const chatInput = document.querySelector('.chat-input');
       chatInput.insertBefore(preview, chatInput.firstChild);
-    }
+    }     
        
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
