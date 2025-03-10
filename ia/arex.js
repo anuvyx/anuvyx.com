@@ -624,7 +624,24 @@
       const files = event.target.files;
       if (!files.length) return;
     
-      Array.from(files).forEach(file => {
+      // Calcular el tamaño total de los archivos que ya están previsualizados
+      let totalSize = 0;
+      let filePreviewsContainer = document.querySelector('.file-previews-container');
+      if (filePreviewsContainer) {
+        const previews = filePreviewsContainer.querySelectorAll('.file-preview');
+        previews.forEach(preview => {
+          totalSize += parseInt(preview.dataset.filesize) || 0;
+        });
+      }
+    
+      // Procesar cada archivo seleccionado
+      for (const file of files) {
+        if (totalSize + file.size > 20 * 1024 * 1024) { // 20MB en bytes
+          alert(`No se puede subir el archivo "${file.name}" porque el tamaño total excede 20MB.`);
+          continue; // Saltar este archivo
+        }
+        totalSize += file.size;
+    
         // Extraer la extensión en minúsculas
         const extension = file.name.split('.').pop().toLowerCase();
     
@@ -633,7 +650,6 @@
           const reader = new FileReader();
           reader.onload = function(e) {
             let content = e.target.result;
-            // Si es JSON, formatearlo de forma legible
             if (extension === 'json') {
               try {
                 const parsed = JSON.parse(content);
@@ -642,7 +658,6 @@
                 console.error("Error al parsear JSON:", error);
               }
             }
-            // Puedes agregar formatos adicionales para CSV/TSV si deseas convertirlos a una tabla
             displayFilePreview(file, content);
           };
           reader.readAsText(file);
@@ -664,7 +679,6 @@
           reader.onload = function(e) {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-            // Convertir la primera hoja a CSV para mostrarla
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
             const content = XLSX.utils.sheet_to_csv(worksheet);
@@ -680,7 +694,6 @@
             pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
               let maxPages = pdf.numPages;
               let countPromises = [];
-              // Extraer el texto de cada página
               for (let i = 1; i <= maxPages; i++) {
                 countPromises.push(
                   pdf.getPage(i).then(function(page) {
@@ -700,12 +713,11 @@
           };
           reader.readAsArrayBuffer(file);
         }
-        else if (extension === 'xlsx' || extension === 'xls') {
+        else if (extension === 'xls') {
           const reader = new FileReader();
           reader.onload = function(e) {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-            // Si el libro tiene varias hojas, concatenamos el contenido de todas.
             let content = '';
             workbook.SheetNames.forEach(sheetName => {
               const worksheet = workbook.Sheets[sheetName];
@@ -716,11 +728,10 @@
           };
           reader.readAsArrayBuffer(file);
         }
-        // Si el formato no está soportado
         else {
           alert('Formato de archivo no soportado.');
         }
-      });
+      }
     }    
 
     // Modificar displayFilePreview para incluir dataset.filename y dataset.content
@@ -729,13 +740,13 @@
       preview.className = 'file-preview';
       preview.dataset.filename = file.name;
       preview.dataset.content = content;
-
+      preview.dataset.filesize = file.size; // Guardamos el tamaño del archivo
+    
       // Extraer la extensión del nombre del archivo y convertirla a mayúsculas
       const fileExtension = file.name.split('.').pop().toUpperCase();
-
+    
       preview.innerHTML = `
         <div class="file-icon">
-          <!-- Icono genérico de archivo -->
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
@@ -750,24 +761,21 @@
         </div>
         <button class="remove-file">×</button>
       `;
-
-      // Evento para eliminar la previsualización
+    
       preview.querySelector('.remove-file').addEventListener('click', () => {
         preview.remove();
       });
-
-      // Buscar o crear el contenedor de previsualizaciones
+    
       let filePreviewsContainer = document.querySelector('.file-previews-container');
       if (!filePreviewsContainer) {
         filePreviewsContainer = document.createElement('div');
         filePreviewsContainer.className = 'file-previews-container';
-        // Insertarlo al inicio del contenedor de entrada (antes del textarea)
         const chatInput = document.querySelector('.chat-input');
         chatInput.insertBefore(filePreviewsContainer, chatInput.firstChild);
       }
       filePreviewsContainer.appendChild(preview);
     }
-
+    
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
       let i = 0;
