@@ -630,11 +630,45 @@ body {
 }
 
 .file-tag {
-  background: #212121;
+  display: flex;
+  align-items: center;
+  background: var(--color-chat-input-bg);
   border: 1px solid var(--color-border);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: monospace;
+  border-radius: 8px;
+  padding: 0.5rem 0 0.5rem 0;
+  margin-bottom: 1rem;
+  max-width: 55%;
+  max-height: 60px;
+  margin-left: auto;
+}
+
+.file-tag ~ br {
+  display: none;
+}
+
+.file-tag .file-icon {
+  margin-right: 0.5rem;
+}
+
+.file-tag .file-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-tag .file-details .file-name {
+  font-weight: bold;
+  margin: 0;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-tag .file-details .file-meta {
+  font-size: 0.85em;
+  color: #aaa;
+  display: flex;
+  gap: 0.5rem;
 }
 
 #send-btn {
