@@ -647,7 +647,7 @@
       const files = event.target.files;
       if (!files.length) return;
     
-      // Calcular el tamaño total de los archivos que ya están previsualizados
+      // Calcular el tamaño total de los archivos ya previsualizados
       let totalSize = 0;
       let filePreviewsContainer = document.querySelector('.file-previews-container');
       if (filePreviewsContainer) {
@@ -657,18 +657,16 @@
         });
       }
     
-      // Procesar cada archivo seleccionado
       for (const file of files) {
         if (totalSize + file.size > 20 * 1024 * 1024) { // 20MB en bytes
           alert(`No se puede subir el archivo "${file.name}" porque el tamaño total excede 20MB.`);
-          continue; // Saltar este archivo
+          continue;
         }
         totalSize += file.size;
     
-        // Extraer la extensión en minúsculas
         const extension = file.name.split('.').pop().toLowerCase();
     
-        // Para archivos que se pueden leer directamente como texto
+        // Archivos de texto
         if (['txt', 'csv', 'tsv', 'json', 'xml'].includes(extension)) {
           const reader = new FileReader();
           reader.onload = function(e) {
@@ -685,7 +683,7 @@
           };
           reader.readAsText(file);
         }
-        // Procesar archivos DOCX usando Mammoth.js
+        // Archivos DOCX
         else if (extension === 'docx') {
           const reader = new FileReader();
           reader.onload = function(e) {
@@ -700,21 +698,24 @@
               });
           };
           reader.readAsArrayBuffer(file);
-        }        
-        // Procesar archivos XLSX usando SheetJS
-        else if (extension === 'xlsx') {
+        }
+        // Archivos XLSX o XLS
+        else if (extension === 'xlsx' || extension === 'xls') {
           const reader = new FileReader();
           reader.onload = function(e) {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            const content = XLSX.utils.sheet_to_csv(worksheet);
+            let content = '';
+            workbook.SheetNames.forEach(sheetName => {
+              const worksheet = workbook.Sheets[sheetName];
+              const csv = XLSX.utils.sheet_to_csv(worksheet);
+              content += `--- ${sheetName} ---\n${csv}\n\n`;
+            });
             displayFilePreview(file, content);
           };
           reader.readAsArrayBuffer(file);
         }
-        // Procesar archivos PDF usando PDF.js
+        // Archivos PDF
         else if (extension === 'pdf') {
           const reader = new FileReader();
           reader.onload = function(e) {
@@ -741,26 +742,41 @@
           };
           reader.readAsArrayBuffer(file);
         }
-        else if (extension === 'xls') {
+        // Nuevamente: Procesar imágenes (png, jpg, jpeg) con OCR usando Tesseract.js
+        // Procesar imágenes (png, jpg, jpeg) con OCR y extracción de colores
+        else if (['png', 'jpg', 'jpeg'].includes(extension)) {
           const reader = new FileReader();
           reader.onload = function(e) {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            let content = '';
-            workbook.SheetNames.forEach(sheetName => {
-              const worksheet = workbook.Sheets[sheetName];
-              const csv = XLSX.utils.sheet_to_csv(worksheet);
-              content += `--- ${sheetName} ---\n${csv}\n\n`;
+            const imageDataUrl = e.target.result;
+            // Extraer texto con Tesseract.js (asegúrate de incluir su script en tu proyecto)
+            Tesseract.recognize(
+              imageDataUrl,
+              'spa', // Modelo de español. Cámbialo según tus necesidades.
+              { logger: m => console.log(m) }
+            ).then(({ data: { text } }) => {
+              // Extraer paleta de colores con Vibrant.js
+              Vibrant.from(imageDataUrl).getPalette()
+                .then((palette) => {
+                  // Seleccionamos colores dominantes mediante una heurística simple:
+                  // Por ejemplo, usamos el color 'Vibrant' para el texto y 'DarkMuted' para el fondo.
+                  const textColor = palette.Vibrant ? palette.Vibrant.getHex() : '#FFFFFF';
+                  const bgColor = palette.DarkMuted ? palette.DarkMuted.getHex() : '#000000';
+                  const resultText = `Texto extraído: ${text.trim()}\nColor de texto: ${textColor}\nColor de fondo: ${bgColor}`;
+                  displayFilePreview(file, resultText);
+                })
+                .catch(err => {
+                  console.error("Error al extraer colores:", err);
+                  // Si falla la extracción de colores, mostramos solo el texto OCR.
+                  displayFilePreview(file, `Texto extraído: ${text.trim()}`);
+                });
+            }).catch(error => {
+              console.error("Error al procesar imagen:", error);
             });
-            displayFilePreview(file, content);
           };
-          reader.readAsArrayBuffer(file);
-        }
-        else {
-          alert('Formato de archivo no soportado.');
+          reader.readAsDataURL(file);
         }
       }
-    }    
+    }        
 
     // Modificar displayFilePreview para incluir dataset.filename y dataset.content
     function displayFilePreview(file, content) {
