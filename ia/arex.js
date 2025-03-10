@@ -829,6 +829,24 @@
       return `${bytes.toFixed(1)} ${units[i]}`;
     }
 
+    function removeDiacritics(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }    
+
+    // Configurar búsqueda de chats
+    const chatSearchInput = document.getElementById('chatSearchInput');
+    chatSearchInput.addEventListener('input', () => {
+      const query = removeDiacritics(chatSearchInput.value.toLowerCase());
+      const chatItems = chatHistory.querySelectorAll('.chat-item');
+      chatItems.forEach(item => {
+        const chatName = removeDiacritics(item.querySelector('.chat-info span').textContent.toLowerCase());
+        if (chatName.includes(query)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
   };
 
   init();
