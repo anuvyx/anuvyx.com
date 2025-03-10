@@ -664,15 +664,20 @@
         }
         // Procesar archivos DOCX usando Mammoth.js
         else if (extension === 'docx') {
-          mammoth.extractRawText({ file: file })
-            .then(function(result) {
-              const content = result.value;
-              displayFilePreview(file, content);
-            })
-            .catch(function(error) {
-              console.error("Error al procesar DOCX:", error);
-            });
-        }
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const arrayBuffer = e.target.result;
+            mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+              .then(function(result) {
+                const content = result.value;
+                displayFilePreview(file, content);
+              })
+              .catch(function(error) {
+                console.error("Error al procesar DOCX:", error);
+              });
+          };
+          reader.readAsArrayBuffer(file);
+        }        
         // Procesar archivos XLSX usando SheetJS
         else if (extension === 'xlsx') {
           const reader = new FileReader();
