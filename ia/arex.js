@@ -336,7 +336,9 @@
           }
         }
         botMessageDiv.innerHTML = marked.parse(botResponse);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (shouldAutoScroll()) {
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }        
       }
 
       enhanceMessage(botMessageDiv);
@@ -434,6 +436,11 @@
       abortController = null;
     }
   };
+
+  // Función que determina si el usuario está cerca del fondo
+  function shouldAutoScroll() {
+    return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 50;
+  }
 
   // Mostrar un mensaje en el chat, procesando Markdown y MathJax
   const displayMessage = (content, isUser) => {
@@ -534,7 +541,7 @@
     }
 
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatMessages.scrollTop = chatMessages.scrollHeight;   
 
     const copyButtonContainer = document.createElement('div');
     copyButtonContainer.style.display = 'flex';
