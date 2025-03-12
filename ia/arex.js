@@ -69,53 +69,91 @@
       return;
     }
 
-    // Crear el menú desplegable
+    // Crear el contenedor del menú desplegable
     menu = document.createElement('div');
     menu.id = 'headerTitleMenu';
     menu.className = 'header-title-menu';
+    menu.style.position = 'absolute';
+    menu.style.top = (this.offsetTop + this.offsetHeight) + 'px';
+    menu.style.left = this.offsetLeft + 'px';
+    menu.style.backgroundColor = '#222';
+    menu.style.border = '1px solid #333';
+    menu.style.borderRadius = '8px';
+    menu.style.padding = '4px 0';
+    menu.style.zIndex = '1000';
 
-    // Opción para "AREX" (qwen-turbo)
-    const optionArex = document.createElement('button');
-    optionArex.textContent = 'AREX';
-    optionArex.addEventListener('click', function() {
-      document.getElementById('chatHeaderTitle').textContent = 'AREX';
-      localStorage.setItem('chatHeaderTitle', 'AREX');
-      menu.remove();
-    });
+    // Función auxiliar para crear cada opción con título y descripción
+    function createOption(title, description, descriptionColor) {
+      const container = document.createElement('div');
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      container.style.cursor = 'pointer';
+      container.style.padding = '8px 16px';
 
-    // Opción para "AREX GOLD" (qwen-plus)
-    const optionArexGold = document.createElement('button');
-    optionArexGold.textContent = 'AREX GOLD';
-    optionArexGold.addEventListener('click', function() {
-      document.getElementById('chatHeaderTitle').textContent = 'AREX GOLD';
-      localStorage.setItem('chatHeaderTitle', 'AREX GOLD');
-      menu.remove();
-    });
+      // Agregar efecto hover: cambiar fondo al pasar el mouse
+      container.addEventListener('mouseenter', function() {
+        container.style.backgroundColor = '#333';
+      });
+      container.addEventListener('mouseleave', function() {
+        container.style.backgroundColor = 'transparent';
+      });
 
-    // Opción para "AREX DELUXE" (qwen-max)
-    const optionArexDeluxe = document.createElement('button');
-    optionArexDeluxe.textContent = 'AREX DELUXE';
-    optionArexDeluxe.addEventListener('click', function() {
-      document.getElementById('chatHeaderTitle').textContent = 'AREX DELUXE';
-      localStorage.setItem('chatHeaderTitle', 'AREX DELUXE');
-      menu.remove();
-    });
+      const titleBtn = document.createElement('button');
+      titleBtn.textContent = title;
+      titleBtn.style.background = 'none';
+      titleBtn.style.border = 'none';
+      titleBtn.style.color = '#fff';
+      titleBtn.style.fontWeight = 'bold';
+      titleBtn.style.fontSize = '16px';
+      titleBtn.style.cursor = 'pointer';
+      titleBtn.addEventListener('click', function() {
+        document.getElementById('chatHeaderTitle').textContent = title;
+        localStorage.setItem('chatHeaderTitle', title);
+        menu.remove();
+      });
 
-    menu.appendChild(optionArex);
-    menu.appendChild(optionArexGold);
+      const desc = document.createElement('div');
+      desc.textContent = description;
+      desc.style.fontSize = '12px';
+      desc.style.color = descriptionColor;
+      desc.style.marginTop = '4px';
+
+      container.appendChild(titleBtn);
+      container.appendChild(desc);
+
+      return container;
+    }
+
+    // Crear las opciones con sus respectivas descripciones y colores
+    const optionArexDeluxe = createOption(
+      'AREX DELUXE',
+      'Tareas complejas que requieren alta precisión y comprensión profunda.',
+      '#ADB0B4' 
+    );
+
+    const optionArexGold = createOption(
+      'AREX GOLD',
+      'Tareas versátiles, desde moderadamente complejas hasta simples.',
+      '#ADB0B4' 
+    );
+
+    const optionArex = createOption(
+      'AREX',
+      'Tareas simples o medianamente complejas donde la rapidez es una prioridad.',
+      '#ADB0B4'
+    );
+
+    // Agregar las opciones al menú
     menu.appendChild(optionArexDeluxe);
+    menu.appendChild(optionArexGold);
+    menu.appendChild(optionArex);
 
-    // Evitar que los clics en el menú se propaguen
+    // Evitar la propagación de clics dentro del menú
     menu.addEventListener('click', function(e) {
       e.stopPropagation();
     });
 
-    // Posicionar el menú justo debajo del botón de toggle
-    menu.style.position = 'absolute';
-    menu.style.top = (this.offsetTop + this.offsetHeight) + 'px';
-    menu.style.left = this.offsetLeft + 'px';
-
-    // Insertar el menú dentro del contenedor (que ya es position: relative)
+    // Insertar el menú dentro del contenedor del botón toggle
     this.parentElement.appendChild(menu);
 
     // Cerrar el menú al hacer clic fuera
