@@ -141,6 +141,48 @@ body {
   margin: 1rem 0;
 }
 
+/* Estilo para el botón de cambiar título */
+.header-title-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem;
+  margin-left: 0.5rem;
+  display: flex;
+  color: var(--color-border);
+  align-items: center;
+}
+
+/* Menú desplegable para cambiar el título */
+.header-title-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 0.5rem 0;
+  z-index: 1000;
+}
+
+.header-title-menu button {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  width: 50%;
+  cursor: pointer;
+}
+
+.header-title-menu button:hover {
+  background: #333;
+}
+
+.logo-title-container {
+  position: relative;
+}
+
 .chat-sidebar-header {
   display: flex;
   justify-content: space-between;

@@ -59,6 +59,74 @@
     });
   };
 
+  // Escucha el clic en el botón de cambio de título
+  document.getElementById('headerTitleToggleBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    
+    let menu = document.getElementById('headerTitleMenu');
+    if (menu) {
+      menu.remove();
+      return;
+    }
+    
+    // Crear el menú desplegable
+    menu = document.createElement('div');
+    menu.id = 'headerTitleMenu';
+    menu.className = 'header-title-menu';
+    
+    // Opción para "AREX"
+    const optionArex = document.createElement('button');
+    optionArex.textContent = 'AREX';
+    optionArex.addEventListener('click', function() {
+      document.getElementById('chatHeaderTitle').textContent = 'AREX';
+      localStorage.setItem('chatHeaderTitle', 'AREX');
+      menu.remove();
+    });
+    
+    // Opción para "AREX+"
+    const optionArexPlus = document.createElement('button');
+    optionArexPlus.textContent = 'AREX+';
+    optionArexPlus.addEventListener('click', function() {
+      document.getElementById('chatHeaderTitle').textContent = 'AREX+';
+      localStorage.setItem('chatHeaderTitle', 'AREX+');
+      menu.remove();
+    });
+    
+    menu.appendChild(optionArex);
+    menu.appendChild(optionArexPlus);
+    
+    // Evitar que los clics en el menú se propaguen
+    menu.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+    
+    // Posicionar el menú justo debajo del botón de toggle
+    // "this" es el botón #headerTitleToggleBtn
+    menu.style.position = 'absolute';
+    menu.style.top = (this.offsetTop + this.offsetHeight) + 'px';
+    menu.style.left = this.offsetLeft + 'px';
+    
+    // Insertar el menú dentro del contenedor (que ya es position: relative)
+    this.parentElement.appendChild(menu);
+    
+    // Cerrar el menú al hacer clic fuera
+    document.addEventListener('click', function closeMenu(event) {
+      if (!menu.contains(event.target) && event.target !== document.getElementById('headerTitleToggleBtn')) {
+        menu.remove();
+        document.removeEventListener('click', closeMenu);
+      }
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    let storedTitle = localStorage.getItem('chatHeaderTitle');
+    if (!storedTitle) {
+      storedTitle = 'AREX';
+      localStorage.setItem('chatHeaderTitle', storedTitle);
+    }
+    document.getElementById('chatHeaderTitle').textContent = storedTitle;
+  });
+
   // Mostrar menú de opciones para un chat específico
   const showChatOptions = (chatId) => {
     const button = document.querySelector(`.chat-item[data-id="${chatId}"] .chat-options-btn`);
@@ -293,9 +361,11 @@
       const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversationMessages }),
-        signal: abortController.signal
-      });
+        body: JSON.stringify({
+          messages: conversationMessages,
+          chatHeaderTitle: document.getElementById('chatHeaderTitle').textContent
+        })
+      });      
 
       const botMessageDiv = document.createElement('div');
       botMessageDiv.className = 'message bot-message';
