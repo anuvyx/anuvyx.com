@@ -62,19 +62,19 @@
   // Escucha el clic en el botón de cambio de título
   document.getElementById('headerTitleToggleBtn').addEventListener('click', function(e) {
     e.stopPropagation();
-    
+
     let menu = document.getElementById('headerTitleMenu');
     if (menu) {
       menu.remove();
       return;
     }
-    
+
     // Crear el menú desplegable
     menu = document.createElement('div');
     menu.id = 'headerTitleMenu';
     menu.className = 'header-title-menu';
-    
-    // Opción para "AREX"
+
+    // Opción para "AREX" (qwen-turbo)
     const optionArex = document.createElement('button');
     optionArex.textContent = 'AREX';
     optionArex.addEventListener('click', function() {
@@ -82,33 +82,42 @@
       localStorage.setItem('chatHeaderTitle', 'AREX');
       menu.remove();
     });
-    
-    // Opción para "AREX+"
-    const optionArexPlus = document.createElement('button');
-    optionArexPlus.textContent = 'AREX+';
-    optionArexPlus.addEventListener('click', function() {
-      document.getElementById('chatHeaderTitle').textContent = 'AREX+';
-      localStorage.setItem('chatHeaderTitle', 'AREX+');
+
+    // Opción para "AREX GOLD" (qwen-plus)
+    const optionArexGold = document.createElement('button');
+    optionArexGold.textContent = 'AREX GOLD';
+    optionArexGold.addEventListener('click', function() {
+      document.getElementById('chatHeaderTitle').textContent = 'AREX GOLD';
+      localStorage.setItem('chatHeaderTitle', 'AREX GOLD');
       menu.remove();
     });
-    
+
+    // Opción para "AREX DELUXE" (qwen-max)
+    const optionArexDeluxe = document.createElement('button');
+    optionArexDeluxe.textContent = 'AREX DELUXE';
+    optionArexDeluxe.addEventListener('click', function() {
+      document.getElementById('chatHeaderTitle').textContent = 'AREX DELUXE';
+      localStorage.setItem('chatHeaderTitle', 'AREX DELUXE');
+      menu.remove();
+    });
+
     menu.appendChild(optionArex);
-    menu.appendChild(optionArexPlus);
-    
+    menu.appendChild(optionArexGold);
+    menu.appendChild(optionArexDeluxe);
+
     // Evitar que los clics en el menú se propaguen
     menu.addEventListener('click', function(e) {
       e.stopPropagation();
     });
-    
+
     // Posicionar el menú justo debajo del botón de toggle
-    // "this" es el botón #headerTitleToggleBtn
     menu.style.position = 'absolute';
     menu.style.top = (this.offsetTop + this.offsetHeight) + 'px';
     menu.style.left = this.offsetLeft + 'px';
-    
+
     // Insertar el menú dentro del contenedor (que ya es position: relative)
     this.parentElement.appendChild(menu);
-    
+
     // Cerrar el menú al hacer clic fuera
     document.addEventListener('click', function closeMenu(event) {
       if (!menu.contains(event.target) && event.target !== document.getElementById('headerTitleToggleBtn')) {
