@@ -709,6 +709,30 @@ body {
   gap: 0.5rem;
 }
 
+#search-web-btn {
+  cursor: pointer;
+  padding: 0.8rem 1rem;
+  background: var(--color-chat-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-white);
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 50px;
+  margin-left: 0.5rem;
+  margin-right: auto;
+}
+
+#search-web-btn:hover {
+  background: var(--color-border);
+}
+
+#search-web-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 #send-btn {
   padding: 0.8rem;
   background: var(--color-white);
