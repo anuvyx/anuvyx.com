@@ -1,4 +1,4 @@
-/* VARIABLES GLOBALES */
+/* VARIABLES Y RESET */
 :root {
   --color-bg: #171717;
   --color-text: #fff;
@@ -14,7 +14,6 @@
   --transition-speed: 0.3s;
 }
 
-/* RESET Y ESTILOS GLOBALES */
 * {
   margin: 0;
   padding: 0;
@@ -141,7 +140,7 @@ body {
   margin: 1rem 0;
 }
 
-/* Estilo para el botón de cambiar título */
+/* BOTÓN Y MENÚ DE TÍTULO */
 .header-title-toggle-btn {
   background: none;
   border: none;
@@ -153,7 +152,6 @@ body {
   align-items: center;
 }
 
-/* Menú desplegable para cambiar el título */
 .header-title-menu {
   position: absolute;
   right: 0;
@@ -183,6 +181,7 @@ body {
   position: relative;
 }
 
+/* HISTORIAL Y ACCIONES DE CHAT */
 .chat-sidebar-header {
   display: flex;
   justify-content: space-between;
@@ -364,7 +363,7 @@ body {
   background: var(--color-bg);
 }
 
-/* CHAT PRINCIPAL */
+/* ÁREA PRINCIPAL DEL CHAT */
 .chat-main {
   flex: 1;
   margin-left: 300px;
@@ -376,6 +375,7 @@ body {
   margin-left: 0;
 }
 
+/* ENCABEZADO DEL CHAT */
 .chat-header {
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 0.5rem;
@@ -412,7 +412,7 @@ body {
   color: var(--color-white);
 }
 
-/* MENSAJES */
+/* MENSAJES DEL CHAT */
 .chat-messages {
   height: calc(100vh - 235px);
   overflow-y: auto;
@@ -468,42 +468,42 @@ body {
 
 @keyframes messageFade {
   from {
-      opacity: 0;
-      transform: translateY(10px);
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .user-message {
   background: var(--color-user-message-bg);
-  border: 1px solid var(none);
+  border: 1px solid transparent;
   max-width: 90%;
   margin-left: auto;
   align-items: center;
 }
 
 .bot-message {
-  background: var(none);
-  border: 1px solid var(none);
+  background: transparent;
+  border: 1px solid transparent;
   max-width: 100%;
   margin-right: auto;
   align-items: center;
 }
 
-/* ENTRADA DE MENSAJES */
+/* ÁREA DE ENTRADA DE MENSAJES */
 .chat-input-container {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   position: fixed;
   bottom: 0;
   width: calc(100% - 300px - 4rem);
   background: var(--color-bg);
   border-top: 1px solid var(--color-border);
-  padding: 1rem 0 1rem 0;
+  padding: 1rem 0;
   backdrop-filter: blur(10px);
   transition: width var(--transition-speed) ease;
 }
@@ -553,17 +553,14 @@ body {
   outline: none;
 }
 
-/* Contenedor de acciones (botones) */
 .input-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 0 0.5rem 0.5rem;
 }
 
-/* Botón de subir archivos */
+/* SUBIR ARCHIVOS Y PREVISUALIZACIONES */
 .file-upload-btn {
   cursor: pointer;
   padding: 0.8rem;
@@ -585,15 +582,14 @@ body {
   height: 16px;
 }
 
-/* Aseguramos que el input de archivos esté oculto */
 #file-upload {
   display: none;
 }
 
 .file-previews-container {
   display: flex;
-  flex-wrap: nowrap;       
-  overflow-x: auto;                  
+  flex-wrap: nowrap;
+  overflow-x: auto;
   max-width: 100%;
   scrollbar-color: var(--color-border) var(--color-chat-input-bg);
 }
@@ -603,7 +599,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 0.5rem;
-  margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+  margin: 0.5rem;
   display: flex;
   align-items: center;
   max-width: 35%;
@@ -677,7 +673,7 @@ body {
   background: var(--color-chat-input-bg);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  padding: 0.5rem 0 0.5rem 0;
+  padding: 0.5rem 0;
   margin-bottom: 1rem;
   max-width: 100%;
   max-height: 60px;
@@ -765,12 +761,13 @@ body {
   cursor: pointer;
 }
 
+/* ANIMACIÓN SPIN */
 @keyframes spin {
   from {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-      transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -897,77 +894,77 @@ pre code .token.property {
   color: #9CDCFE;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE DESIGN */
 @media (max-width: 768px) {
   .chat-sidebar {
-      width: 100%;
-      z-index: 1000;
-      background: var(--color-sidebar-bg);
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      padding: 1rem;
-      overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    background: var(--color-sidebar-bg);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    padding: 1rem;
+    overflow-y: auto;
   }
   
   .chat-main {
-      margin-left: 0;
-      width: 100%;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+    margin-left: 0;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
   }
   
   .chat-header {
-      padding: 1rem;
+    padding: 1rem;
   }
   
   .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem;
-      box-sizing: border-box;
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    box-sizing: border-box;
   }
   
   .chat-input-container {
-      width: 100%;
-      position: sticky;
-      bottom: 0;
-      background: var(--color-bg);
-      border-top: 1px solid var(--color-chat-input-bg);
-      padding-left: 1rem;
-      padding-right: 1rem;
-      box-sizing: border-box;
-      z-index: 10;
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-chat-input-bg);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+    z-index: 10;
   }
-
+  
   .chat-sidebar.hidden + .chat-main .chat-input-container {
     width: 100%;
   }
-
+  
   .chat-input {
-      width: 100%;
+    width: 100%;
   }
   
   .message {
-      max-width: 100%;
-      padding: 1rem;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
+    max-width: 100%;
+    padding: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .floating-toggle-container {
-      display: block !important;
-      margin-right: 1rem;
+    display: block !important;
+    margin-right: 1rem;
   }
   
   .floating-toggle {
-      display: block;
+    display: block;
   }
   
   pre {
-      font-size: 0.9em;
+    font-size: 0.9em;
   }
 }

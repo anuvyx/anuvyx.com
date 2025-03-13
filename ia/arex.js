@@ -1,5 +1,5 @@
 (() => {
-  // Cacheo de elementos del DOM
+  /* ====== INICIALIZACIÓN Y CACHEO DE ELEMENTOS ====== */
   const chatSidebar = document.getElementById('chatSidebar');
   const chatHistory = document.getElementById('chatHistory');
   const chatMessages = document.getElementById('chatMessages');
@@ -8,18 +8,16 @@
   const newChatBtn = document.querySelector('.new-chat-btn');
   const deleteChatsBtn = document.querySelector('.delete-chats-btn');
 
-  // Variables globales
   let currentChatId = null;
   let currentOptionsMenu = null;
   let abortController = null;
   let chats = JSON.parse(localStorage.getItem('arexChats')) || [];
 
-  // Función para guardar el historial de chats en localStorage
+  /* ====== GESTIÓN DEL HISTORIAL DE CHATS ====== */
   const saveChatsToStorage = () => {
     localStorage.setItem('arexChats', JSON.stringify(chats));
   };
 
-  // Cargar el historial de chats
   const loadChatHistory = () => {
     const sortedChats = [...chats].sort((a, b) => b.timestamp - a.timestamp);
     chatHistory.innerHTML = sortedChats
@@ -59,17 +57,14 @@
     });
   };
 
-  // Escucha el clic en el botón de cambio de título
+  /* ====== MENÚ DE CAMBIO DE TÍTULO ====== */
   document.getElementById('headerTitleToggleBtn').addEventListener('click', function(e) {
     e.stopPropagation();
-
     let menu = document.getElementById('headerTitleMenu');
     if (menu) {
       menu.remove();
       return;
     }
-
-    // Crear el contenedor del menú desplegable
     menu = document.createElement('div');
     menu.id = 'headerTitleMenu';
     menu.className = 'header-title-menu';
@@ -82,81 +77,56 @@
     menu.style.padding = '4px 0';
     menu.style.zIndex = '1000';
 
-    // Función auxiliar para crear cada opción con título y descripción
     function createOption(title, description, descriptionColor) {
       const container = document.createElement('div');
       container.style.display = 'flex';
       container.style.flexDirection = 'column';
       container.style.cursor = 'pointer';
       container.style.padding = '8px 16px';
-
-      // Agregar efecto hover: cambiar fondo al pasar el mouse
+    
       container.addEventListener('mouseenter', function() {
         container.style.backgroundColor = '#333';
       });
       container.addEventListener('mouseleave', function() {
         container.style.backgroundColor = 'transparent';
       });
-
-      const titleBtn = document.createElement('button');
-      titleBtn.textContent = title;
-      titleBtn.style.background = 'none';
-      titleBtn.style.border = 'none';
-      titleBtn.style.color = '#fff';
-      titleBtn.style.fontWeight = 'bold';
-      titleBtn.style.fontSize = '16px';
-      titleBtn.style.cursor = 'pointer';
-      titleBtn.addEventListener('click', function() {
+    
+      container.addEventListener('click', function() {
         document.getElementById('chatHeaderTitle').textContent = title;
         localStorage.setItem('chatHeaderTitle', title);
         menu.remove();
       });
-
+    
+      const titleElem = document.createElement('div');
+      titleElem.textContent = title;
+      titleElem.style.background = 'none';
+      titleElem.style.border = 'none';
+      titleElem.style.color = '#fff';
+      titleElem.style.fontWeight = 'bold';
+      titleElem.style.fontSize = '16px';
+    
       const desc = document.createElement('div');
       desc.textContent = description;
       desc.style.fontSize = '12px';
       desc.style.color = descriptionColor;
       desc.style.marginTop = '4px';
-
-      container.appendChild(titleBtn);
+    
+      container.appendChild(titleElem);
       container.appendChild(desc);
-
+    
       return container;
-    }
+    }    
 
-    // Crear las opciones con sus respectivas descripciones y colores
-    const optionArexDeluxe = createOption(
-      'AREX DELUXE',
-      'Tareas complejas que requieren alta precisión y comprensión profunda.',
-      '#ADB0B4' 
-    );
+    const optionArexDeluxe = createOption('AREX DELUXE', 'Tareas complejas que requieren alta precisión y comprensión profunda.', '#ADB0B4');
+    const optionArexGold = createOption('AREX GOLD', 'Tareas versátiles, desde moderadamente complejas hasta simples.', '#ADB0B4');
+    const optionArex = createOption('AREX', 'Tareas simples o medianamente complejas donde la rapidez es una prioridad.', '#ADB0B4');
 
-    const optionArexGold = createOption(
-      'AREX GOLD',
-      'Tareas versátiles, desde moderadamente complejas hasta simples.',
-      '#ADB0B4' 
-    );
-
-    const optionArex = createOption(
-      'AREX',
-      'Tareas simples o medianamente complejas donde la rapidez es una prioridad.',
-      '#ADB0B4'
-    );
-
-    // Agregar las opciones al menú
     menu.appendChild(optionArexDeluxe);
     menu.appendChild(optionArexGold);
     menu.appendChild(optionArex);
-
-    // Evitar la propagación de clics dentro del menú
-    menu.addEventListener('click', function(e) {
-      e.stopPropagation();
-    });
-
-    // Insertar el menú dentro del contenedor del botón toggle
+    menu.addEventListener('click', (e) => e.stopPropagation());
     this.parentElement.appendChild(menu);
 
-    // Cerrar el menú al hacer clic fuera
     document.addEventListener('click', function closeMenu(event) {
       if (!menu.contains(event.target) && event.target !== document.getElementById('headerTitleToggleBtn')) {
         menu.remove();
@@ -165,7 +135,7 @@
     });
   });
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
     let storedTitle = localStorage.getItem('chatHeaderTitle');
     if (!storedTitle) {
       storedTitle = 'AREX';
@@ -174,10 +144,9 @@
     document.getElementById('chatHeaderTitle').textContent = storedTitle;
   });
 
-  // Mostrar menú de opciones para un chat específico
+  /* ====== MENÚ DE OPCIONES DE CHAT ====== */
   const showChatOptions = (chatId) => {
     const button = document.querySelector(`.chat-item[data-id="${chatId}"] .chat-options-btn`);
-
     if (currentOptionsMenu && currentOptionsMenu.parentElement === button.parentElement) {
       currentOptionsMenu.remove();
       currentOptionsMenu = null;
@@ -187,7 +156,6 @@
       currentOptionsMenu.remove();
       currentOptionsMenu = null;
     }
-
     const menu = document.createElement('div');
     menu.className = 'chat-options-menu';
     Object.assign(menu.style, {
@@ -214,9 +182,7 @@
     `;
     renameOption.addEventListener('click', () => {
       const newName = prompt("Introduce un nuevo nombre para este chat:");
-      if (newName && newName.trim()) {
-        renameChat(chatId, newName.trim());
-      }
+      if (newName && newName.trim()) renameChat(chatId, newName.trim());
       menu.remove();
       currentOptionsMenu = null;
     });
@@ -230,9 +196,7 @@
       Eliminar
     `;
     deleteOption.addEventListener('click', () => {
-      if (confirm("¿Estás seguro de que quieres eliminar este chat?")) {
-        deleteChat(chatId);
-      }
+      if (confirm("¿Estás seguro de que quieres eliminar este chat?")) deleteChat(chatId);
       menu.remove();
       currentOptionsMenu = null;
     });
@@ -251,17 +215,13 @@
     document.addEventListener('click', handleOutsideClick);
   };
 
-  // Eliminar un chat específico
   const deleteChat = (chatId) => {
     chats = chats.filter((chat) => chat.id !== chatId);
     saveChatsToStorage();
     loadChatHistory();
-    if (currentChatId === chatId) {
-      chatMessages.innerHTML = '';
-    }
+    if (currentChatId === chatId) chatMessages.innerHTML = '';
   };
 
-  // Renombrar un chat
   const renameChat = (chatId, newName) => {
     const chat = chats.find((chat) => chat.id === chatId);
     if (chat) {
@@ -271,7 +231,7 @@
     }
   };
 
-  // Cargar los mensajes del chat seleccionado
+  /* ====== MENSAJES Y NUEVO CHAT ====== */
   const loadChatMessages = () => {
     const chat = chats.find((c) => c.id === currentChatId);
     if (!chat) return;
@@ -285,20 +245,17 @@
     });
   };
 
-  // Crear un nuevo chat
   const createNewChat = () => {
     currentChatId = Date.now().toString();
     const welcomeMessage = "¡Hola! Soy Arex, el asistente de IA de Anuvyx.\n\n¿En qué puedo ayudarte hoy?\n";
     chats.push({
       id: currentChatId,
       timestamp: Date.now(),
-      messages: [
-        {
-          content: welcomeMessage,
-          isUser: false,
-          timestamp: Date.now()
-        }
-      ]
+      messages: [{
+        content: welcomeMessage,
+        isUser: false,
+        timestamp: Date.now()
+      }]
     });
     saveChatsToStorage();
     localStorage.setItem('selectedChatId', currentChatId);
@@ -306,7 +263,7 @@
     loadChatMessages();
   };
 
-  // Mostrar indicador de carga con contador
+  /* ====== INDICADOR DE CARGA ====== */
   const showLoadingWithCounter = () => {
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'message bot-message';
@@ -333,58 +290,44 @@
 
     const countdownInterval = setInterval(() => {
       countdown--;
-      if (countdown >= 0) {
-        counter.textContent = countdown;
-      } else {
-        clearInterval(countdownInterval);
-      }
+      if (countdown >= 0) counter.textContent = countdown;
+      else clearInterval(countdownInterval);
     }, 1000);
 
     loadingDiv.appendChild(spinner);
     loadingDiv.appendChild(counter);
     chatMessages.appendChild(loadingDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
     return { loadingDiv, countdownInterval };
   };
 
-  // Enviar mensaje y gestionar respuesta de la API
+  /* ====== ENVÍO DE MENSAJES Y RESPUESTA DE LA API ====== */
   const sendMessage = async () => {
     const userText = userInput.value.trim();
     const filePreviews = document.querySelectorAll('.file-preview');
-    
-    // Capturar nombres y contenido de archivos
     const fileNames = [];
     let fileContent = '';
-    
     filePreviews.forEach(preview => {
       const fileName = preview.dataset.filename;
       const content = preview.dataset.content;
       fileNames.push(`[${fileName}]`);
       fileContent += '\n\n' + content;
     });
-
-    // Construir mensajes
     const displayMessageContent = (fileNames.join('\n') + (userText ? '\n\n' + userText : '')).trim();
     const apiMessageContent = (userText + fileContent).trim();
-
     if (!apiMessageContent) return;
 
-    // Añadir mensaje del usuario al historial
     const chat = chats.find(c => c.id === currentChatId);
     chat.messages.push({
-      content: apiMessageContent,           // Para el backend
-      displayContent: displayMessageContent,  // Para mostrar
+      content: apiMessageContent,
+      displayContent: displayMessageContent,
       isUser: true,
       files: fileNames,
       timestamp: Date.now()
     });
 
-    // Limpiar área de entrada y previsualizaciones
     userInput.value = '';
     document.querySelectorAll('.file-preview').forEach(p => p.remove());
-    
-    // Mostrar en UI
     displayMessage(displayMessageContent, true);
     autoResizeTextarea();
 
@@ -404,7 +347,6 @@
         role: msg.isUser ? 'user' : 'assistant',
         content: msg.content
       }));
-
       const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -412,7 +354,7 @@
           messages: conversationMessages,
           chatHeaderTitle: document.getElementById('chatHeaderTitle').textContent
         })
-      });      
+      });
 
       const botMessageDiv = document.createElement('div');
       botMessageDiv.className = 'message bot-message';
@@ -439,12 +381,7 @@
             }
             try {
               const parsed = JSON.parse(jsonStr);
-              if (
-                parsed.choices &&
-                parsed.choices.length > 0 &&
-                parsed.choices[0].delta &&
-                parsed.choices[0].delta.content
-              ) {
+              if (parsed.choices && parsed.choices.length > 0 && parsed.choices[0].delta && parsed.choices[0].delta.content) {
                 botResponse += parsed.choices[0].delta.content;
               }
             } catch (error) {
@@ -455,11 +392,10 @@
         botMessageDiv.innerHTML = marked.parse(botResponse);
         if (shouldAutoScroll()) {
           chatMessages.scrollTop = chatMessages.scrollHeight;
-        }        
+        }
       }
 
       enhanceMessage(botMessageDiv);
-
       chat.messages.push({
         content: botResponse,
         isUser: false,
@@ -489,17 +425,15 @@
     }
   };
 
-  // Función para aplicar mejoras de formato al mensaje del bot
+  /* ====== MEJORA DEL FORMATO DE LOS MENSAJES ====== */
   function enhanceMessage(messageDiv) {
     const codeBlocks = messageDiv.querySelectorAll('pre > code');
     codeBlocks.forEach((codeBlock) => {
       const language = codeBlock.className.replace('language-', '') || 'plaintext';
       const header = document.createElement('div');
       header.classList.add('code-header');
-
       const languageSpan = document.createElement('span');
       languageSpan.textContent = language;
-
       const copyIcon = document.createElement('button');
       copyIcon.classList.add('copy-icon');
       copyIcon.innerHTML = `
@@ -527,18 +461,14 @@
           })
           .catch((err) => console.error('Error al copiar el código:', err));
       });
-
       header.appendChild(languageSpan);
       header.appendChild(copyIcon);
-
       const preBlock = codeBlock.parentElement;
       preBlock.parentElement.insertBefore(header, preBlock);
-
       preBlock.classList.add('line-numbers');
       preBlock.setAttribute('data-lang', language);
       Prism.highlightElement(codeBlock);
     });
-
     if (typeof MathJax !== 'undefined') {
       MathJax.typesetPromise([messageDiv]).catch((err) =>
         console.error('Error al renderizar MathJax:', err)
@@ -546,7 +476,7 @@
     }
   }
 
-  // Función para cancelar la solicitud de la API
+  /* ====== CANCELAR SOLICITUD A LA API ====== */
   const cancelRequest = () => {
     if (abortController) {
       abortController.abort();
@@ -554,26 +484,23 @@
     }
   };
 
-  // Función que determina si el usuario está cerca del fondo
+  /* ====== AUTO-SCROLLING ====== */
   function shouldAutoScroll() {
     return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 50;
   }
 
-  // Mostrar un mensaje en el chat, procesando Markdown y MathJax
+  /* ====== MOSTRAR MENSAJE EN EL CHAT ====== */
   const displayMessage = (content, isUser) => {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
 
     if (isUser) {
-      // Procesar contenido para mostrar: reemplazar saltos de línea y formatear etiquetas de archivos
       const formattedContent = content
-      .replace(/\n/g, '<br>')
-      .replace(/\[(.*?)\]/g, (match, fileName) => {
-        // Se extrae la extensión del archivo
-        const fileExtension = fileName.split('.').pop().toUpperCase();
-        // Si tuviésemos el tamaño del archivo, podríamos incluirlo; de lo contrario, se deja vacío o se calcula de otra forma.
-        const fileSize = ''; // O extraer el valor si está disponible
-        return `
+        .replace(/\n/g, '<br>')
+        .replace(/\[(.*?)\]/g, (match, fileName) => {
+          const fileExtension = fileName.split('.').pop().toUpperCase();
+          const fileSize = '';
+          return `
           <div class="file-tag">
             <div class="file-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -589,9 +516,8 @@
               </div>
             </div>
           </div>
-        `;
-      });
-
+          `;
+        });
       messageDiv.innerHTML = formattedContent;
     } else {
       let processedContent = marked.parse(content);
@@ -600,19 +526,15 @@
         .replace(/\\\[.+?\\\]/g, (match) => match)
         .replace(/\$.+?\$/g, (match) => `\\(${match.slice(1, -1)}\\)`)
         .replace(/\\boxed\{(.+?)\}/g, (match) => `\\boxed{${match.slice(7, -1)}}`);
-
       const tempContainer = document.createElement('div');
       tempContainer.innerHTML = processedContent;
-
       const codeBlocks = tempContainer.querySelectorAll('pre > code');
       codeBlocks.forEach((codeBlock) => {
         const language = codeBlock.className.replace('language-', '') || 'plaintext';
         const header = document.createElement('div');
         header.classList.add('code-header');
-
         const languageSpan = document.createElement('span');
         languageSpan.textContent = language;
-
         const copyIcon = document.createElement('button');
         copyIcon.classList.add('copy-icon');
         copyIcon.innerHTML = `
@@ -640,31 +562,26 @@
             })
             .catch((err) => console.error('Error al copiar el código:', err));
         });
-
         header.appendChild(languageSpan);
         header.appendChild(copyIcon);
-
         const preBlock = codeBlock.parentElement;
         preBlock.parentElement.insertBefore(header, preBlock);
-
         preBlock.classList.add('line-numbers');
         preBlock.setAttribute('data-lang', language);
         Prism.highlightElement(codeBlock);
       });
-
       while (tempContainer.firstChild) {
         messageDiv.appendChild(tempContainer.firstChild);
       }
     }
 
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;   
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 
     const copyButtonContainer = document.createElement('div');
     copyButtonContainer.style.display = 'flex';
     copyButtonContainer.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
     copyButtonContainer.style.marginTop = '5px';
-
     const copyButton = document.createElement('button');
     copyButton.className = 'copy-button';
     copyButton.style.padding = '5px';
@@ -711,20 +628,20 @@
     }
   };
 
-  // Función para ajustar dinámicamente la altura del textarea
+  /* ====== AJUSTE DINÁMICO DEL TEXTAREA ====== */
   const autoResizeTextarea = () => {
     userInput.style.height = 'auto';
     userInput.style.height = `${userInput.scrollHeight}px`;
   };
 
-  // Función para alternar la visibilidad del sidebar
+  /* ====== VISIBILIDAD DEL SIDEBAR ====== */
   const toggleSidebar = () => {
     chatSidebar.classList.toggle('hidden');
     const isHidden = chatSidebar.classList.contains('hidden');
     localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
   };
 
-  // Inicialización y asignación de event listeners
+  /* ====== INICIALIZACIÓN Y EVENT LISTENERS ====== */
   const init = () => {
     newChatBtn.addEventListener('click', createNewChat);
     sendBtn.addEventListener('click', sendMessage);
@@ -767,11 +684,10 @@
 
     document.getElementById('file-upload').addEventListener('change', handleFileUpload);
 
+    /* ====== MANEJO DE ARCHIVOS ====== */
     function handleFileUpload(event) {
       const files = event.target.files;
       if (!files.length) return;
-    
-      // Calcular el tamaño total de los archivos ya previsualizados
       let totalSize = 0;
       let filePreviewsContainer = document.querySelector('.file-previews-container');
       if (filePreviewsContainer) {
@@ -780,17 +696,13 @@
           totalSize += parseInt(preview.dataset.filesize) || 0;
         });
       }
-    
       for (const file of files) {
-        if (totalSize + file.size > 20 * 1024 * 1024) { // 20MB en bytes
+        if (totalSize + file.size > 20 * 1024 * 1024) {
           alert(`No se puede subir el archivo "${file.name}" porque el tamaño total excede 20MB.`);
           continue;
         }
         totalSize += file.size;
-    
         const extension = file.name.split('.').pop().toLowerCase();
-    
-        // Archivos de texto
         if (['txt', 'csv', 'tsv', 'json', 'xml'].includes(extension)) {
           const reader = new FileReader();
           reader.onload = function(e) {
@@ -806,9 +718,7 @@
             displayFilePreview(file, content);
           };
           reader.readAsText(file);
-        }
-        // Archivos DOCX
-        else if (extension === 'docx') {
+        } else if (extension === 'docx') {
           const reader = new FileReader();
           reader.onload = function(e) {
             const arrayBuffer = e.target.result;
@@ -822,9 +732,7 @@
               });
           };
           reader.readAsArrayBuffer(file);
-        }
-        // Archivos XLSX o XLS
-        else if (extension === 'xlsx' || extension === 'xls') {
+        } else if (extension === 'xlsx' || extension === 'xls') {
           const reader = new FileReader();
           reader.onload = function(e) {
             const data = new Uint8Array(e.target.result);
@@ -838,9 +746,7 @@
             displayFilePreview(file, content);
           };
           reader.readAsArrayBuffer(file);
-        }
-        // Archivos PDF
-        else if (extension === 'pdf') {
+        } else if (extension === 'pdf') {
           const reader = new FileReader();
           reader.onload = function(e) {
             const typedarray = new Uint8Array(e.target.result);
@@ -865,54 +771,39 @@
             });
           };
           reader.readAsArrayBuffer(file);
-        }
-        // Nuevamente: Procesar imágenes (png, jpg, jpeg) con OCR usando Tesseract.js
-        // Procesar imágenes (png, jpg, jpeg) con OCR y extracción de colores
-        else if (['png', 'jpg', 'jpeg'].includes(extension)) {
+        } else if (['png', 'jpg', 'jpeg'].includes(extension)) {
           const reader = new FileReader();
           reader.onload = function(e) {
             const imageDataUrl = e.target.result;
-            // Extraer texto con Tesseract.js (asegúrate de incluir su script en tu proyecto)
-            Tesseract.recognize(
-              imageDataUrl,
-              'spa', // Modelo de español. Cámbialo según tus necesidades.
-              { logger: m => console.log(m) }
-            ).then(({ data: { text } }) => {
-              // Extraer paleta de colores con Vibrant.js
-              Vibrant.from(imageDataUrl).getPalette()
-                .then((palette) => {
-                  // Seleccionamos colores dominantes mediante una heurística simple:
-                  // Por ejemplo, usamos el color 'Vibrant' para el texto y 'DarkMuted' para el fondo.
-                  const textColor = palette.Vibrant ? palette.Vibrant.getHex() : '#FFFFFF';
-                  const bgColor = palette.DarkMuted ? palette.DarkMuted.getHex() : '#000000';
-                  const resultText = `Texto extraído: ${text.trim()}\nColor de texto: ${textColor}\nColor de fondo: ${bgColor}`;
-                  displayFilePreview(file, resultText);
-                })
-                .catch(err => {
-                  console.error("Error al extraer colores:", err);
-                  // Si falla la extracción de colores, mostramos solo el texto OCR.
-                  displayFilePreview(file, `Texto extraído: ${text.trim()}`);
-                });
-            }).catch(error => {
-              console.error("Error al procesar imagen:", error);
-            });
+            Tesseract.recognize(imageDataUrl, 'spa', { logger: m => console.log(m) })
+              .then(({ data: { text } }) => {
+                Vibrant.from(imageDataUrl).getPalette()
+                  .then((palette) => {
+                    const textColor = palette.Vibrant ? palette.Vibrant.getHex() : '#FFFFFF';
+                    const bgColor = palette.DarkMuted ? palette.DarkMuted.getHex() : '#000000';
+                    const resultText = `Texto extraído: ${text.trim()}\nColor de texto: ${textColor}\nColor de fondo: ${bgColor}`;
+                    displayFilePreview(file, resultText);
+                  })
+                  .catch(err => {
+                    console.error("Error al extraer colores:", err);
+                    displayFilePreview(file, `Texto extraído: ${text.trim()}`);
+                  });
+              }).catch(error => {
+                console.error("Error al procesar imagen:", error);
+              });
           };
           reader.readAsDataURL(file);
         }
       }
-    }        
+    }
 
-    // Modificar displayFilePreview para incluir dataset.filename y dataset.content
     function displayFilePreview(file, content) {
       const preview = document.createElement('div');
       preview.className = 'file-preview';
       preview.dataset.filename = file.name;
       preview.dataset.content = content;
-      preview.dataset.filesize = file.size; // Guardamos el tamaño del archivo
-    
-      // Extraer la extensión del nombre del archivo y convertirla a mayúsculas
+      preview.dataset.filesize = file.size;
       const fileExtension = file.name.split('.').pop().toUpperCase();
-    
       preview.innerHTML = `
         <div class="file-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -929,11 +820,7 @@
         </div>
         <button class="remove-file">×</button>
       `;
-    
-      preview.querySelector('.remove-file').addEventListener('click', () => {
-        preview.remove();
-      });
-    
+      preview.querySelector('.remove-file').addEventListener('click', () => preview.remove());
       let filePreviewsContainer = document.querySelector('.file-previews-container');
       if (!filePreviewsContainer) {
         filePreviewsContainer = document.createElement('div');
@@ -955,20 +842,15 @@
 
     function removeDiacritics(str) {
       return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }    
+    }
 
-    // Configurar búsqueda de chats
     const chatSearchInput = document.getElementById('chatSearchInput');
     chatSearchInput.addEventListener('input', () => {
       const query = removeDiacritics(chatSearchInput.value.toLowerCase());
       const chatItems = chatHistory.querySelectorAll('.chat-item');
       chatItems.forEach(item => {
         const chatName = removeDiacritics(item.querySelector('.chat-info span').textContent.toLowerCase());
-        if (chatName.includes(query)) {
-          item.style.display = '';
-        } else {
-          item.style.display = 'none';
-        }
+        item.style.display = chatName.includes(query) ? '' : 'none';
       });
     });
   };
