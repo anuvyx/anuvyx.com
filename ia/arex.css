@@ -574,7 +574,7 @@ body {
 }
 
 .file-upload-btn:hover {
-  background: var(--color-border);
+  background: #404144;
 }
 
 .file-upload-btn svg {
@@ -725,12 +725,28 @@ body {
 }
 
 #search-web-btn:hover {
-  background: var(--color-border);
+  background: #404144;
 }
 
 #search-web-btn svg {
   width: 16px;
   height: 16px;
+}
+
+#search-web-btn.active {
+  background-color: #626465;
+}
+
+.file-upload-btn.disabled {
+  background-color: #2D2E2F; 
+  opacity: 0.6;           
+  cursor: not-allowed;      
+}
+
+#search-web-btn:disabled {
+  background-color: #2D2E2F; 
+  opacity: 0.6;           
+  cursor: not-allowed;      
 }
 
 #send-btn {

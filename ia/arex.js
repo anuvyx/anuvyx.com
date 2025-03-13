@@ -83,15 +83,34 @@
       container.style.flexDirection = 'column';
       container.style.cursor = 'pointer';
       container.style.padding = '8px 16px';
+      container.style.transition = 'background-color 0.3s ease';
+    
+      const updateBackground = () => {
+        const storedTitle = localStorage.getItem('chatHeaderTitle') || 'AREX';
+        if (storedTitle === title) {
+          container.classList.add('active');
+          container.style.backgroundColor = 'rgba(227,227,227,0.1)';
+        } else {
+          container.classList.remove('active');
+          container.style.backgroundColor = 'transparent';
+        }
+      };
     
       container.addEventListener('mouseenter', function() {
         container.style.backgroundColor = '#333';
       });
       container.addEventListener('mouseleave', function() {
-        container.style.backgroundColor = 'transparent';
+        updateBackground();
       });
     
       container.addEventListener('click', function() {
+        const siblings = container.parentElement.children;
+        for (let sibling of siblings) {
+          sibling.classList.remove('active');
+          sibling.style.backgroundColor = 'transparent';
+        }
+        container.classList.add('active');
+        container.style.backgroundColor = 'rgba(227,227,227,0.1)';
         document.getElementById('chatHeaderTitle').textContent = title;
         localStorage.setItem('chatHeaderTitle', title);
         menu.remove();
@@ -105,6 +124,12 @@
       titleElem.style.fontWeight = 'bold';
       titleElem.style.fontSize = '16px';
     
+      const storedTitle = localStorage.getItem('chatHeaderTitle') || 'AREX';
+      if (storedTitle === title) {
+        container.classList.add('active');
+        container.style.backgroundColor = 'rgba(227,227,227,0.1)';
+      }
+    
       const desc = document.createElement('div');
       desc.textContent = description;
       desc.style.fontSize = '12px';
@@ -115,11 +140,11 @@
       container.appendChild(desc);
     
       return container;
-    }    
+    }        
 
     const optionArexDeluxe = createOption('AREX DELUXE', 'Tareas complejas que requieren alta precisión y comprensión profunda.', '#ADB0B4');
-    const optionArexGold = createOption('AREX GOLD', 'Tareas versátiles, desde moderadamente complejas hasta simples.', '#ADB0B4');
-    const optionArex = createOption('AREX', 'Tareas simples o medianamente complejas donde la rapidez es una prioridad.', '#ADB0B4');
+    const optionArexGold = createOption('AREX GOLD', 'Tareas moderadamente complejas o simples con mayor precisión.', '#ADB0B4');
+    const optionArex = createOption('AREX', 'Tareas simples donde la rapidez es una prioridad.', '#ADB0B4');
 
     menu.appendChild(optionArexDeluxe);
     menu.appendChild(optionArexGold);
@@ -142,6 +167,25 @@
       localStorage.setItem('chatHeaderTitle', storedTitle);
     }
     document.getElementById('chatHeaderTitle').textContent = storedTitle;
+  });
+
+  const searchWebBtn = document.getElementById('search-web-btn');
+  const fileUploadInput = document.getElementById('file-upload');
+  const fileUploadBtn = document.querySelector('.file-upload-btn');
+  let searchActive = false;
+
+  searchWebBtn.addEventListener('click', function() {
+    searchActive = !searchActive;
+    
+    if (searchActive) {
+      searchWebBtn.classList.add('active');
+      fileUploadInput.disabled = true;
+      fileUploadBtn.classList.add('disabled');
+    } else {
+      searchWebBtn.classList.remove('active');
+      fileUploadInput.disabled = false;
+      fileUploadBtn.classList.remove('disabled');
+    }
   });
 
   /* ====== MENÚ DE OPCIONES DE CHAT ====== */
@@ -688,6 +732,8 @@
     function handleFileUpload(event) {
       const files = event.target.files;
       if (!files.length) return;
+      searchWebBtn.disabled = true;
+      searchWebBtn.classList.add('disabled');
       let totalSize = 0;
       let filePreviewsContainer = document.querySelector('.file-previews-container');
       if (filePreviewsContainer) {
@@ -820,7 +866,14 @@
         </div>
         <button class="remove-file">×</button>
       `;
-      preview.querySelector('.remove-file').addEventListener('click', () => preview.remove());
+      preview.querySelector('.remove-file').addEventListener('click', () => {
+        preview.remove();
+        if (document.querySelectorAll('.file-preview').length === 0) {
+          searchWebBtn.disabled = false;
+          searchWebBtn.classList.remove('disabled');
+        }
+      });
+
       let filePreviewsContainer = document.querySelector('.file-previews-container');
       if (!filePreviewsContainer) {
         filePreviewsContainer = document.createElement('div');
