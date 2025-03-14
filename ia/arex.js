@@ -281,13 +281,14 @@
     if (!chat) return;
     chatMessages.innerHTML = '';
     chat.messages.forEach((msg) => {
-      if (msg.isUser && msg.displayContent) {
-        displayMessage(msg.displayContent, true);
+      if (msg.isUser) {
+        // Si no se definió displayContent, se usa content
+        displayMessage(msg.displayContent || msg.content, true);
       } else {
         displayMessage(msg.content, false);
       }
     });
-  };
+  };  
 
   const createNewChat = () => {
     currentChatId = Date.now().toString();
@@ -351,17 +352,86 @@
     const filePreviews = document.querySelectorAll('.file-preview');
     const fileNames = [];
     let fileContent = '';
+  
     filePreviews.forEach(preview => {
       const fileName = preview.dataset.filename;
       const content = preview.dataset.content;
       fileNames.push(`[${fileName}]`);
       fileContent += '\n\n' + content;
     });
+  
     const displayMessageContent = (fileNames.join('\n') + (userText ? '\n\n' + userText : '')).trim();
     const apiMessageContent = (userText + fileContent).trim();
     if (!apiMessageContent) return;
-
+  
+    // Obtener el chat actual (para guardar en el historial)
     const chat = chats.find(c => c.id === currentChatId);
+    
+    // Modo búsqueda: si searchActive es verdadero
+    if (searchActive) {
+      // Agregar la consulta del usuario al historial y mostrarla
+      chat.messages.push({
+        content: userText,
+        isUser: true,
+        timestamp: Date.now()
+      });
+      saveChatsToStorage();
+      displayMessage(userText, true);
+      userInput.value = '';
+      autoResizeTextarea();
+  
+      // Mostramos un indicador de carga
+      const { loadingDiv, countdownInterval } = showLoadingWithCounter();
+  
+      try {
+        // Llamar al endpoint de búsqueda (en este ejemplo se usa el endpoint configurado para Google o resultados simulados)
+        const response = await fetch('https://anuvyx-com-backend.vercel.app/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: userText })
+        });
+        const data = await response.json();
+  
+        // Construir el HTML para mostrar los resultados
+        let resultsHtml = '<div class="search-results">';
+        if (data.results && data.results.length > 0) {
+          data.results.forEach(result => {
+            resultsHtml += `
+              <div class="search-result">
+                <a href="${result.url}" target="_blank" rel="noopener">
+                  <h4>${result.title}</h4>
+                </a>
+                <p>${result.snippet}</p>
+              </div>
+            `;
+          });
+        } else {
+          resultsHtml += '<p>No se encontraron resultados.</p>';
+        }
+        resultsHtml += '</div>';
+  
+        // Guardamos el mensaje de resultados en el historial y lo mostramos
+        chat.messages.push({
+          content: resultsHtml,
+          isUser: false,
+          timestamp: Date.now()
+        });
+        saveChatsToStorage();
+        displayMessage(resultsHtml, false);
+      } catch (error) {
+        console.error('Error en la búsqueda:', error);
+        displayMessage('Error al realizar la búsqueda.', false);
+      } finally {
+        clearInterval(countdownInterval);
+        loadingDiv.remove();
+        // Puedes optar por desactivar el modo búsqueda después de la consulta
+        // searchActive = false;
+        // searchWebBtn.classList.remove('active');
+      }
+      return; // Terminamos la función en modo búsqueda
+    }
+  
+    // Flujo normal del chat (sin búsqueda)
     chat.messages.push({
       content: apiMessageContent,
       displayContent: displayMessageContent,
@@ -369,14 +439,14 @@
       files: fileNames,
       timestamp: Date.now()
     });
-
+  
     userInput.value = '';
     document.querySelectorAll('.file-preview').forEach(p => p.remove());
     displayMessage(displayMessageContent, true);
     autoResizeTextarea();
-
+  
     const { loadingDiv, countdownInterval } = showLoadingWithCounter();
-
+  
     abortController = new AbortController();
     sendBtn.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -385,7 +455,7 @@
     `;
     sendBtn.style.backgroundColor = '#FF0000E6';
     sendBtn.onclick = cancelRequest;
-
+  
     try {
       const conversationMessages = chat.messages.map((msg) => ({
         role: msg.isUser ? 'user' : 'assistant',
@@ -399,16 +469,16 @@
           chatHeaderTitle: document.getElementById('chatHeaderTitle').textContent
         })
       });
-
+  
       const botMessageDiv = document.createElement('div');
       botMessageDiv.className = 'message bot-message';
       chatMessages.appendChild(botMessageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
-
+  
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
       let botResponse = '';
-
+  
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -438,7 +508,7 @@
           chatMessages.scrollTop = chatMessages.scrollHeight;
         }
       }
-
+  
       enhanceMessage(botMessageDiv);
       chat.messages.push({
         content: botResponse,
@@ -446,7 +516,7 @@
         timestamp: Date.now()
       });
       saveChatsToStorage();
-
+  
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Solicitud cancelada por el usuario.');
@@ -467,7 +537,7 @@
       loadingDiv.remove();
       document.querySelectorAll('.file-preview').forEach(p => p.remove());
     }
-  };
+  };  
 
   /* ====== MEJORA DEL FORMATO DE LOS MENSAJES ====== */
   function enhanceMessage(messageDiv) {
