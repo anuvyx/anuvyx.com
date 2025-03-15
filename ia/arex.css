@@ -749,6 +749,10 @@ body {
   cursor: not-allowed;      
 }
 
+.search-result a {
+  color: var(--color-white);
+}
+
 #send-btn {
   padding: 0.8rem;
   background: var(--color-white);

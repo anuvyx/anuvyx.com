@@ -607,7 +607,7 @@
   const displayMessage = (content, isUser) => {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-
+  
     if (isUser) {
       const formattedContent = content
         .replace(/\n/g, '<br>')
@@ -615,83 +615,87 @@
           const fileExtension = fileName.split('.').pop().toUpperCase();
           const fileSize = '';
           return `
-          <div class="file-tag">
-            <div class="file-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-              </svg>
-            </div>
-            <div class="file-details">
-              <div class="file-name">${fileName}</div>
-              <div class="file-meta">
-                <span class="file-type">${fileExtension}</span>
-                <span class="file-size">${fileSize}</span>
+            <div class="file-tag">
+              <div class="file-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div class="file-details">
+                <div class="file-name">${fileName}</div>
+                <div class="file-meta">
+                  <span class="file-type">${fileExtension}</span>
+                  <span class="file-size">${fileSize}</span>
+                </div>
               </div>
             </div>
-          </div>
           `;
         });
       messageDiv.innerHTML = formattedContent;
     } else {
-      let processedContent = marked.parse(content);
-      processedContent = processedContent
-        .replace(/\\\(.+?\\\)/g, (match) => match)
-        .replace(/\\\[.+?\\\]/g, (match) => match)
-        .replace(/\$.+?\$/g, (match) => `\\(${match.slice(1, -1)}\\)`)
-        .replace(/\\boxed\{(.+?)\}/g, (match) => `\\boxed{${match.slice(7, -1)}}`);
-      const tempContainer = document.createElement('div');
-      tempContainer.innerHTML = processedContent;
-      const codeBlocks = tempContainer.querySelectorAll('pre > code');
-      codeBlocks.forEach((codeBlock) => {
-        const language = codeBlock.className.replace('language-', '') || 'plaintext';
-        const header = document.createElement('div');
-        header.classList.add('code-header');
-        const languageSpan = document.createElement('span');
-        languageSpan.textContent = language;
-        const copyIcon = document.createElement('button');
-        copyIcon.classList.add('copy-icon');
-        copyIcon.innerHTML = `
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-          </svg>
-        `;
-        copyIcon.addEventListener('click', () => {
-          navigator.clipboard.writeText(codeBlock.textContent)
-            .then(() => {
-              copyIcon.innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              `;
-              setTimeout(() => {
+      if (content.includes('<div class="search-results">')) {
+        messageDiv.innerHTML = content;
+      } else {
+        let processedContent = marked.parse(content);
+        processedContent = processedContent
+          .replace(/\\\(.+?\\\)/g, (match) => match)
+          .replace(/\\\[.+?\\\]/g, (match) => match)
+          .replace(/\$(.+?)\$/g, (match, p1) => p1)
+          .replace(/\\boxed\{(.+?)\}/g, (match) => `\\boxed{${match.slice(7, -1)}}`);
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = processedContent;
+        const codeBlocks = tempContainer.querySelectorAll('pre > code');
+        codeBlocks.forEach((codeBlock) => {
+          const language = codeBlock.className.replace('language-', '') || 'plaintext';
+          const header = document.createElement('div');
+          header.classList.add('code-header');
+          const languageSpan = document.createElement('span');
+          languageSpan.textContent = language;
+          const copyIcon = document.createElement('button');
+          copyIcon.classList.add('copy-icon');
+          copyIcon.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+          `;
+          copyIcon.addEventListener('click', () => {
+            navigator.clipboard.writeText(codeBlock.textContent)
+              .then(() => {
                 copyIcon.innerHTML = `
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
-                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 `;
-              }, 2000);
-            })
-            .catch((err) => console.error('Error al copiar el código:', err));
+                setTimeout(() => {
+                  copyIcon.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                      <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
+                  `;
+                }, 2000);
+              })
+              .catch((err) => console.error('Error al copiar el código:', err));
+          });
+          header.appendChild(languageSpan);
+          header.appendChild(copyIcon);
+          const preBlock = codeBlock.parentElement;
+          preBlock.parentElement.insertBefore(header, preBlock);
+          preBlock.classList.add('line-numbers');
+          preBlock.setAttribute('data-lang', language);
+          Prism.highlightElement(codeBlock);
         });
-        header.appendChild(languageSpan);
-        header.appendChild(copyIcon);
-        const preBlock = codeBlock.parentElement;
-        preBlock.parentElement.insertBefore(header, preBlock);
-        preBlock.classList.add('line-numbers');
-        preBlock.setAttribute('data-lang', language);
-        Prism.highlightElement(codeBlock);
-      });
-      while (tempContainer.firstChild) {
-        messageDiv.appendChild(tempContainer.firstChild);
+        while (tempContainer.firstChild) {
+          messageDiv.appendChild(tempContainer.firstChild);
+        }
       }
     }
-
+  
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
+  
     const copyButtonContainer = document.createElement('div');
     copyButtonContainer.style.display = 'flex';
     copyButtonContainer.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
@@ -734,13 +738,13 @@
     });
     copyButtonContainer.appendChild(copyButton);
     chatMessages.appendChild(copyButtonContainer);
-
+  
     if (!isUser && typeof MathJax !== 'undefined') {
       MathJax.typesetPromise([messageDiv]).catch((err) =>
         console.error('Error al renderizar MathJax:', err)
       );
     }
-  };
+  };  
 
   /* ====== AJUSTE DINÁMICO DEL TEXTAREA ====== */
   const autoResizeTextarea = () => {
