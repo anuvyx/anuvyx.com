@@ -368,6 +368,7 @@
     const chat = chats.find(c => c.id === currentChatId);
     
     // Modo búsqueda: si searchActive es verdadero
+    // Dentro del bloque que maneja el modo búsqueda, luego de obtener 'data' de la API de búsqueda:
     if (searchActive) {
       // Agregar la consulta del usuario al historial y mostrarla
       chat.messages.push({
@@ -379,56 +380,113 @@
       displayMessage(userText, true);
       userInput.value = '';
       autoResizeTextarea();
-  
+
       // Mostramos un indicador de carga
       const { loadingDiv, countdownInterval } = showLoadingWithCounter();
-  
+
       try {
-        // Llamar al endpoint de búsqueda (en este ejemplo se usa el endpoint configurado para Google o resultados simulados)
         const response = await fetch('https://anuvyx-com-backend.vercel.app/api/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query: userText })
         });
         const data = await response.json();
-  
-        // Construir el HTML para mostrar los resultados
-        let resultsHtml = '<div class="search-results">';
+
+        // Procesar los resultados para extraer la información de las fuentes
+        // Procesar los resultados para extraer la información de las fuentes de forma resumida
+        let fuentes = '';
         if (data.results && data.results.length > 0) {
-          data.results.forEach(result => {
-            resultsHtml += `
-              <div class="search-result">
-                <a href="${result.url}" target="_blank" rel="noopener">
-                  <h4>${result.title}</h4>
-                </a>
-                <p>${result.snippet}</p>
-              </div>
-            `;
-          });
+          fuentes = data.results.map((result, index) => {
+            // Limitar el snippet a 150 caracteres para evitar exceso de información
+            const snippet = result.snippet.length > 150 ? result.snippet.substring(0, 150) + '...' : result.snippet;
+            return `${index + 1}. ${result.title} (${result.url})\n${snippet}`;
+          }).join('\n\n');
         } else {
-          resultsHtml += '<p>No se encontraron resultados.</p>';
+          fuentes = 'No se encontraron resultados.';
         }
-        resultsHtml += '</div>';
-  
-        // Guardamos el mensaje de resultados en el historial y lo mostramos
+
+        // Crear un prompt para que la API del chat sintetice la respuesta
+        const prompt = `
+        Pregunta: ${userText}
+
+        Utiliza la siguiente información obtenida de internet para responder de forma precisa:
+
+        Fuentes:
+        ${fuentes}
+
+        Responde de manera concisa y, al final, lista de las fuentes utilizadas.
+        `.trim();
+
+        // Enviar el prompt a la API del chat
+        const chatResponse = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{
+              role: 'user',
+              content: prompt
+            }],
+            chatHeaderTitle: document.getElementById('chatHeaderTitle').textContent
+          })
+        });
+
+        // Procesar la respuesta de la API del chat (similar al flujo actual)
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'message bot-message';
+        chatMessages.appendChild(botMessageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        const reader = chatResponse.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let botResponse = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+          for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+            if (line.startsWith("data:")) {
+              let jsonStr = line.replace(/^(data:\s*)+/i, '');
+              if (jsonStr === "[DONE]") {
+                reader.cancel();
+                break;
+              }
+              try {
+                const parsed = JSON.parse(jsonStr);
+                if (parsed.choices && parsed.choices.length > 0 && parsed.choices[0].delta && parsed.choices[0].delta.content) {
+                  botResponse += parsed.choices[0].delta.content;
+                }
+              } catch (error) {
+                console.error("Error al parsear JSON:", error);
+              }
+            }
+          }
+          botMessageDiv.innerHTML = marked.parse(botResponse);
+          if (shouldAutoScroll()) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+        }
+
+        // Guardar y mostrar la respuesta final
+        enhanceMessage(botMessageDiv);
         chat.messages.push({
-          content: resultsHtml,
+          content: botResponse,
           isUser: false,
           timestamp: Date.now()
         });
         saveChatsToStorage();
-        displayMessage(resultsHtml, false);
+
       } catch (error) {
-        console.error('Error en la búsqueda:', error);
-        displayMessage('Error al realizar la búsqueda.', false);
+        console.error('Error en la búsqueda o en el procesamiento:', error);
+        displayMessage('Error al realizar la búsqueda o procesar la respuesta.', false);
       } finally {
         clearInterval(countdownInterval);
         loadingDiv.remove();
-        // Puedes optar por desactivar el modo búsqueda después de la consulta
-        // searchActive = false;
-        // searchWebBtn.classList.remove('active');
       }
-      return; // Terminamos la función en modo búsqueda
+      return; // Salir de la función en modo búsqueda
     }
   
     // Flujo normal del chat (sin búsqueda)
