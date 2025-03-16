@@ -637,6 +637,10 @@
       if (content.includes('<div class="search-results">')) {
         messageDiv.innerHTML = content;
       } else {
+        content = content.replace(/\\\[(.+?)\\\]/gs, (match, p1) => `$$${p1.trim()}$$`);
+        content = content.replace(/\$\$(.*?)\$\$/g, (match, inner) => {
+          return inner.includes('\n') ? match : `$$\n${inner}\n$$`;
+        });
         let processedContent = marked.parse(content);
         processedContent = processedContent
           .replace(/\\\(.+?\\\)/g, (match) => match)
