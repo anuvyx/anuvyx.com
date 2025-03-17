@@ -383,12 +383,21 @@
 
       // Mostramos un indicador de carga
       const { loadingDiv, countdownInterval } = showLoadingWithCounter();
+      abortController = new AbortController();
+      sendBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      `;
+      sendBtn.style.backgroundColor = '#FF0000E6';
+      sendBtn.onclick = cancelRequest;
 
       try {
         const response = await fetch('https://anuvyx-com-backend.vercel.app/api/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: userText })
+          body: JSON.stringify({ query: userText }),
+          signal: abortController.signal
         });
         const data = await response.json();
 
@@ -414,7 +423,7 @@
         Fuentes:
         ${fuentes}
 
-        Responde de manera concisa y, al final, lista de las fuentes utilizadas.
+        Responde de manera concisa y, al final, lista solo las fuentes utilizadas con su respectivo link.
         `.trim();
 
         // Enviar el prompt a la API del chat
@@ -485,6 +494,14 @@
       } finally {
         clearInterval(countdownInterval);
         loadingDiv.remove();
+        // Restaurar el estado original del botón:
+        sendBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        `;
+        sendBtn.style.backgroundColor = '#ffffff';
+        sendBtn.onclick = sendMessage;
       }
       return; // Salir de la función en modo búsqueda
     }
@@ -525,7 +542,8 @@
         body: JSON.stringify({
           messages: conversationMessages,
           chatHeaderTitle: document.getElementById('chatHeaderTitle').textContent
-        })
+        }),
+        signal: abortController.signal
       });
   
       const botMessageDiv = document.createElement('div');

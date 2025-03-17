@@ -749,8 +749,24 @@ body {
   cursor: not-allowed;      
 }
 
-.search-result a {
-  color: var(--color-white);
+a {
+  color: #3498db;      
+  text-decoration: underline;
+  overflow-wrap: break-word; 
+  word-wrap: break-word;     
+  white-space: normal;     
+}
+
+a:visited {
+  color: #9b59b6;
+}
+
+a:hover {
+  color: #e74c3c;
+}
+
+a:active {
+  color: #c0392b;
 }
 
 #send-btn {
