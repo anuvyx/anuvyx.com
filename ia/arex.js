@@ -282,13 +282,13 @@
     chatMessages.innerHTML = '';
     chat.messages.forEach((msg) => {
       if (msg.isUser) {
-        // Si no se definió displayContent, se usa content
         displayMessage(msg.displayContent || msg.content, true);
       } else {
-        displayMessage(msg.content, false);
+        // Se pasa un objeto de opciones con fuentesData (si está disponible)
+        displayMessage(msg.content, false, { fuentesData: msg.fuentesData });
       }
     });
-  };  
+  };   
 
   const createNewChat = () => {
     currentChatId = Date.now().toString();
@@ -423,7 +423,7 @@
         Fuentes:
         ${fuentes}
 
-        Responde de manera concisa y, al final, lista solo las fuentes utilizadas con su respectivo link.
+        Responde de manera concisa y precisa, evitando información irrelevante o redundante. Únicamente escribe las referencias de las fuentes consultadas entre corchetes a lo largo del texto (Ejemplo: Texto[n]).
         `.trim();
 
         // Enviar el prompt a la API del chat
@@ -484,9 +484,56 @@
         chat.messages.push({
           content: botResponse,
           isUser: false,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          fuentesData: data.results || []
         });
         saveChatsToStorage();
+
+        // Aquí insertamos el botón "Fuentes" y configuramos el sidebar
+        // Suponiendo que "data.results" contiene las fuentes consultadas
+        let fuentesData = data.results || [];
+
+        const fuentesBtn = document.createElement('button');
+        fuentesBtn.textContent = 'Fuentes';
+        fuentesBtn.classList.add('fuentes-btn');
+        botMessageDiv.appendChild(fuentesBtn);
+
+        // Verificar si el sidebar ya existe; si no, crearlo
+        let fuentesSidebar = document.getElementById('fuentesSidebar');
+        if (!fuentesSidebar) {
+          fuentesSidebar = document.createElement('div');
+          fuentesSidebar.id = 'fuentesSidebar';
+          fuentesSidebar.classList.add('fuentes-sidebar');
+          fuentesSidebar.innerHTML = `
+            <button id="fuentesCloseBtn" class="fuentes-close-btn">X</button>
+            <h3>Fuentes Consultadas</h3>
+            <ul id="fuentesList"></ul>
+          `;
+          document.body.appendChild(fuentesSidebar);
+        }
+
+        fuentesBtn.addEventListener('click', () => {
+          const fuentesList = document.getElementById('fuentesList');
+          fuentesList.innerHTML = '';
+          const topFuentes = fuentesData.slice(0, 5);
+          topFuentes.forEach((result, index) => {
+            let snippet = result.snippet;
+            if (snippet && snippet.length > 150) {
+              snippet = snippet.substring(0, 150) + '...';
+            }
+            const li = document.createElement('li');
+            li.style.marginBottom = '10px';
+            li.innerHTML = `<strong>${index + 1}.</strong> <a href="${result.url}" target="_blank">${result.title}</a><br><small>${snippet || ''}</small>`;
+            fuentesList.appendChild(li);
+          });
+          // Abrir el sidebar
+          fuentesSidebar.classList.add('open');
+        });
+
+        // Evento para cerrar el sidebar
+        document.getElementById('fuentesCloseBtn').addEventListener('click', () => {
+          fuentesSidebar.classList.remove('open');
+        });
 
       } catch (error) {
         console.error('Error en la búsqueda o en el procesamiento:', error);
@@ -545,16 +592,16 @@
         }),
         signal: abortController.signal
       });
-  
+    
       const botMessageDiv = document.createElement('div');
       botMessageDiv.className = 'message bot-message';
       chatMessages.appendChild(botMessageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
-  
+    
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
       let botResponse = '';
-  
+    
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -584,15 +631,19 @@
           chatMessages.scrollTop = chatMessages.scrollHeight;
         }
       }
-  
+    
+      // Se mejora el mensaje y se guarda en el historial sin fuentes (fuentesData vacío)
       enhanceMessage(botMessageDiv);
       chat.messages.push({
         content: botResponse,
         isUser: false,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        fuentesData: [] // Aquí se asigna un arreglo vacío, ya que en este flujo no se reciben fuentes
       });
       saveChatsToStorage();
-  
+    
+      // Se omite la creación del botón "Fuentes" en este flujo,
+      // puesto que no hay datos de fuentes en la respuesta.
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Solicitud cancelada por el usuario.');
@@ -612,7 +663,7 @@
       clearInterval(countdownInterval);
       loadingDiv.remove();
       document.querySelectorAll('.file-preview').forEach(p => p.remove());
-    }
+    }    
   };  
 
   /* ====== MEJORA DEL FORMATO DE LOS MENSAJES ====== */
@@ -680,7 +731,7 @@
   }
 
   /* ====== MOSTRAR MENSAJE EN EL CHAT ====== */
-  const displayMessage = (content, isUser) => {
+  const displayMessage = (content, isUser, options = {}) => {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
   
@@ -776,6 +827,46 @@
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   
+    // Agregar botón de Fuentes si es mensaje del bot y se tienen fuentes en options.fuentesData
+    if (!isUser && options.fuentesData && options.fuentesData.length > 0) {
+      const fuentesBtn = document.createElement('button');
+      fuentesBtn.textContent = 'Fuentes';
+      fuentesBtn.classList.add('fuentes-btn');
+      messageDiv.appendChild(fuentesBtn);
+  
+      fuentesBtn.addEventListener('click', () => {
+        let fuentesSidebar = document.getElementById('fuentesSidebar');
+        if (!fuentesSidebar) {
+          fuentesSidebar = document.createElement('div');
+          fuentesSidebar.id = 'fuentesSidebar';
+          fuentesSidebar.classList.add('fuentes-sidebar');
+          fuentesSidebar.innerHTML = `
+            <button id="fuentesCloseBtn" class="fuentes-close-btn">X</button>
+            <h3>Fuentes Consultadas</h3>
+            <ul id="fuentesList"></ul>
+          `;
+          document.body.appendChild(fuentesSidebar);
+        }
+        const fuentesList = document.getElementById('fuentesList');
+        fuentesList.innerHTML = '';
+        const topFuentes = options.fuentesData.slice(0, 5);
+        topFuentes.forEach((result, index) => {
+          let snippet = result.snippet;
+          if (snippet && snippet.length > 150) {
+            snippet = snippet.substring(0, 150) + '...';
+          }
+          const li = document.createElement('li');
+          li.style.marginBottom = '10px';
+          li.innerHTML = `<strong>${index + 1}.</strong> <a href="${result.url}" target="_blank">${result.title}</a><br><small>${snippet || ''}</small>`;
+          fuentesList.appendChild(li);
+        });
+        fuentesSidebar.classList.add('open');
+        document.getElementById('fuentesCloseBtn').addEventListener('click', () => {
+          fuentesSidebar.classList.remove('open');
+        });
+      });
+    }
+  
     const copyButtonContainer = document.createElement('div');
     copyButtonContainer.style.display = 'flex';
     copyButtonContainer.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
@@ -811,10 +902,7 @@
             `;
           }, 2000);
         })
-        .catch((err) => {
-          console.error('Error al copiar el texto:', err);
-          alert('No se pudo copiar el texto.');
-        });
+        .catch((err) => console.error('Error al copiar el texto:', err));
     });
     copyButtonContainer.appendChild(copyButton);
     chatMessages.appendChild(copyButtonContainer);
@@ -824,7 +912,7 @@
         console.error('Error al renderizar MathJax:', err)
       );
     }
-  };  
+  };      
 
   /* ====== AJUSTE DINÁMICO DEL TEXTAREA ====== */
   const autoResizeTextarea = () => {
