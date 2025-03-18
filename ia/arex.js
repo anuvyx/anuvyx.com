@@ -849,7 +849,7 @@
         }
         const fuentesList = document.getElementById('fuentesList');
         fuentesList.innerHTML = '';
-        const topFuentes = options.fuentesData.slice(0, 5);
+        const topFuentes = options.fuentesData.slice(0, 10);
         topFuentes.forEach((result, index) => {
           let snippet = result.snippet;
           if (snippet && snippet.length > 150) {
