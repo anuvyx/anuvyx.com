@@ -603,6 +603,7 @@ body {
   display: flex;
   align-items: center;
   max-width: 35%;
+  width: 35%;
   max-height: 60px;
 }
 

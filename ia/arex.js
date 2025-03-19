@@ -986,6 +986,127 @@
 
     document.getElementById('file-upload').addEventListener('change', handleFileUpload);
 
+    userInput.addEventListener('paste', (event) => {
+      // Verificar que haya datos en el portapapeles
+      if (event.clipboardData && event.clipboardData.items) {
+        const items = event.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          // Si el item es de tipo 'file'
+          if (item.kind === 'file') {
+            const file = item.getAsFile();
+            if (!file) continue;
+            // Opcional: deshabilitar botones o inputs si se va a procesar un archivo
+            // Por ejemplo: searchWebBtn.disabled = true;
+            
+            const extension = file.name.split('.').pop().toLowerCase();
+            // Procesar archivos de texto
+            if (['txt', 'csv', 'tsv', 'json', 'xml'].includes(extension)) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                let content = e.target.result;
+                if (extension === 'json') {
+                  try {
+                    const parsed = JSON.parse(content);
+                    content = JSON.stringify(parsed, null, 2);
+                  } catch (error) {
+                    console.error("Error al parsear JSON:", error);
+                  }
+                }
+                displayFilePreview(file, content);
+              };
+              reader.readAsText(file);
+            }
+            // Procesar documentos DOCX
+            else if (extension === 'docx') {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                const arrayBuffer = e.target.result;
+                mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+                  .then(function(result) {
+                    const content = result.value;
+                    displayFilePreview(file, content);
+                  })
+                  .catch(function(error) {
+                    console.error("Error al procesar DOCX:", error);
+                  });
+              };
+              reader.readAsArrayBuffer(file);
+            }
+            // Procesar hojas de cálculo XLS/XLSX
+            else if (['xlsx', 'xls'].includes(extension)) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                let content = '';
+                workbook.SheetNames.forEach(sheetName => {
+                  const worksheet = workbook.Sheets[sheetName];
+                  const csv = XLSX.utils.sheet_to_csv(worksheet);
+                  content += `--- ${sheetName} ---\n${csv}\n\n`;
+                });
+                displayFilePreview(file, content);
+              };
+              reader.readAsArrayBuffer(file);
+            }
+            // Procesar PDFs
+            else if (extension === 'pdf') {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                const typedarray = new Uint8Array(e.target.result);
+                pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                  let maxPages = pdf.numPages;
+                  let countPromises = [];
+                  for (let i = 1; i <= maxPages; i++) {
+                    countPromises.push(
+                      pdf.getPage(i).then(function(page) {
+                        return page.getTextContent().then(function(textContent) {
+                          return textContent.items.map(item => item.str).join(' ');
+                        });
+                      })
+                    );
+                  }
+                  Promise.all(countPromises).then(function(texts) {
+                    const content = texts.join('\n\n');
+                    displayFilePreview(file, content);
+                  });
+                }).catch(function(error) {
+                  console.error("Error al procesar PDF:", error);
+                });
+              };
+              reader.readAsArrayBuffer(file);
+            }
+            // Procesar imágenes (por ejemplo, PNG, JPG, JPEG)
+            else if (['png', 'jpg', 'jpeg'].includes(extension)) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                const imageDataUrl = e.target.result;
+                // Usar Tesseract para extraer texto, similar al flujo en handleFileUpload
+                Tesseract.recognize(imageDataUrl, 'spa', { logger: m => console.log(m) })
+                  .then(({ data: { text } }) => {
+                    Vibrant.from(imageDataUrl).getPalette()
+                      .then((palette) => {
+                        const textColor = palette.Vibrant ? palette.Vibrant.getHex() : '#FFFFFF';
+                        const bgColor = palette.DarkMuted ? palette.DarkMuted.getHex() : '#000000';
+                        const resultText = `Texto extraído: ${text.trim()}\nColor de texto: ${textColor}\nColor de fondo: ${bgColor}`;
+                        displayFilePreview(file, resultText);
+                      })
+                      .catch(err => {
+                        console.error("Error al extraer colores:", err);
+                        displayFilePreview(file, `Texto extraído: ${text.trim()}`);
+                      });
+                  })
+                  .catch(error => {
+                    console.error("Error al procesar imagen:", error);
+                  });
+              };
+              reader.readAsDataURL(file);
+            }
+          }
+        }
+      }
+    });    
+
     /* ====== MANEJO DE ARCHIVOS ====== */
     function handleFileUpload(event) {
       const files = event.target.files;
