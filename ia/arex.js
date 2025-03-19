@@ -76,16 +76,17 @@
     menu.style.borderRadius = '8px';
     menu.style.padding = '4px 0';
     menu.style.zIndex = '1000';
-
-    function createOption(title, description, descriptionColor) {
+  
+    function createOption(title, description, descriptionColor, disabled = false) {
       const container = document.createElement('div');
       container.style.display = 'flex';
       container.style.flexDirection = 'column';
-      container.style.cursor = 'pointer';
+      container.style.cursor = disabled ? 'not-allowed' : 'pointer';
       container.style.padding = '8px 16px';
       container.style.transition = 'background-color 0.3s ease';
-    
+  
       const updateBackground = () => {
+        if (disabled) return;
         const storedTitle = localStorage.getItem('chatHeaderTitle') || 'AREX';
         if (storedTitle === title) {
           container.classList.add('active');
@@ -95,27 +96,35 @@
           container.style.backgroundColor = 'transparent';
         }
       };
-    
+  
       container.addEventListener('mouseenter', function() {
-        container.style.backgroundColor = '#333';
+        if (!disabled) container.style.backgroundColor = '#333';
       });
       container.addEventListener('mouseleave', function() {
-        updateBackground();
+        if (!disabled) updateBackground();
       });
-    
-      container.addEventListener('click', function() {
-        const siblings = container.parentElement.children;
-        for (let sibling of siblings) {
-          sibling.classList.remove('active');
-          sibling.style.backgroundColor = 'transparent';
-        }
-        container.classList.add('active');
-        container.style.backgroundColor = 'rgba(227,227,227,0.1)';
-        document.getElementById('chatHeaderTitle').textContent = title;
-        localStorage.setItem('chatHeaderTitle', title);
-        menu.remove();
-      });
-    
+  
+      if (!disabled) {
+        container.addEventListener('click', function() {
+          const siblings = container.parentElement.children;
+          for (let sibling of siblings) {
+            sibling.classList.remove('active');
+            sibling.style.backgroundColor = 'transparent';
+          }
+          container.classList.add('active');
+          container.style.backgroundColor = 'rgba(227,227,227,0.1)';
+          document.getElementById('chatHeaderTitle').textContent = title;
+          localStorage.setItem('chatHeaderTitle', title);
+          menu.remove();
+        });
+      } else {
+        container.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          // No se realiza acción, ya que está deshabilitado
+        });
+      }
+  
       const titleElem = document.createElement('div');
       titleElem.textContent = title;
       titleElem.style.background = 'none';
@@ -123,42 +132,49 @@
       titleElem.style.color = '#fff';
       titleElem.style.fontWeight = 'bold';
       titleElem.style.fontSize = '16px';
-    
+  
       const storedTitle = localStorage.getItem('chatHeaderTitle') || 'AREX';
-      if (storedTitle === title) {
+      if (storedTitle === title && !disabled) {
         container.classList.add('active');
         container.style.backgroundColor = 'rgba(227,227,227,0.1)';
       }
-    
+  
       const desc = document.createElement('div');
       desc.textContent = description;
       desc.style.fontSize = '12px';
       desc.style.color = descriptionColor;
       desc.style.marginTop = '4px';
-    
+  
       container.appendChild(titleElem);
       container.appendChild(desc);
-    
+  
       return container;
-    }        
+    }
+  
+    // Nueva opción deshabilitada: no permite cambiar el título
+    const optionArexThinking = createOption('AREX THINKING', 'Próximamente', '#ADB0B4', true);
+    // Se ajusta visualmente para indicar que está deshabilitada:
+    optionArexThinking.style.opacity = '0.5';
 
     const optionArexDeluxe = createOption('AREX DELUXE', 'Tareas complejas que requieren alta precisión y comprensión profunda.', '#ADB0B4');
     const optionArexGold = createOption('AREX GOLD', 'Tareas moderadamente complejas o simples con mayor precisión.', '#ADB0B4');
     const optionArex = createOption('AREX', 'Tareas simples donde la rapidez es una prioridad.', '#ADB0B4');
-
+  
+    menu.appendChild(optionArexThinking);
     menu.appendChild(optionArexDeluxe);
     menu.appendChild(optionArexGold);
     menu.appendChild(optionArex);
+  
     menu.addEventListener('click', (e) => e.stopPropagation());
     this.parentElement.appendChild(menu);
-
+  
     document.addEventListener('click', function closeMenu(event) {
       if (!menu.contains(event.target) && event.target !== document.getElementById('headerTitleToggleBtn')) {
         menu.remove();
         document.removeEventListener('click', closeMenu);
       }
     });
-  });
+  });  
 
   document.addEventListener('DOMContentLoaded', () => {
     let storedTitle = localStorage.getItem('chatHeaderTitle');
