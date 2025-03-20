@@ -490,10 +490,16 @@
             }
           }
           botMessageDiv.innerHTML = marked.parse(botResponse);
+          
+          // Actualizar la renderización de MathJax en cada iteración
+          if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise([botMessageDiv]).catch((err) => console.error('MathJax error:', err));
+          }
+          
           if (shouldAutoScroll()) {
             chatMessages.scrollTop = chatMessages.scrollHeight;
           }
-        }
+        }        
 
         // Guardar y mostrar la respuesta final
         enhanceMessage(botMessageDiv);
@@ -643,10 +649,16 @@
           }
         }
         botMessageDiv.innerHTML = marked.parse(botResponse);
+        
+        // Actualizar la renderización de MathJax en cada iteración
+        if (typeof MathJax !== 'undefined') {
+          MathJax.typesetPromise([botMessageDiv]).catch((err) => console.error('MathJax error:', err));
+        }
+        
         if (shouldAutoScroll()) {
           chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-      }
+      }      
     
       // Se mejora el mensaje y se guarda en el historial sin fuentes (fuentesData vacío)
       enhanceMessage(botMessageDiv);
