@@ -591,7 +591,6 @@ body {
   flex-wrap: nowrap;
   overflow-x: auto;
   max-width: 100%;
-  scrollbar-color: var(--color-border) var(--color-chat-input-bg);
 }
 
 .file-preview {
@@ -739,23 +738,24 @@ body {
 }
 
 .file-upload-btn.disabled {
-  background-color: #2D2E2F; 
-  opacity: 0.6;           
-  cursor: not-allowed;      
+  background-color: #2D2E2F;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 #search-web-btn:disabled {
-  background-color: #2D2E2F; 
-  opacity: 0.6;           
-  cursor: not-allowed;      
+  background-color: #2D2E2F;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
+/* ENLACES */
 a {
-  color: #3498db;      
+  color: #3498db;
   text-decoration: underline;
-  overflow-wrap: break-word; 
-  word-wrap: break-word;     
-  white-space: normal;     
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 a:visited {
@@ -770,7 +770,7 @@ a:active {
   color: #c0392b;
 }
 
-/* Estilos para el botón "Fuentes" */
+/* BOTÓN "FUENTES" */
 .fuentes-btn {
   padding: 8px 16px;
   background-color: var(--color-bg);
@@ -786,11 +786,11 @@ a:active {
   background: #404144;
 }
 
-/* Estilos para el sidebar de fuentes mejor organizado */
+/* SIDEBAR "FUENTES" */
 .fuentes-sidebar {
   position: fixed;
   top: 0;
-  right: -400px; /* Oculto por defecto */
+  right: -400px;
   width: 400px;
   height: 100%;
   background-color: var(--color-bg);
@@ -804,12 +804,10 @@ a:active {
   gap: 1rem;
 }
 
-/* Clase para mostrar el sidebar */
 .fuentes-sidebar.open {
   right: 0;
 }
 
-/* Botón de cierre del sidebar alineado a la derecha */
 .fuentes-close-btn {
   align-self: flex-end;
   color: var(--color-white);
@@ -819,14 +817,12 @@ a:active {
   cursor: pointer;
 }
 
-/* Título centrado y con margen inferior */
 .fuentes-sidebar h3 {
   text-align: center;
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
-/* Estilos para la lista de fuentes */
 .fuentes-sidebar ul {
   list-style: none;
   padding: 0;
@@ -840,7 +836,6 @@ a:active {
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Enlaces dentro de cada fuente */
 .fuentes-sidebar li a {
   color: #3498db;
   text-decoration: none;
@@ -851,6 +846,7 @@ a:active {
   color: #e74c3c;
 }
 
+/* TABLAS */
 table {
   border-collapse: collapse;
   width: 100%;
@@ -862,6 +858,7 @@ th, td {
   text-align: left;
 }
 
+/* BOTÓN DE ENVIAR */
 #send-btn {
   padding: 0.8rem;
   background: var(--color-white);
@@ -885,6 +882,7 @@ th, td {
   height: 16px;
 }
 
+/* BUSQUEDA EN CHAT */
 .chat-search-container {
   display: flex;
   align-items: center;
