@@ -1082,6 +1082,10 @@
               };
               reader.readAsArrayBuffer(file);
             } else if (['png', 'jpg', 'jpeg'].includes(extension)) {
+              if (document.getElementById('chatHeaderTitle').textContent.trim() === "AREX") {
+                alert("No es posible subir imágenes en esta versión. Intenta de nuevo en la versión Gold o Deluxe.");
+                continue;
+              }
               const reader = new FileReader();
               reader.onload = function (e) {
                 const imageDataUrl = e.target.result;
@@ -1200,6 +1204,10 @@
           };
           reader.readAsArrayBuffer(file);
         } else if (['png', 'jpg', 'jpeg'].includes(extension)) {
+          if (document.getElementById('chatHeaderTitle').textContent.trim() === "AREX") {
+            alert("No es posible subir imágenes en esta versión. Intenta de nuevo en la versión Gold o Deluxe.");
+            continue;
+          }
           const reader = new FileReader();
           reader.onload = function (e) {
             const imageDataUrl = e.target.result;
@@ -1221,7 +1229,7 @@
                 console.error("Error al procesar imagen:", error);
               });
           };
-          reader.readAsDataURL(file);
+          reader.readAsDataURL(file);        
         }
       }
     }
