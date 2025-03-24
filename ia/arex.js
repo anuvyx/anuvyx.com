@@ -57,6 +57,75 @@
     });
   };
 
+  // Función para mostrar una alerta personalizada
+  function showCustomAlert(message) {
+    return new Promise(resolve => {
+      const modal = document.createElement('div');
+      modal.classList.add('custom-alert-overlay');
+      modal.innerHTML = `
+        <div class="custom-alert-box">
+          <p>${message}</p>
+          <button id="customAlertOk">Aceptar</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('customAlertOk').addEventListener('click', () => {
+        modal.remove();
+        resolve();
+      });
+    });
+  }
+
+  // Función para mostrar un diálogo de confirmación personalizado
+  function showCustomConfirm(message) {
+    return new Promise(resolve => {
+      const modal = document.createElement('div');
+      modal.classList.add('custom-alert-overlay');
+      modal.innerHTML = `
+        <div class="custom-alert-box">
+          <p>${message}</p>
+          <button id="customConfirmYes">Sí</button>
+          <button id="customConfirmNo">No</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('customConfirmYes').addEventListener('click', () => {
+        modal.remove();
+        resolve(true);
+      });
+      document.getElementById('customConfirmNo').addEventListener('click', () => {
+        modal.remove();
+        resolve(false);
+      });
+    });
+  }
+
+  // Función para mostrar un diálogo de entrada personalizado (prompt)
+  function showCustomPrompt(message, defaultValue = '') {
+    return new Promise((resolve) => {
+      const modal = document.createElement('div');
+      modal.classList.add('custom-alert-overlay');
+      modal.innerHTML = `
+        <div class="custom-alert-box">
+          <p>${message}</p>
+          <input id="customPromptInput" type="text" value="${defaultValue}" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid var(--color-border);">
+          <button id="customPromptOk">Aceptar</button>
+          <button id="customPromptCancel">Cancelar</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('customPromptOk').addEventListener('click', () => {
+        const input = document.getElementById('customPromptInput').value;
+        modal.remove();
+        resolve(input);
+      });
+      document.getElementById('customPromptCancel').addEventListener('click', () => {
+        modal.remove();
+        resolve(null);
+      });
+    });
+  }
+
   // MENÚ DE CAMBIO DE TÍTULO
   document.getElementById('headerTitleToggleBtn').addEventListener('click', function (e) {
     e.stopPropagation();
@@ -236,12 +305,14 @@
       </svg>
       Renombrar
     `;
-    renameOption.addEventListener('click', () => {
-      const newName = prompt("Introduce un nuevo nombre para este chat:");
-      if (newName && newName.trim()) renameChat(chatId, newName.trim());
+    renameOption.addEventListener('click', async () => {
+      const newName = await showCustomPrompt("Introduce un nuevo nombre para este chat:", document.querySelector(`.chat-item[data-id="${chatId}"] .chat-info span`).textContent);
+      if (newName && newName.trim()) {
+        renameChat(chatId, newName.trim());
+      }
       menu.remove();
       currentOptionsMenu = null;
-    });
+    });    
 
     const deleteOption = document.createElement('button');
     deleteOption.className = 'chat-option';
@@ -251,11 +322,14 @@
       </svg>
       Eliminar
     `;
-    deleteOption.addEventListener('click', () => {
-      if (confirm("¿Estás seguro de que quieres eliminar este chat?")) deleteChat(chatId);
+    deleteOption.addEventListener('click', async () => {
+      const confirmDelete = await showCustomConfirm("¿Estás seguro de que quieres eliminar este chat?");
+      if (confirmDelete) {
+        deleteChat(chatId);
+      }
       menu.remove();
       currentOptionsMenu = null;
-    });
+    });    
 
     menu.append(renameOption, deleteOption);
     button.parentElement.appendChild(menu);
@@ -971,15 +1045,16 @@
         sendMessage();
       }
     });
-    deleteChatsBtn.addEventListener('click', () => {
-      if (confirm('¿Estás seguro de que quieres eliminar todos los chats?')) {
+    deleteChatsBtn.addEventListener('click', async () => {
+      const confirmDelete = await showCustomConfirm('¿Estás seguro de que quieres eliminar todos los chats?');
+      if (confirmDelete) {
         chats = [];
         localStorage.removeItem('arexChats');
         chatHistory.innerHTML = '';
         chatMessages.innerHTML = '';
-        alert('Todos los chats han sido eliminados.');
+        await showCustomAlert('Todos los chats han sido eliminados.');
       }
-    });
+    });    
     document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
     document.getElementById('floatingToggle').addEventListener('click', toggleSidebar);
     userInput.addEventListener('input', autoResizeTextarea);
@@ -1083,9 +1158,9 @@
               reader.readAsArrayBuffer(file);
             } else if (['png', 'jpg', 'jpeg'].includes(extension)) {
               if (document.getElementById('chatHeaderTitle').textContent.trim() === "AREX") {
-                alert("No es posible subir imágenes en esta versión. Intenta de nuevo en la versión Gold o Deluxe.");
+                showCustomAlert("No es posible subir imágenes en esta versión. Intenta de nuevo en la versión Gold o Deluxe.");
                 continue;
-              }
+              }              
               const reader = new FileReader();
               reader.onload = function (e) {
                 const imageDataUrl = e.target.result;
@@ -1115,7 +1190,7 @@
     });
 
     // MANEJO DE ARCHIVOS
-    function handleFileUpload(event) {
+    async function handleFileUpload(event) {
       const files = event.target.files;
       if (!files.length) return;
       searchWebBtn.disabled = true;
@@ -1130,9 +1205,9 @@
       }
       for (const file of files) {
         if (totalSize + file.size > 20 * 1024 * 1024) {
-          alert(`No se puede subir el archivo "${file.name}" porque el tamaño total excede 20MB.`);
+          await showCustomAlert(`No se puede subir el archivo "${file.name}" porque el tamaño total excede 20MB.`);
           continue;
-        }
+        }        
         totalSize += file.size;
         const extension = file.name.split('.').pop().toLowerCase();
         if (['txt', 'csv', 'tsv', 'json', 'xml'].includes(extension)) {
@@ -1205,9 +1280,9 @@
           reader.readAsArrayBuffer(file);
         } else if (['png', 'jpg', 'jpeg'].includes(extension)) {
           if (document.getElementById('chatHeaderTitle').textContent.trim() === "AREX") {
-            alert("No es posible subir imágenes en esta versión. Intenta de nuevo en la versión Gold o Deluxe.");
+            showCustomAlert("No es posible subir imágenes en esta versión. Intenta de nuevo en la versión Gold o Deluxe.");
             continue;
-          }
+          }          
           const reader = new FileReader();
           reader.onload = function (e) {
             const imageDataUrl = e.target.result;
