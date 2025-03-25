@@ -475,7 +475,7 @@
       sendBtn.onclick = cancelRequest;
 
       try {
-        const response = await fetch('https://anuvyx-com-backend.vercel.app/api/search', {
+        const response = await fetch('https://arex-backend.vercel.app/api/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query: userText }),
@@ -506,7 +506,7 @@
         Responde de manera concisa y precisa, evitando información irrelevante o redundante. Únicamente escribe las referencias de las fuentes consultadas entre corchetes a lo largo del texto (Ejemplo: Texto[n]).
         `.trim();
 
-        const chatResponse = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
+        const chatResponse = await fetch('https://arex-backend.vercel.app/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -664,7 +664,7 @@
         role: msg.isUser ? 'user' : 'assistant',
         content: msg.content
       }));
-      const response = await fetch('https://anuvyx-com-backend.vercel.app/api/chat', {
+      const response = await fetch('https://arex-backend.vercel.app/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
