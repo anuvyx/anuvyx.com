@@ -15,6 +15,51 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Login System
+const loginModal = document.getElementById('loginModal');
+const loginLinks = document.querySelectorAll('.login-link');
+const closeModal = document.querySelector('.close-modal');
+
+// Abrir modal
+loginLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.style.display = 'block';
+        document.body.classList.add('no-scroll');
+    });
+});
+
+// Cerrar modal
+closeModal.addEventListener('click', () => {
+    loginModal.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+});
+
+// Cerrar al hacer click fuera
+window.addEventListener('click', (e) => {
+    if (e.target === loginModal) {
+        loginModal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+    }
+});
+
+// Cerrar con ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && loginModal.style.display === 'block') {
+        loginModal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+    }
+});
+
+// Manejo del formulario
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Aquí iría la lógica de autenticación
+    console.log('Iniciando sesión...');
+    // Redirección temporal de ejemplo
+    window.location.href = '/dashboard';
+});
+
 // Animación al hacer scroll
 const observerOptions = {
     threshold: 0.1 // Define cuándo se activará la animación (10% visible)
