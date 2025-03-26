@@ -60,6 +60,56 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
     window.location.href = '/dashboard';
 });
 
+// Elementos para el modal de registro
+const registroModal = document.getElementById('registroModal');
+const registroLink = document.querySelector('a[href="#registro"]');
+const closeModalRegistro = document.querySelector('.close-modal-registro');
+
+// Abrir modal de registro al hacer clic en "Crear cuenta nueva"
+if (registroLink) {
+    registroLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        registroModal.style.display = 'block';
+        document.body.classList.add('no-scroll');
+    });
+}
+
+// Cerrar modal de registro al hacer clic en la X
+if (closeModalRegistro) {
+    closeModalRegistro.addEventListener('click', () => {
+        registroModal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+    });
+}
+
+// Cerrar modal de registro al hacer clic fuera de la ventana del modal
+window.addEventListener('click', (e) => {
+    if (e.target === registroModal) {
+        registroModal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+    }
+});
+
+// Manejo del formulario de registro
+document.getElementById('registroForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Validar que las contraseñas coincidan
+    const password = document.getElementById('passwordRegistro').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden");
+        return;
+    }
+    
+    // Aquí iría la lógica para enviar los datos al servidor
+    console.log('Registrando usuario...');
+    
+    // Redirección o mensaje de éxito (por ejemplo, redirigir a un dashboard o página de bienvenida)
+    window.location.href = '../anuvyx.com/welcome.html';
+});
+
 // Animación al hacer scroll
 const observerOptions = {
     threshold: 0.1 // Define cuándo se activará la animación (10% visible)

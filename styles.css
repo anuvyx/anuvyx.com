@@ -128,6 +128,45 @@ body {
     animation: modalSlideIn 0.3s ease-out;
 }
 
+.registro-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.registro-content {
+    position: relative;
+    background: #111;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    margin: 10% auto;
+    border-radius: 15px;
+    border: 1px solid #333;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+/* Estilo para el botón de cerrar modal (similar al de login) */
+.close-modal-registro {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    color: #888;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal-registro:hover {
+    color: #fff;
+}
+
 @keyframes modalSlideIn {
     from { transform: translateY(-50px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
