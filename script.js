@@ -86,15 +86,41 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   
   document.getElementById('registroForm').addEventListener('submit', (e) => {
     e.preventDefault();
+    
+    // Obtener datos del formulario
+    const nombre = document.getElementById('nombre').value;
+    const email = document.getElementById('emailRegistro').value;
     const password = document.getElementById('passwordRegistro').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
+  
+    // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
       alert("Las contraseñas no coinciden");
       return;
     }
-    console.log('Registrando usuario...');
-    window.location.href = '../anuvyx.com/welcome.html';
-  });
+  
+    // Construir el objeto con los datos del usuario
+    const userData = { nombre, email, password };
+  
+    // Enviar solicitud POST al backend para registrar el usuario
+    fetch('https://anuvyx-backend.vercel.app/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Usuario registrado en el backend:', data);
+        // Redireccionar a la página de bienvenida u otra acción
+        window.location.href = '../anuvyx.com/welcome.html';
+      })
+      .catch(error => {
+        console.error('Error al registrar el usuario:', error);
+        alert('Hubo un error al crear la cuenta, por favor intenta nuevamente.');
+      });
+  });  
   
   /* ===============================
      Scroll Animation Functionality
