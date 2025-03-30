@@ -99,6 +99,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       return;
     }
   
+    // Validar que la contraseña sea segura:
+    // Al menos 8 caracteres, 1 minúscula, 1 mayúscula, 1 dígito y 1 carácter especial.
+    const securePasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!securePasswordRegex.test(password)) {
+      alert("La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales.");
+      return;
+    }
+  
     // Construir el objeto con los datos del usuario
     const userData = { nombre, email, password };
   
@@ -114,13 +122,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       .then(data => {
         console.log('Usuario registrado en el backend:', data);
         // Redireccionar a la página de bienvenida u otra acción
-        window.location.href = '../anuvyx.com/welcome.html';
+        window.location.href = 'welcome.html';
       })
       .catch(error => {
         console.error('Error al registrar el usuario:', error);
         alert('Hubo un error al crear la cuenta, por favor intenta nuevamente.');
       });
-  });  
+  });    
   
   /* ===============================
      Scroll Animation Functionality
