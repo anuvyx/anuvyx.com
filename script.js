@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     userIconLink.classList.add("user-icon-container");
 
     const userIconImg = document.createElement("img");
-    userIconImg.src = "static/logo/user-icon.png";
+    userIconImg.src = "static/icons/user-icon-black.png";
     userIconImg.alt = "Perfil";
     userIconImg.classList.add("user-icon");
 
