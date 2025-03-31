@@ -83,6 +83,94 @@
   .nav-link:hover {
     opacity: 0.7;
   }
+
+  .user-icon {
+    border-radius: 50%;      
+    max-width: 40px;               
+    max-height: 40px;              
+    object-fit: cover;         
+    border: 2px solid #0071e3; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  }
+  
+  .user-icon:hover {
+    transform: scale(1.1);   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+  }
+  
+  /* User Menu Styles */
+  .user-menu-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .user-icon-container {
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .user-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    min-width: 160px;
+    z-index: 1001;
+    margin-top: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  }
+
+  .user-dropdown.show {
+    display: block;
+    animation: dropdownFade 0.3s ease;
+  }
+
+  .dropdown-item {
+    color: #fff;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+  }
+
+  .dropdown-item:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .logout-button {
+    cursor: pointer;
+    border-top: 1px solid #333;
+  }
+
+  @keyframes dropdownFade {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mobile Adjustments */
+  @media (max-width: 768px) {
+    .user-dropdown {
+      position: fixed;
+      right: 20px;
+      top: 80px;
+    }
+    
+    .user-menu-container {
+      order: -1;
+      margin-left: auto;
+      padding-right: 20px;
+    }
+  }
   
   /* ===============================================
      Sections Styles

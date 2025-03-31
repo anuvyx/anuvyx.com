@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido - Anuvyx</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../static/logo/favicon.ico">
+  <!-- Estilos personalizados para la página de Bienvenida -->
+  <style>
+    /* Fondo similar al hero de index */
+    .welcome-section {
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                  url('../static/index/hero-banner.avif');
+      background-size: cover;
+      background-position: center center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+    }
+
+    /* Contenedor principal de la bienvenida */
+    .welcome-content {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2rem;
+      border-radius: 10px;
+      margin-top: 140px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Estilos para el encabezado de bienvenida */
+    .welcome-header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #fff;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .welcome-header p {
+      font-size: 1.2rem;
+      color: #ccc;
+      text-align: center;
+    }
+
+    /* Estilos para las tarjetas de pasos */
+    .welcome-steps {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .step-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .step-number {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #0071e3;
+    }
+
+    .step-card h3 {
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .step-card p {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+
+    .cta-button.small {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Top Bar Section -->
+    <div class="top-bar" onclick="window.location.reload()" style="cursor: pointer;" title="Recargar">
+      <a href="../index.html#hero" class="company-name">ANUVYX</a>
+    </div>
+
+    <!-- Navigation Bar Section -->
+    <nav class="nav">
+      <a href="../index.html#hero" class="nav-logo">
+        <img src="../static/logo/Anuvyx-White-NB.PNG" alt="Logo Anuvyx" class="logo-img" title="Inicio">
+      </a>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html#ia" class="nav-link">IA</a>
+        <a href="../index.html#iot" class="nav-link">IoT</a>
+        <a href="../index.html#blockchain" class="nav-link">Blockchain</a>
+        <a href="../index.html#metaverso" class="nav-link">Metaverso</a>
+        <a href="../index.html#energias" class="nav-link">Energías Limpias</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Sección de Bienvenida con fondo modificado -->
+    <section class="section welcome-section">
+      <div class="welcome-content">
+        <div class="welcome-header">
+          <h1>¡Bienvenido a Anuvyx!</h1>
+          <p>Tu cuenta ha sido creada exitosamente.</p>
+        </div>
+
+        <div class="welcome-steps">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3>Completa tu perfil</h3>
+            <p>Personaliza tu experiencia añadiendo información básica.</p>
+            <a href="profile.html" class="cta-button small">Configurar Perfil</a>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3>Explora la IA</h3>
+            <p>Comienza a interactuar con nuestro modelo de lenguaje Arex.</p>
+            <a href="../ia/arex.html" class="cta-button small">Conocer a Arex</a>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3>Descubre más</h3>
+            <p>Conoce nuestras funciones y tecnologías.</p>
+            <a href="../index.html#hero" class="cta-button small">Volver al inicio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="copyright">&copy; 2025 Anuvyx. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../script.js"></script>
+</body>
+</html>
