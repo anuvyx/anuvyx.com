@@ -86,7 +86,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   
   document.getElementById('registroForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    
+  
     // Obtener datos del formulario
     const nombre = document.getElementById('nombre').value;
     const email = document.getElementById('emailRegistro').value;
@@ -118,7 +118,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       },
       body: JSON.stringify(userData)
     })
-      .then(response => response.json())
+      .then(response => {
+        // Verificar si la respuesta es exitosa
+        if (!response.ok) {
+          // Extraer el mensaje de error del backend y lanzarlo
+          return response.json().then(errorData => {
+            throw new Error(errorData.error || 'Error al crear la cuenta');
+          });
+        }
+        return response.json();
+      })
       .then(data => {
         console.log('Usuario registrado en el backend:', data);
         // Redireccionar a la página de bienvenida u otra acción
@@ -126,9 +135,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       })
       .catch(error => {
         console.error('Error al registrar el usuario:', error);
-        alert('Hubo un error al crear la cuenta, por favor intenta nuevamente.');
+        alert(error.message);
       });
-  });    
+  });      
   
   /* ===============================
      Scroll Animation Functionality
