@@ -66,7 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
     userIconLink.classList.add("user-icon-container");
 
     const userIconImg = document.createElement("img");
-    userIconImg.src = "static/icons/user-icon-black.png";
+    let basePath = window.location.pathname.includes('/user/') ? '../' : '';
+    userIconImg.src = basePath + 'static/icons/user-icon-black.png';
     userIconImg.alt = "Perfil";
     userIconImg.classList.add("user-icon");
 
@@ -149,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       console.log('Inicio de sesión exitoso:', data);
       localStorage.setItem("isLoggedIn", "true");
-      window.location.href = 'index.html';
+      window.location.href = '../index.html#hero';
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);
       alert('Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.');
