@@ -224,7 +224,7 @@
     animation: modalSlideIn 0.3s ease-out;
   }
   
-  .registro-modal {
+  .signUp-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -235,7 +235,7 @@
     z-index: 10000;
   }
   
-  .registro-content {
+  .signUp-content {
     position: relative;
     background: #111;
     padding: 2rem;
@@ -247,7 +247,7 @@
     animation: modalSlideIn 0.3s ease-out;
   }
   
-  .close-modal-registro {
+  .close-modal-signUp {
     position: absolute;
     top: 1rem;
     right: 1.5rem;
@@ -257,7 +257,7 @@
     transition: color 0.3s;
   }
   
-  .close-modal-registro:hover {
+  .close-modal-signUp:hover {
     color: #fff;
   }
   

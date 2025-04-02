@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* Toggle de visibilidad de contraseñas */
   addTogglePassword('password');
-  addTogglePassword('passwordRegistro');
+  addTogglePassword('passwordSignUp');
   addTogglePassword('confirmPassword');
 
   /* Modal de login */
@@ -157,34 +157,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* Modal de registro */
-  const registroModal = document.getElementById('registroModal');
-  const registroLink = document.querySelector('a[href="#registro"]');
-  const closeModalRegistro = document.querySelector('.close-modal-registro');
-  if (registroLink) {
-    registroLink.addEventListener('click', (e) => {
+  /* Modal de sign up */
+  const signUpModal = document.getElementById('signUpModal');
+  const signUpLink = document.querySelector('a[href="#signUp"]');
+  const closeModalSignUp = document.querySelector('.close-modal-signUp');
+  if (signUpLink) {
+    signUpLink.addEventListener('click', (e) => {
       e.preventDefault();
-      registroModal.style.display = 'block';
+      signUpModal.style.display = 'block';
       document.body.classList.add('no-scroll');
     });
   }
-  if (closeModalRegistro) {
-    closeModalRegistro.addEventListener('click', () => {
-      registroModal.style.display = 'none';
+  if (closeModalSignUp) {
+    closeModalSignUp.addEventListener('click', () => {
+      signUpModal.style.display = 'none';
       document.body.classList.remove('no-scroll');
     });
   }
   window.addEventListener('click', (e) => {
-    if (e.target === registroModal) {
-      registroModal.style.display = 'none';
+    if (e.target === signUpModal) {
+      signUpModal.style.display = 'none';
       document.body.classList.remove('no-scroll');
     }
   });
-  document.getElementById('registroForm').addEventListener('submit', (e) => {
+  document.getElementById('signUpForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const nombre = document.getElementById('nombre').value;
-    const email = document.getElementById('emailRegistro').value;
-    const password = document.getElementById('passwordRegistro').value;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('emailSignUp').value;
+    const password = document.getElementById('passwordSignUp').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     if (password !== confirmPassword) {
       alert("Las contraseñas no coinciden");
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales.");
       return;
     }
-    const userData = { nombre, email, password };
+    const userData = { name, email, password };
     fetch('https://anuvyx-backend.vercel.app/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
