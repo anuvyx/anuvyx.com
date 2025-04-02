@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     userIconLink.classList.add("user-icon-container");
 
     const userIconImg = document.createElement("img");
-    let basePath = window.location.pathname.includes('/user/') ? '../' : '';
+    let basePath = window.location.pathname.includes('/account/') ? '../' : '';
     userIconImg.src = basePath + 'static/icons/user-icon-black.png';
     userIconImg.alt = "Perfil";
     userIconImg.classList.add("user-icon");
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dropdownMenu = document.createElement("div");
     dropdownMenu.classList.add("user-dropdown");
     dropdownMenu.innerHTML = `
-      <a href="user/profile.html" class="dropdown-item">Perfil</a>
+      <a href="account/profile.html" class="dropdown-item">Perfil</a>
       <div class="dropdown-item logout-button">Cerrar Sesión</div>
     `;
 
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then(data => {
         console.log('Usuario registrado en el backend:', data);
-        window.location.href = 'user/welcome.html';
+        window.location.href = 'account/welcome.html';
       })
       .catch(error => {
         console.error('Error al registrar el usuario:', error);

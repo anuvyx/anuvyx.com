@@ -235,10 +235,17 @@
   </footer>
 
   <script src="../script.js"></script>
+
   <script>
-    // Script adicional para funcionalidad del perfil
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      alert("Acceso denegado. Por favor, inicia sesión primero.");
+      window.location.href = "../index.html#login";
+    }
+  </script>
+  
+
+  <script>
     document.querySelector('.edit-overlay').addEventListener('click', function() {
-      // Lógica para cambiar foto de perfil
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = 'image/*';
