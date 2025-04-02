@@ -271,6 +271,84 @@
       opacity: 1;
     }
   }
+
+  /* Auth Page Styles */
+  .auth-page {
+    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), 
+                url('../static/index/hero-banner.avif');
+    background-size: cover;
+    min-height: 100vh;
+  }
+
+  .auth-nav {
+    padding: 20px 40px;
+    background: rgba(0, 0, 0, 0.9);
+    border-bottom: 1px solid #333;
+  }
+
+  .auth-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 2rem;
+    background: rgba(17, 17, 17, 0.95);
+    border-radius: 15px;
+    border: 1px solid #333;
+  }
+
+  .auth-section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .auth-section.active {
+    display: block;
+  }
+
+  .auth-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .auth-links {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+
+  .auth-links a {
+    color: #0071e3;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+
+  .auth-links a:hover {
+    opacity: 0.8;
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .auth-container {
+      margin: 20px;
+      padding: 1.5rem;
+    }
+    
+    .auth-content h2 {
+      font-size: 2rem;
+    }
+  }
   
   .close-modal {
     position: absolute;

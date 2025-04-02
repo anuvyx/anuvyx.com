@@ -111,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModal = document.querySelector('.close-modal');
   loginLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-      e.preventDefault();
       loginModal.style.display = 'block';
       document.body.classList.add('no-scroll');
     });
