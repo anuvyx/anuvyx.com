@@ -17,7 +17,6 @@
       background-size: cover;
       background-position: center;
     }
-
     .profile-container {
       max-width: 1200px;
       margin: 50px auto;
@@ -26,12 +25,10 @@
       padding: 2rem;
       box-shadow: 0 4px 15px rgba(0, 113, 227, 0.2);
     }
-
     .profile-header {
       text-align: center;
       margin-bottom: 2rem;
     }
-
     .profile-picture {
       width: 150px;
       height: 150px;
@@ -41,7 +38,6 @@
       position: relative;
       border: 3px solid #0071e3;
     }
-
     .edit-overlay {
       position: absolute;
       bottom: 0;
@@ -51,35 +47,30 @@
       border-radius: 50%;
       cursor: pointer;
     }
-
     .profile-grid {
       display: grid;
       grid-template-columns: 1fr 2fr;
       gap: 2rem;
     }
-
     .profile-sidebar {
       border-right: 1px solid #333;
       padding-right: 2rem;
     }
-
     .profile-info h2 {
       color: #0071e3;
       margin-bottom: 1.5rem;
     }
-
     .info-group {
       margin-bottom: 1.5rem;
     }
-
     .info-group label {
       display: block;
       color: #888;
       margin-bottom: 0.5rem;
     }
-
     .info-group input,
-    .info-group select {
+    .info-group select,
+    .info-group textarea {
       width: 100%;
       padding: 0.8rem;
       background: #111;
@@ -88,41 +79,36 @@
       border-radius: 8px;
       transition: all 0.3s;
     }
-
-    .info-group input:focus {
+    .info-group input:focus,
+    .info-group textarea:focus,
+    .info-group select:focus {
       border-color: #0071e3;
       outline: none;
     }
-
     .security-section {
       margin-top: 2rem;
       padding-top: 2rem;
       border-top: 1px solid #333;
     }
-
     .button-group {
       display: flex;
       gap: 1rem;
       margin-top: 2rem;
     }
-
     .disabled-input {
       background: #222 !important;
       cursor: not-allowed;
     }
-
     @media (max-width: 768px) {
       .profile-grid {
         grid-template-columns: 1fr;
       }
-      
       .profile-sidebar {
         border-right: none;
         padding-right: 0;
         border-bottom: 1px solid #333;
         padding-bottom: 2rem;
       }
-      
       .profile-container {
         padding: 1.5rem;
       }
@@ -134,7 +120,6 @@
   <div class="top-bar" onclick="window.location.reload()" style="cursor: pointer;" title="Recargar">
     <a href="../index.html#hero" class="company-name">ANUVYX</a>
   </div>
-
   <!-- Navigation Bar Section -->
   <nav class="nav">
     <a href="../index.html#hero" class="nav-logo">
@@ -153,7 +138,6 @@
       <a href="../index.html#energias" class="nav-link">Energías Limpias</a>
     </div>
   </nav>
-
   <!-- Main Profile Content -->
   <main class="profile-section">
     <div class="profile-container">
@@ -163,37 +147,35 @@
         </div>
         <h1>Perfil de Usuario</h1>
       </div>
-
       <div class="profile-grid">
         <div class="profile-sidebar">
           <div class="profile-info">
             <h2>Información Básica</h2>
             <div class="info-group">
               <label>Nombre completo</label>
-              <input type="text" value="Juan Pérez" class="disabled-input" readonly>
+              <input id="userName" type="text" value="" class="disabled-input" readonly>
             </div>
             <div class="info-group">
               <label>Correo electrónico</label>
-              <input type="email" value="juan@example.com" class="disabled-input" readonly>
+              <input id="userEmail" type="email" value="" class="disabled-input" readonly>
             </div>
             <div class="info-group">
               <label>Fecha de registro</label>
-              <input type="text" value="15 Marzo 2024" class="disabled-input" readonly>
+              <input id="registrationDate" type="text" value="" class="disabled-input" readonly>
             </div>
           </div>
         </div>
-
         <div class="profile-content">
           <div class="profile-info">
             <h2>Detalles Personales</h2>
             <div class="info-group">
               <label>Biografía</label>
-              <textarea rows="4" placeholder="Cuéntanos algo sobre ti..."></textarea>
+              <textarea id="userBio" rows="4" placeholder="Cuéntanos algo sobre ti..."></textarea>
             </div>
-            
             <div class="info-group">
               <label>País</label>
-              <select>
+              <select id="userCountry">
+                <option value="">Selecciona tu país</option>
                 <option>México</option>
                 <option>España</option>
                 <option>Argentina</option>
@@ -201,7 +183,6 @@
               </select>
             </div>
           </div>
-
           <div class="security-section">
             <h2>Seguridad</h2>
             <div class="info-group">
@@ -212,7 +193,6 @@
               <label>Nueva contraseña</label>
               <input type="password" placeholder="••••••••">
             </div>
-            
             <div class="button-group">
               <button class="cta-button">Guardar Cambios</button>
               <button class="cta-button" style="background: #333;">Cancelar</button>
@@ -220,7 +200,6 @@
           </div>
         </div>
       </div>
-
       <div class="security-section">
         <h2>Zona Peligrosa</h2>
         <div class="button-group">
@@ -229,22 +208,34 @@
       </div>
     </div>
   </main>
-
   <footer class="footer">
     <p class="copyright">&copy; 2025 Anuvyx. Todos los derechos reservados.</p>
   </footer>
-
   <script src="../script.js"></script>
-
   <script>
+    // Validación de sesión
     if (localStorage.getItem("isLoggedIn") !== "true") {
       alert("Acceso denegado. Por favor, inicia sesión primero.");
       window.location.href = "../index.html#login";
     }
+    // Cargar datos del usuario desde localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      if (userData) {
+        document.getElementById('userName').value = userData.name;
+        document.getElementById('userEmail').value = userData.email;
+        document.getElementById('registrationDate').value = userData.registrationDate || '';
+        // Si se han guardado otros datos (biografía, país) se pueden asignar:
+        document.getElementById('userBio').value = userData.bio || '';
+        document.getElementById('userCountry').value = userData.country || '';
+      } else {
+        alert("Datos de usuario no encontrados. Por favor, inicia sesión.");
+        window.location.href = "../index.html#login";
+      }
+    });
   </script>
-  
-
   <script>
+    // Funcionalidad para editar la imagen de perfil
     document.querySelector('.edit-overlay').addEventListener('click', function() {
       const input = document.createElement('input');
       input.type = 'file';

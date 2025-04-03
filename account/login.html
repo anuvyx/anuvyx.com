@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="../static/logo/favicon.ico">
   <script>
-    // Verificar si el usuario ya tiene sesión iniciada y redirigir si es el caso
+    // Si ya se inició sesión, redirigir al index
     if (localStorage.getItem("isLoggedIn") === "true") {
       window.location.href = "../index.html";
     }
@@ -83,30 +83,24 @@
       const input = document.getElementById(idInput);
       if (!input) return;
       
-      // Tomamos el label si es el siguiente elemento (y removemos cualquier span existente)
       const label = input.nextElementSibling;
       if (label && label.tagName.toLowerCase() !== 'label') return;
       
-      // Si existe un span extra (toggle previamente definido), lo removemos
       if (label.nextElementSibling && label.nextElementSibling.classList.contains('toggle-password')) {
         label.nextElementSibling.remove();
       }
       
-      // Creamos el contenedor wrapper
       const wrapper = document.createElement('div');
       wrapper.style.position = 'relative';
       
-      // Insertamos el wrapper en el DOM
       input.parentNode.insertBefore(wrapper, input);
       wrapper.appendChild(input);
       if (label && label.tagName.toLowerCase() === 'label') {
         wrapper.appendChild(label);
       }
       
-      // Aseguramos que el input use todo el ancho disponible
       input.style.width = '100%';
       
-      // Creamos el ícono para el toggle
       const toggleIcon = document.createElement('span');
       toggleIcon.classList.add('toggle-password-icon');
       toggleIcon.style.position = 'absolute';
@@ -115,7 +109,6 @@
       toggleIcon.style.transform = 'translateY(-50%)';
       toggleIcon.style.cursor = 'pointer';
       
-      // SVG de "ojo" y "ojo tachado"
       const eyeSVG = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
         <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -128,11 +121,9 @@
       </svg>
       `;
       
-      // Inicialmente el input está oculto (tipo password)
       toggleIcon.innerHTML = eyeSlashSVG;
       wrapper.appendChild(toggleIcon);
       
-      // Evento para cambiar la visibilidad
       toggleIcon.addEventListener('click', () => {
         if (input.type === 'password') {
           input.type = 'text';
@@ -176,10 +167,14 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
           });
-
+          
           if (!response.ok) throw new Error(await response.text());
           
+          const data = await response.json();
+          // Guardamos el estado de sesión y los datos del usuario
           localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("userData", JSON.stringify(data.user));
+          
           window.location.href = '../index.html';
         } catch (error) {
           console.error('Login error:', error);
@@ -210,7 +205,6 @@
 
           if (!response.ok) throw new Error(await response.text());
 
-          // Redirección directa a welcome.html
           window.location.href = 'welcome.html';
           
           alert('Registro exitoso! Por favor inicia sesión.');
