@@ -71,11 +71,8 @@
           </div>
           <!-- Input oculto para almacenar el token de reCAPTCHA -->
           <input type="hidden" id="recaptchaToken" name="recaptchaToken">
-          <!-- Botón de registro modificado para reCAPTCHA -->
-          <button type="submit" class="cta-button g-recaptcha" 
-                  data-sitekey="6LcKLQgrAAAAAA_CidzmLhdN0KHLVfloMFSuu1zL" 
-                  data-callback="onSubmit" 
-                  data-action="submit">
+          <!-- Botón de registro sin atributos conflictivos -->
+          <button type="submit" class="cta-button">
             Registrarse
           </button>
           <p class="auth-links">
@@ -145,7 +142,7 @@
       });
     }
     
-    // Función para ejecutar reCAPTCHA
+    // Función para ejecutar reCAPTCHA manualmente
     function executeRecaptcha(action) {
       return new Promise((resolve, reject) => {
         grecaptcha.ready(() => {
@@ -228,11 +225,8 @@
           
           if (!response.ok) throw new Error(await response.text());
           
-          window.location.href = 'welcome.html';
-          
           alert('¡Registro exitoso! Por favor inicia sesión.');
-          document.getElementById('loginSection').classList.add('active');
-          document.getElementById('signupSection').classList.remove('active');
+          window.location.href = '../index.html';
         } catch (error) {
           console.error('Signup error:', error);
           alert('Error en el registro: ' + error.message);
