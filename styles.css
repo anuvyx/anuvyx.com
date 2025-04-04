@@ -281,9 +281,25 @@
   }
 
   .auth-nav {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px 40px;
     background: rgba(0, 0, 0, 0.9);
     border-bottom: 1px solid #333;
+  }
+  
+  
+  .nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .auth-nav-text {
+    font-size: 1.5rem;
+    color: #fff;
   }
 
   .auth-container {
