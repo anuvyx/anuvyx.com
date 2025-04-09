@@ -198,8 +198,8 @@
             body: JSON.stringify(formData)
           });
           if (!response.ok) throw new Error(await response.text());
-          alert('¡Registro exitoso! Por favor inicia sesión.');
-          window.location.href = '../index.html';
+          alert('¡Registro exitoso! Revisa tu correo para verificar tu cuenta.');
+          window.location.href = '../account/welcome.html';
         } catch (error) {
           console.error('Signup error:', error);
           alert('Error en el registro: ' + error.message);
