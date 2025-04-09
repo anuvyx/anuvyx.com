@@ -199,7 +199,7 @@
           });
           if (!response.ok) throw new Error(await response.text());
           alert('¡Registro exitoso! Revisa tu correo para verificar tu cuenta.');
-          window.location.href = '../account/welcome.html';
+          window.location.href = '../account/verification.html';
         } catch (error) {
           console.error('Signup error:', error);
           alert('Error en el registro: ' + error.message);
