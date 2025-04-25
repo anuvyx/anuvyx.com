@@ -450,6 +450,7 @@ body {
 
 .cta-button {
   background: #0071e3;
+  border: 2px solid #fff;
   color: #fff;
   padding: 1rem 2.5rem;
   border-radius: 2rem;
