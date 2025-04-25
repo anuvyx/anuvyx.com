@@ -153,15 +153,15 @@
             <h2>Información Básica</h2>
             <div class="info-group">
               <label>Nombre completo</label>
-              <input id="userName" type="text" value="" class="disabled-input" readonly>
+              <input id="userName" type="text" class="disabled-input" readonly>
             </div>
             <div class="info-group">
               <label>Correo electrónico</label>
-              <input id="userEmail" type="email" value="" class="disabled-input" readonly>
+              <input id="userEmail" type="email" class="disabled-input" readonly>
             </div>
             <div class="info-group">
               <label>Fecha de registro</label>
-              <input id="registrationDate" type="text" value="" class="disabled-input" readonly>
+              <input id="registrationDate" type="text" class="disabled-input" readonly>
             </div>
           </div>
         </div>
@@ -203,7 +203,9 @@
       <div class="security-section">
         <h2>Zona Peligrosa</h2>
         <div class="button-group">
-          <button class="cta-button" style="background: #dc3545;">Eliminar Cuenta</button>
+          <button id="deleteAccountBtn" class="cta-button" style="background: #dc3545;">
+            Eliminar Cuenta
+          </button>
         </div>
       </div>
     </div>
@@ -212,40 +214,86 @@
   <footer class="footer">
     <p class="copyright">&copy; 2025 Anuvyx. Todos los derechos reservados.</p>
   </footer>
+
   <script src="../script.js"></script>
   <script>
+    // Verificar sesión
     if (localStorage.getItem("isLoggedIn") !== "true") {
       alert("Acceso denegado. Por favor, inicia sesión primero.");
       window.location.href = "../index.html#login";
     }
+
     document.addEventListener('DOMContentLoaded', () => {
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      if (userData) {
-        document.getElementById('userName').value = userData.name;
-        document.getElementById('userEmail').value = userData.email;
-        document.getElementById('registrationDate').value = userData.registrationDate || '';
-        document.getElementById('userBio').value = userData.bio || '';
-        document.getElementById('userCountry').value = userData.country || '';
-      } else {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      if (!userData.email) {
         alert("Datos de usuario no encontrados. Por favor, inicia sesión.");
         window.location.href = "../index.html#login";
+        return;
       }
-    });
-  </script>
-  <script>
-    document.querySelector('.edit-overlay').addEventListener('click', function() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = function(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.querySelector('.profile-picture').style.backgroundImage = `url(${e.target.result})`;
+      // Llenar campos
+      document.getElementById('userName').value = userData.name || '';
+      document.getElementById('userEmail').value = userData.email;
+      document.getElementById('registrationDate').value = userData.registrationDate || '';
+      document.getElementById('userBio').value = userData.bio || '';
+      document.getElementById('userCountry').value = userData.country || '';
+
+      // Eliminar Cuenta con solicitud de correo y contraseña
+      document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+        if (!confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")) {
+          return;
         }
-        reader.readAsDataURL(file);
-      };
-      input.click();
+
+        const inputEmail = prompt("Por favor, ingresa tu correo electrónico para confirmar:");
+        if (!inputEmail) {
+          alert("Operación cancelada.");
+          return;
+        }
+        if (inputEmail !== userData.email) {
+          alert("El correo ingresado no coincide con tu cuenta.");
+          return;
+        }
+
+        const inputPassword = prompt("Por favor, ingresa tu contraseña:");
+        if (!inputPassword) {
+          alert("Operación cancelada.");
+          return;
+        }
+
+        try {
+          const response = await fetch('https://anuvyx-backend.vercel.app/api/delete-account', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: inputEmail, password: inputPassword })
+          });
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.error || 'Error al eliminar la cuenta');
+          }
+          // Éxito: limpiar estado y redirigir
+          localStorage.clear();
+          alert('Tu cuenta ha sido eliminada correctamente.');
+          window.location.href = '../index.html';
+        } catch (error) {
+          console.error('Delete account error:', error);
+          alert('No se pudo eliminar la cuenta: ' + error.message);
+        }
+      });
+
+      // Subir foto de perfil
+      document.querySelector('.edit-overlay').addEventListener('click', function() {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = function(event) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.querySelector('.profile-picture').style.backgroundImage = `url(${e.target.result})`;
+          };
+          reader.readAsDataURL(file);
+        };
+        fileInput.click();
+      });
     });
   </script>
 </body>
