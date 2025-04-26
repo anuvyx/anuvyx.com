@@ -20,7 +20,7 @@ body {
   background: #000;
   padding: 15px 0;
   text-align: center;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #d4a944;
   position: fixed;
   width: 100%;
   top: 0;
@@ -276,7 +276,7 @@ body {
   align-items: center;
   padding: 20px 40px;
   background: rgba(0, 0, 0, 0.9);
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #d4a944;
 }
 
 .nav-center {
@@ -534,7 +534,7 @@ body {
   background: rgba(0, 0, 0, 0.9);
   padding: 1.5rem;
   text-align: center;
-  border-top: 1px solid #333;
+  border-top: 1px solid #d4a944;
 }
 
 .copyright {
@@ -546,7 +546,7 @@ body {
 @media (max-width: 768px) {
   .top-bar {
     padding: 12px 0;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #d4a944;
   }
   
   .company-name {
