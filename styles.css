@@ -83,6 +83,7 @@ body {
   max-width: 40px;
   max-height: 40px;
   object-fit: cover;
+  margin-top: 5px;
   border: 2px solid #0071e3;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
