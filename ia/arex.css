@@ -1124,15 +1124,10 @@ pre code .token.property {
   .chat-history {
     height: 63vh;
   }
-
-  .login-section {
-    width: 95vw;
-  }
   
   .chat-main {
-    margin-left: 0;
     width: 100%;
-    padding: 0;
+    padding: 0 1rem;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -1155,8 +1150,6 @@ pre code .token.property {
     bottom: 0;
     background: var(--color-bg);
     border-top: 1px solid var(--color-accent);
-    padding-left: 1rem;
-    padding-right: 1rem;
     box-sizing: border-box;
     z-index: 10;
   }
