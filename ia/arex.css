@@ -806,10 +806,6 @@ a:visited {
   color: #9b59b6;
 }
 
-a:hover {
-  color: #e74c3c;
-}
-
 a:active {
   color: #c0392b;
 }
@@ -1134,7 +1130,12 @@ pre code .token.property {
   }
 
   .login-section {
-    z-index: 10;
+    z-index: auto;
+  }
+
+  .login-section.with-user {
+    padding: 0 1rem;
+    z-index: auto;
   }
 
   .chat-history {
