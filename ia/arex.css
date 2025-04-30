@@ -161,6 +161,16 @@ body {
   color: var(--color-bg);
 }
 
+.login-section.with-user {
+  position: absolute;
+  background-color: var(--color-sidebar-bg);
+  border-top: 1px solid var(--color-accent);
+  bottom: 0;
+  width: calc(100% - 2rem);
+  text-align: center;
+  padding: 0.4rem 1rem;
+}
+
 /* BOTÓN Y MENÚ DE TÍTULO */
 .header-title-toggle-btn {
   background: none;

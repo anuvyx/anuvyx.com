@@ -1038,25 +1038,24 @@
   // INICIALIZACIÓN Y EVENT LISTENERS
   const init = () => {
     if (localStorage.getItem('isLoggedIn') === 'true') {
-      const loginLink  = document.querySelector('.login-link');   // <a class="login-btn login-link">
+      const loginLink  = document.querySelector('.login-link');   
       if (loginLink) {
-        const loginSection = loginLink.parentElement;             // <div class="login-section">
-        loginLink.remove();                                       // Quitamos botón “Iniciar sesión (Beta)”
+        const loginSection = loginLink.parentElement;            
+        loginLink.remove();    
+        
+        loginSection.classList.add('with-user'); 
     
-        // Contenedor principal
         const userMenuContainer = document.createElement('div');
         userMenuContainer.classList.add('user-menu-container');
     
-        // Icono
         const userIconLink = document.createElement('div');
         userIconLink.classList.add('user-icon-container');
     
         const userIconImg = document.createElement('img');
-        userIconImg.src  = '../static/icons/user-icon-black.png'; // ruta relativa desde /ia/
+        userIconImg.src  = '../static/icons/user-icon-black.png';
         userIconImg.alt  = 'Perfil';
         userIconImg.classList.add('user-icon');
     
-        // Dropdown
         const dropdownMenu = document.createElement('div');
         dropdownMenu.classList.add('user-dropdown');
         dropdownMenu.innerHTML = `
@@ -1064,13 +1063,11 @@
           <div class="dropdown-item logout-button">Cerrar Sesión</div>
         `;
     
-        // Ensamblamos
         userIconLink.appendChild(userIconImg);
         userMenuContainer.appendChild(userIconLink);
         userMenuContainer.appendChild(dropdownMenu);
         loginSection.appendChild(userMenuContainer);
     
-        // Mostrar/ocultar menú
         userIconLink.addEventListener('click', (e) => {
           e.stopPropagation();
           dropdownMenu.classList.toggle('show');
@@ -1078,8 +1075,7 @@
         document.addEventListener('click', (e) => {
           if (!userMenuContainer.contains(e.target)) dropdownMenu.classList.remove('show');
         });
-    
-        // Logout
+
         dropdownMenu.querySelector('.logout-button').addEventListener('click', () => {
           localStorage.removeItem('isLoggedIn');
           window.location.reload();
