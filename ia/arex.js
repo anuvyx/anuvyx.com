@@ -1056,27 +1056,27 @@
         userIconImg.alt  = 'Perfil';
         userIconImg.classList.add('user-icon');
     
-        const dropdownMenu = document.createElement('div');
-        dropdownMenu.classList.add('user-dropdown');
-        dropdownMenu.innerHTML = `
-          <a href="../account/profile.html" class="dropdown-item">Perfil</a>
-          <div class="dropdown-item logout-button">Cerrar Sesión</div>
+        const dropupMenu = document.createElement('div');
+        dropupMenu.classList.add('user-dropup');
+        dropupMenu.innerHTML = `
+          <a href="../account/profile.html" class="dropup-item">Perfil</a>
+          <div class="dropup-item logout-button">Cerrar Sesión</div>
         `;
     
         userIconLink.appendChild(userIconImg);
         userMenuContainer.appendChild(userIconLink);
-        userMenuContainer.appendChild(dropdownMenu);
+        userMenuContainer.appendChild(dropupMenu);
         loginSection.appendChild(userMenuContainer);
     
         userIconLink.addEventListener('click', (e) => {
           e.stopPropagation();
-          dropdownMenu.classList.toggle('show');
+          dropupMenu.classList.toggle('show');
         });
         document.addEventListener('click', (e) => {
-          if (!userMenuContainer.contains(e.target)) dropdownMenu.classList.remove('show');
+          if (!userMenuContainer.contains(e.target)) dropupMenu.classList.remove('show');
         });
 
-        dropdownMenu.querySelector('.logout-button').addEventListener('click', () => {
+        dropupMenu.querySelector('.logout-button').addEventListener('click', () => {
           localStorage.removeItem('isLoggedIn');
           window.location.reload();
         });
