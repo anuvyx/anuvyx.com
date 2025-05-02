@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil de Usuario ‑ Anuvyx</title>
+  <title>Perfil de Usuario - Anuvyx</title>
   <link rel="stylesheet" href="../styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="../static/logo/favicon.ico">
@@ -169,7 +169,7 @@
       <div class="profile-header">
         <div class="profile-picture">
           <div class="edit-overlay">
-            <!-- Cámara outline -->
+            <!-- Cámara outline adaptada -->
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
               <circle cx="12" cy="13" r="4"></circle>
@@ -199,7 +199,7 @@
             <h2>Detalles Personales</h2>
             <div class="info-group">
               <label>Fecha de nacimiento</label>
-              <input id="userDOB" type="date" disabled class="disabled-input" placeholder="dd/mm/yyyy">
+              <input id="userDOB" type="date" disabled class="disabled-input">
             </div>
           </div>
 
@@ -254,20 +254,10 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p class="copyright">&copy; 2025 Anuvyx. Todos los derechos reservados.</p>
+    <p class="copyright">&copy; 2025 Anuvyx. Todos los derechos reservados.</p>
   </footer>
 
   <script>
-    function normalizaFecha(fechaStr = '') {
-      if (/^\d{4}-\d{2}-\d{2}$/.test(fechaStr)) return fechaStr;
-
-      if (/^\d{2}\/\d{2}\/\d{4}$/.test(fechaStr)) {
-        const [d, m, y] = fechaStr.split('/');
-        return `${y}-${m}-${d}`;
-      }
-      return '';
-    }
-
     // Verificar sesión
     if (localStorage.getItem("isLoggedIn") !== "true") {
       alert("Acceso denegado. Por favor, inicia sesión primero.");
@@ -282,12 +272,12 @@
         window.location.href = "../index.html#login";
         return;
       }
-      document.getElementById('userName').value  = userData.name  || '';
+      document.getElementById('userName').value = userData.name || '';
       document.getElementById('userEmail').value = userData.email;
-      document.getElementById('userDOB').value   = normalizaFecha(userData.birthDate);
+      document.getElementById('userDOB').value = userData.birthDate || '';
 
       // Toggle editar perfil
-      const editBtn    = document.getElementById('editProfileBtn');
+      const editBtn = document.getElementById('editProfileBtn');
       const saveCancel = document.getElementById('saveCancelButtons');
       const fields = [
         document.getElementById('userName'),
@@ -327,10 +317,10 @@
       // Guardar cambios
       document.getElementById('saveChangesBtn').addEventListener('click', async () => {
         const updatedName = document.getElementById('userName').value.trim();
-        const updatedDOB  = document.getElementById('userDOB').value;
-        const currentPassword   = document.getElementById('currentPassword').value;
-        const newPassword       = document.getElementById('newPassword').value;
-        const confirmNewPassword= document.getElementById('confirmNewPassword').value;
+        const updatedDOB = document.getElementById('userDOB').value;
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
 
         if (newPassword && newPassword !== confirmNewPassword) {
           return alert('La nueva contraseña y su confirmación no coinciden.');
@@ -344,7 +334,7 @@
         const payload = { email: userData.email, name: updatedName, birthDate: updatedDOB };
         if (newPassword) {
           payload.currentPassword = currentPassword;
-          payload.newPassword     = newPassword;
+          payload.newPassword = newPassword;
         }
 
         try {
@@ -361,6 +351,8 @@
           localStorage.setItem('userData', JSON.stringify(newUserData));
 
           alert('Perfil actualizado correctamente.');
+
+          // Recarga la página tras guardar cambios
           location.reload();
 
         } catch (error) {
@@ -369,7 +361,7 @@
         }
       });
 
-      // Mostrar / ocultar contraseñas
+      // Función para mostrar/ocultar contraseñas
       function addTogglePassword(idInput) {
         const input = document.getElementById(idInput);
         if (!input) return;
@@ -400,7 +392,7 @@
       addTogglePassword('newPassword');
       addTogglePassword('confirmNewPassword');
 
-      // Eliminar cuenta
+      // Eliminar Cuenta
       document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
         if (!confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")) return;
         const inputEmail = prompt("Por favor, ingresa tu correo electrónico para confirmar:");
@@ -426,9 +418,8 @@
         }
       });
 
-      // menú móvil
       const menuToggle = document.querySelector('.menu-toggle');
-      const navLinks   = document.querySelector('.nav-links');
+      const navLinks = document.querySelector('.nav-links');
       if (menuToggle && navLinks) {
         menuToggle.addEventListener('click', () => {
           menuToggle.classList.toggle('active');
