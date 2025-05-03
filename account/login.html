@@ -234,7 +234,7 @@
             body: JSON.stringify(formData)
           });
           if (!response.ok) throw new Error(await response.text());
-          alert('¡Registro exitoso! Revisa tu correo para verificar tu cuenta.');
+          alert('¡Registro exitoso! Escribe tu correo para verificar tu cuenta.');
           window.location.href = '../account/verification.html';
         } catch (error) {
           console.error('Signup error:', error);
