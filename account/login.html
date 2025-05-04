@@ -192,10 +192,9 @@
       // Login con reCAPTCHA
       document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('email').value;
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         try {
-          // Obtener token reCAPTCHA para 'login'
           const token = await executeRecaptcha('login');
           document.getElementById('recaptchaTokenLogin').value = token;
 
@@ -204,7 +203,24 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password, recaptchaToken: token })
           });
-          if (!response.ok) throw new Error(await response.text());
+
+          if (!response.ok) {
+            const errMsg = await response.text();
+            const needsVerification =
+              response.status === 401 && errMsg.toLowerCase().includes('no ha sido verificado');
+
+            if (needsVerification) {
+              localStorage.setItem('pendingVerificationEmail', email);
+
+              
+              alert('Tu cuenta ya está registrada. Verifica tu correo para poder iniciar sesión.');
+              window.location.href = '../account/verification.html';
+              return;           
+            }
+
+            throw new Error(errMsg || 'Error en el inicio de sesión');
+          }
+
           const data = await response.json();
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("userData", JSON.stringify(data.user));
