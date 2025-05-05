@@ -4,7 +4,7 @@
   padding: 0;
   box-sizing: border-box;
   scrollbar-width: normal;
-  scrollbar-color: #333 #000;
+  scrollbar-color: #616263 #000;
 }
 
 body {
@@ -110,7 +110,7 @@ body {
   right: 0;
   top: 100%;
   background: #111;
-  border: 1px solid #333;
+  border: 1px solid #616263;
   border-radius: 8px;
   min-width: 160px;
   z-index: 1001;
@@ -138,7 +138,7 @@ body {
 
 .logout-button {
   cursor: pointer;
-  border-top: 1px solid #333;
+  border-top: 1px solid #616263;
 }
 
 @keyframes dropdownFade {
@@ -211,7 +211,7 @@ body {
   max-width: 400px;
   margin: 10% auto;
   border-radius: 15px;
-  border: 1px solid #333;
+  border: 1px solid #616263;
   animation: modalSlideIn 0.3s ease-out;
 }
 
@@ -234,7 +234,7 @@ body {
   max-width: 400px;
   margin: 7% auto;
   border-radius: 15px;
-  border: 1px solid #333;
+  border: 1px solid #616263;
   animation: modalSlideIn 0.3s ease-out;
 }
 
@@ -297,7 +297,7 @@ body {
   padding: 2rem;
   background: rgba(17, 17, 17, 0.95);
   border-radius: 15px;
-  border: 1px solid #333;
+  border: 1px solid #616263;
 }
 
 .auth-section {
@@ -381,7 +381,7 @@ body {
   padding: 1rem;
   background: transparent;
   border: none;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #616263;
   color: #fff;
   font-size: 1rem;
   transition: border-color 0.3s;
