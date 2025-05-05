@@ -15,6 +15,7 @@
 
   // GESTIÓN DEL HISTORIAL DE CHATS
   const saveChatsToStorage = () => {
+    purgeOldChats();
     localStorage.setItem('arexChats', JSON.stringify(chats));
   };
 
@@ -250,6 +251,14 @@
     document.getElementById('chatHeaderTitle').textContent = storedTitle;
   });
 
+  // === CONFIGURACIÓN DE LIMPIEZA AUTOMÁTICA ===============================
+  const MAX_CHAT_AGE = 30 * 24 * 60 * 60 * 1000;   
+
+  function purgeOldChats() {                       
+    const cutoff = Date.now() - MAX_CHAT_AGE;
+    chats = chats.filter(chat => chat.timestamp >= cutoff);
+  }
+
   // FUNCIONALIDAD DE BÚSQUEDA Y CARGA DE ARCHIVOS
   const searchWebBtn = document.getElementById('search-web-btn');
   const fileUploadInput = document.getElementById('file-upload');
@@ -269,6 +278,7 @@
     }
   });
 
+  // === ACTUALIZAR TIMESTAMP DEL CHAT ACTUAL ===============================
   function touchCurrentChat() {
     const chat = chats.find(c => c.id === currentChatId);
     if (chat) chat.timestamp = Date.now();
@@ -1045,6 +1055,7 @@
 
   // INICIALIZACIÓN Y EVENT LISTENERS
   const init = () => {
+    purgeOldChats();
     if (localStorage.getItem('isLoggedIn') === 'true') {
       const loginLink  = document.querySelector('.login-link');   
       if (loginLink) {
@@ -1127,6 +1138,9 @@
       } else {
         createNewChat();
       }
+      if (!chats.some(c => c.id === currentChatId)) {         
+        currentChatId = chats.length ? chats[0].id : null;   
+      } 
       loadChatHistory();
       loadChatMessages();
     });
