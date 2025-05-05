@@ -269,6 +269,11 @@
     }
   });
 
+  function touchCurrentChat() {
+    const chat = chats.find(c => c.id === currentChatId);
+    if (chat) chat.timestamp = Date.now();
+  }
+
   // MENÚ DE OPCIONES DE CHAT
   const showChatOptions = (chatId) => {
     const button = document.querySelector(`.chat-item[data-id="${chatId}"] .chat-options-btn`);
@@ -459,6 +464,7 @@
         isUser: true,
         timestamp: Date.now()
       });
+      touchCurrentChat();
       saveChatsToStorage();
       displayMessage(userText, true);
       userInput.value = '';
@@ -642,7 +648,8 @@
       files: fileNames,
       timestamp: Date.now()
     });
-
+    touchCurrentChat();      
+  saveChatsToStorage();
     userInput.value = '';
     document.querySelectorAll('.file-preview').forEach((p) => p.remove());
     displayMessage(displayMessageContent, true);
@@ -730,6 +737,7 @@
         timestamp: Date.now(),
         fuentesData: []
       });
+      touchCurrentChat();
       saveChatsToStorage();
     } catch (error) {
       if (error.name === 'AbortError') {
