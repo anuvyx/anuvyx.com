@@ -133,7 +133,7 @@ body {
 }
 
 .dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: #40414491;
 }
 
 .logout-button {
