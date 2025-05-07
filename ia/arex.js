@@ -268,7 +268,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     let storedTitle = localStorage.getItem('chatHeaderTitle');
     if (!storedTitle) {
-      storedTitle = 'AREX';
+      storedTitle = 'New chat';
       localStorage.setItem('chatHeaderTitle', storedTitle);
     }
     document.getElementById('chatHeaderTitle').textContent = storedTitle;
@@ -455,7 +455,7 @@
     // plantilla de primer mensaje
     const welcomeMessage = "¡Hola! Soy Arex, el asistente de IA de Anuvyx.\n\n¿En qué puedo ayudarte hoy?\n";
     const body = {
-      name      : 'New chat',
+      name      : 'AREX',
       timestamp : Date.now(),
       messages  : [{ content: welcomeMessage, isUser: false, timestamp: Date.now() }]
     };
