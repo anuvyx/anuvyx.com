@@ -268,7 +268,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     let storedTitle = localStorage.getItem('chatHeaderTitle');
     if (!storedTitle) {
-      storedTitle = 'AREX';
+      storedTitle = 'New Chat';
       localStorage.setItem('chatHeaderTitle', storedTitle);
     }
     document.getElementById('chatHeaderTitle').textContent = storedTitle;
@@ -1175,6 +1175,7 @@
 
         dropupMenu.querySelector('.logout-button').addEventListener('click', () => {
           localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('token');
           window.location.reload();
         });
       }
@@ -1208,21 +1209,21 @@
       if (sidebarState === 'hidden' && window.innerWidth >= 769) {
         chatSidebar.classList.add('hidden');
       }
+    
+      await fetchServerChats();
+    
       const savedChatId = localStorage.getItem('selectedChatId');
       if (savedChatId && chats.some(chat => getId(chat) === savedChatId)) {
         currentChatId = savedChatId;
       } else if (chats.length > 0) {
-        currentChatId = getId(chats[0]);
+        currentChatId = getId(chats[0]);          
       } else {
-        createNewChat();
+        await createNewChat();                   
       }
-      if (!chats.some(c => getId(c) === currentChatId)) {
-        currentChatId = chats.length ? getId(chats[0]) : null;   
-      } 
-      await fetchServerChats();
+    
       loadChatHistory();
       loadChatMessages();
-    });
+    });    
 
     document.getElementById('file-upload').addEventListener('change', handleFileUpload);
 
