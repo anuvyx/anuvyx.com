@@ -447,9 +447,9 @@ body {
 }
 
 .chat-item.active {
-  background: rgba(227, 227, 227, 0.1);
+  background: rgba(212, 169, 68, 0.1);
   color: var(--color-white);
-  border-left: 3px solid var(--color-white);
+  border-left: 3px solid var(--color-accent);
 }
 
 /* CONTENEDOR PRINCIPAL DEL CHAT */
