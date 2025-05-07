@@ -27,15 +27,15 @@
   };
 
   async function fetchServerChats() {
-    if (!localStorage.getItem('token')) return;          // usuario anónimo
+    if (!localStorage.getItem('token')) return;         
     try {
       const res = await fetch(`${apiBase}/chats`, { headers: authHeaders() });
       if (!res.ok) throw new Error('fetch chats failed');
       const serverChats = await res.json();
   
       if (serverChats.length) {
-        chats = serverChats;                 // pisa los locales
-        currentChatId = serverChats[0]._id;  // selecciona el más reciente
+        chats = serverChats;                
+        currentChatId = serverChats[0]._id;  
         saveChatsToStorage();
       }
     } catch (e) { console.error(e); }
@@ -268,7 +268,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     let storedTitle = localStorage.getItem('chatHeaderTitle');
     if (!storedTitle) {
-      storedTitle = 'New Chat';
+      storedTitle = 'AREX';
       localStorage.setItem('chatHeaderTitle', storedTitle);
     }
     document.getElementById('chatHeaderTitle').textContent = storedTitle;
@@ -455,7 +455,7 @@
     // plantilla de primer mensaje
     const welcomeMessage = "¡Hola! Soy Arex, el asistente de IA de Anuvyx.\n\n¿En qué puedo ayudarte hoy?\n";
     const body = {
-      name      : 'AREX',
+      name      : 'New chat',
       timestamp : Date.now(),
       messages  : [{ content: welcomeMessage, isUser: false, timestamp: Date.now() }]
     };
