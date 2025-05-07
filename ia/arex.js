@@ -7,11 +7,18 @@
   const sendBtn = document.getElementById('send-btn');
   const newChatBtn = document.querySelector('.new-chat-btn');
   const deleteChatsBtn = document.querySelector('.delete-chats-btn');
+  const apiBase = 'https://arex-backend.vercel.app/api';
+  const getId = (chat) => chat._id || chat.id;
 
   let currentChatId = null;
   let currentOptionsMenu = null;
   let abortController = null;
   let chats = JSON.parse(localStorage.getItem('arexChats')) || [];
+
+  function authHeaders() {
+    const token = localStorage.getItem('token');
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  }
 
   // GESTIÓN DEL HISTORIAL DE CHATS
   const saveChatsToStorage = () => {
@@ -19,12 +26,28 @@
     localStorage.setItem('arexChats', JSON.stringify(chats));
   };
 
+  async function fetchServerChats() {
+    if (!localStorage.getItem('token')) return;          // usuario anónimo
+    try {
+      const res = await fetch(`${apiBase}/chats`, { headers: authHeaders() });
+      if (!res.ok) throw new Error('fetch chats failed');
+      const serverChats = await res.json();
+  
+      if (serverChats.length) {
+        chats = serverChats;                 // pisa los locales
+        currentChatId = serverChats[0]._id;  // selecciona el más reciente
+        saveChatsToStorage();
+      }
+    } catch (e) { console.error(e); }
+  }
+  
+
   const loadChatHistory = () => {
     const sortedChats = [...chats].sort((a, b) => b.timestamp - a.timestamp);
     chatHistory.innerHTML = sortedChats
       .map(
         (chat) => `
-        <li class="chat-item ${chat.id === currentChatId ? 'active' : ''}" data-id="${chat.id}">
+        <li class="chat-item ${getId(chat)===currentChatId?'active':''}" data-id="${getId(chat)}">
           <div class="chat-info">
             <span>${chat.name || new Date(chat.timestamp).toLocaleString()}</span>
           </div>
@@ -280,9 +303,27 @@
 
   // === ACTUALIZAR TIMESTAMP DEL CHAT ACTUAL ===============================
   function touchCurrentChat() {
-    const chat = chats.find(c => c.id === currentChatId);
+    const chat = chats.find(c => getId(c) === currentChatId);
     if (chat) chat.timestamp = Date.now();
   }
+
+  async function syncCurrentChat() {
+    if (!localStorage.getItem('token')) return;
+    const chat = chats.find(c=>getId(c)===currentChatId);
+    if (!chat) return;
+    try {
+      await fetch(`${apiBase}/chats/${chat._id}`, {
+        method : 'PUT',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body   : JSON.stringify({
+          name     : chat.name,
+          timestamp: chat.timestamp,
+          messages : chat.messages
+        })
+      });
+    } catch (e) { console.error('sync error:', e); }
+  }
+  
 
   // MENÚ DE OPCIONES DE CHAT
   const showChatOptions = (chatId) => {
@@ -360,25 +401,45 @@
     document.addEventListener('click', handleOutsideClick);
   };
 
-  const deleteChat = (chatId) => {
-    chats = chats.filter((chat) => chat.id !== chatId);
+  const deleteChat = async (chatId) => {
+    chats = chats.filter(chat => getId(chat) !== chatId);
     saveChatsToStorage();
     loadChatHistory();
-    if (currentChatId === chatId) chatMessages.innerHTML = '';
-  };
-
-  const renameChat = (chatId, newName) => {
-    const chat = chats.find((chat) => chat.id === chatId);
-    if (chat) {
-      chat.name = newName;
-      saveChatsToStorage();
-      loadChatHistory();
+    if (currentChatId === chatId) {
+      chatMessages.innerHTML = '';
+      currentChatId = chats.length ? getId(chats[0]) : null;
+    }
+  
+    if (localStorage.getItem('token')) {
+      try {
+        await fetch(`${apiBase}/chats/${chatId}`, {
+          method: 'DELETE',
+          headers: authHeaders()
+        });
+      } catch (err) { console.error('delete chat api:', err); }
     }
   };
+  
+
+  const renameChat = (chatId, newName) => {
+    const chat = chats.find(c => getId(c) === chatId);
+    if (!chat) return;
+    chat.name = newName;
+    saveChatsToStorage();
+    loadChatHistory();
+  
+    if (localStorage.getItem('token')) {
+      fetch(`${apiBase}/chats/${chatId}`, {
+        method : 'PUT',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body   : JSON.stringify({ name: newName })
+      }).catch(err => console.error('rename chat api:', err));
+    }
+  };  
 
   // MENSAJES Y NUEVO CHAT
   const loadChatMessages = () => {
-    const chat = chats.find((c) => c.id === currentChatId);
+    const chat = chats.find(c=>getId(c)===currentChatId);
     if (!chat) return;
     chatMessages.innerHTML = '';
     chat.messages.forEach((msg) => {
@@ -390,25 +451,38 @@
     });
   };
 
-  const createNewChat = () => {
-    currentChatId = Date.now().toString();
+  async function createNewChat() {
+    // plantilla de primer mensaje
     const welcomeMessage = "¡Hola! Soy Arex, el asistente de IA de Anuvyx.\n\n¿En qué puedo ayudarte hoy?\n";
-    chats.push({
-      id: currentChatId,
-      timestamp: Date.now(),
-      messages: [
-        {
-          content: welcomeMessage,
-          isUser: false,
-          timestamp: Date.now()
-        }
-      ]
-    });
-    saveChatsToStorage();
-    localStorage.setItem('selectedChatId', currentChatId);
-    loadChatHistory();
-    loadChatMessages();
-  };
+    const body = {
+      name      : 'AREX',
+      timestamp : Date.now(),
+      messages  : [{ content: welcomeMessage, isUser: false, timestamp: Date.now() }]
+    };
+  
+    try {
+      let _id = null;
+      if (localStorage.getItem('token')) {
+        const res = await fetch(`${apiBase}/chats`, {
+          method : 'POST',
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
+          body   : JSON.stringify(body)
+        });
+        const data = await res.json();
+        _id = data._id;
+      } else {
+        _id = Date.now().toString(); // fallback offline
+      }
+  
+      currentChatId = _id;
+      chats.unshift({ _id, ...body });      // _id real o temporal
+      saveChatsToStorage();
+      loadChatHistory();
+      loadChatMessages();
+    } catch (e) {
+      console.error('createNewChat error:', e);
+    }
+  }  
 
   // INDICADOR DE CARGA
   const showLoadingWithCounter = () => {
@@ -466,7 +540,7 @@
     const apiMessageContent = (userText + fileContent).trim();
     if (!apiMessageContent) return;
 
-    const chat = chats.find((c) => c.id === currentChatId);
+    const chat = chats.find(c=>getId(c)===currentChatId);
 
     if (searchActive) {
       chat.messages.push({
@@ -476,6 +550,7 @@
       });
       touchCurrentChat();
       saveChatsToStorage();
+      await syncCurrentChat();
       displayMessage(userText, true);
       userInput.value = '';
       autoResizeTextarea();
@@ -593,6 +668,7 @@
           fuentesData: data.results || []
         });
         saveChatsToStorage();
+        await syncCurrentChat();
 
         let fuentesData = data.results || [];
 
@@ -660,6 +736,7 @@
     });
     touchCurrentChat();      
   saveChatsToStorage();
+  await syncCurrentChat();
     userInput.value = '';
     document.querySelectorAll('.file-preview').forEach((p) => p.remove());
     displayMessage(displayMessageContent, true);
@@ -749,6 +826,7 @@
       });
       touchCurrentChat();
       saveChatsToStorage();
+      await syncCurrentChat();
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Solicitud cancelada por el usuario.');
@@ -1125,22 +1203,23 @@
     userInput.addEventListener('input', autoResizeTextarea);
     autoResizeTextarea();
 
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
       const sidebarState = localStorage.getItem('sidebarState');
       if (sidebarState === 'hidden' && window.innerWidth >= 769) {
         chatSidebar.classList.add('hidden');
       }
       const savedChatId = localStorage.getItem('selectedChatId');
-      if (savedChatId && chats.some((chat) => chat.id === savedChatId)) {
+      if (savedChatId && chats.some(chat => getId(chat) === savedChatId)) {
         currentChatId = savedChatId;
       } else if (chats.length > 0) {
-        currentChatId = chats[0].id;
+        currentChatId = getId(chats[0]);
       } else {
         createNewChat();
       }
-      if (!chats.some(c => c.id === currentChatId)) {         
-        currentChatId = chats.length ? chats[0].id : null;   
+      if (!chats.some(c => getId(c) === currentChatId)) {
+        currentChatId = chats.length ? getId(chats[0]) : null;   
       } 
+      await fetchServerChats();
       loadChatHistory();
       loadChatMessages();
     });
