@@ -820,6 +820,16 @@ body {
   margin-right: auto;
 }
 
+#search-web-btn.active {
+  background: var(--color-accent);      
+  border-color: var(--color-accent);
+  color: var(--color-bg);            
+}
+
+#search-web-btn.active:hover {
+  background: rgba(212,169,68,0.85);              
+}
+
 #search-web-btn:hover {
   background: var(--color-hover-dark);
 }
