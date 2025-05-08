@@ -26,21 +26,54 @@
     localStorage.setItem('arexChats', JSON.stringify(chats));
   };
 
+  
   async function fetchServerChats() {
-    if (!localStorage.getItem('token')) return;         
+    
+    if (!localStorage.getItem('token')) return;
+
     try {
+      
       const res = await fetch(`${apiBase}/chats`, { headers: authHeaders() });
       if (!res.ok) throw new Error('fetch chats failed');
-      const serverChats = await res.json();
-  
-      if (serverChats.length) {
-        chats = serverChats;                
-        currentChatId = serverChats[0]._id;  
-        saveChatsToStorage();
+      const serverChats = await res.json();           
+
+      
+      const toUpload = chats.filter(localChat =>
+        !serverChats.some(remoteChat => getId(remoteChat) === getId(localChat))
+      );
+
+      for (const chat of toUpload) {
+        const body = { ...chat };
+        delete body._id;                              
+        const uploadRes = await fetch(`${apiBase}/chats`, {
+          method : 'POST',
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
+          body   : JSON.stringify(body)
+        });
+        if (uploadRes.ok) {
+          const { _id } = await uploadRes.json();
+          chat._id = _id;                              
+        }
       }
-    } catch (e) { console.error(e); }
+
+      
+      const merged = new Map();                        
+      [...serverChats, ...chats].forEach(c => {
+        const id = getId(c);
+        if (!merged.has(id) || c.timestamp > merged.get(id).timestamp) {
+          merged.set(id, c);
+        }
+      });
+      chats = [...merged.values()].sort((a, b) => b.timestamp - a.timestamp);
+
+      
+      currentChatId = chats.length ? getId(chats[0]) : null;
+      saveChatsToStorage();                           
+
+    } catch (e) {
+      console.error('fetchServerChats error:', e);
+    }
   }
-  
 
   const loadChatHistory = () => {
     const sortedChats = [...chats].sort((a, b) => b.timestamp - a.timestamp);
@@ -268,7 +301,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     let storedTitle = localStorage.getItem('chatHeaderTitle');
     if (!storedTitle) {
-      storedTitle = 'New chat';
+      storedTitle = 'AREX';
       localStorage.setItem('chatHeaderTitle', storedTitle);
     }
     document.getElementById('chatHeaderTitle').textContent = storedTitle;
