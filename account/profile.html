@@ -414,7 +414,6 @@
           }
 
           const payload = {
-            email: userData.email,
             name: updatedName,
             birthDate: updatedDOB,
           };
@@ -425,11 +424,21 @@
           }
 
           try {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+              alert("No estás autenticado. Inicia sesión nuevamente.");
+              window.location.href = "../index.html#login";
+              return;
+            }
+
             const res = await fetch(
               "https://anuvyx-backend.vercel.app/api/update-profile",
               {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer " + token,
+                },
                 body: JSON.stringify(payload),
               }
             );
